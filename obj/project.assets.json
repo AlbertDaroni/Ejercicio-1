@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Usuario\\OneDrive\\Documentos\\Tecnicatura Universitaria de Desarrollo de Software (Trabajos)\\Laboratorio II\\Ejercicio 1\\Ejercicio 1.csproj",
+      "projectUniqueName": "C:\\univercidad\\2do cuatrimestre\\Laboratorio 2\\Ejercicio-1\\Ejercicio 1.csproj",
       "projectName": "Ejercicio 1",
-      "projectPath": "C:\\Users\\Usuario\\OneDrive\\Documentos\\Tecnicatura Universitaria de Desarrollo de Software (Trabajos)\\Laboratorio II\\Ejercicio 1\\Ejercicio 1.csproj",
+      "projectPath": "C:\\univercidad\\2do cuatrimestre\\Laboratorio 2\\Ejercicio-1\\Ejercicio 1.csproj",
       "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Usuario\\OneDrive\\Documentos\\Tecnicatura Universitaria de Desarrollo de Software (Trabajos)\\Laboratorio II\\Ejercicio 1\\obj\\",
+      "outputPath": "C:\\univercidad\\2do cuatrimestre\\Laboratorio 2\\Ejercicio-1\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config"
