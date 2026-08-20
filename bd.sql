@@ -1,0 +1,21 @@
+CREATE DATABASE Inmobiliaria;
+
+USE Inmobiliaria;
+
+CREATE TABLE Propietarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(100) NOT NULL,
+    Apellido VARCHAR(100) NOT NULL,
+    DNI VARCHAR(20) NOT NULL,
+    Telefono VARCHAR(30) NOT NULL,
+    Correo VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Inquilinos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(100) NOT NULL,
+    Apellido VARCHAR(100) NOT NULL,
+    DNI VARCHAR(20) NOT NULL,
+    Telefono VARCHAR(30) NOT NULL,
+    Correo VARCHAR(100) NOT NULL
+);
