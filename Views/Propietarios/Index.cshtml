@@ -1,0 +1,56 @@
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.Propietario>
+
+@{
+    ViewData["Title"] = "Propietarios";
+}
+
+<h1>Propietarios</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        Nuevo propietario
+    </a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var propietario in Model)
+        {
+            <tr>
+                <td>@propietario.Nombre</td>
+                <td>@propietario.Apellido</td>
+                <td>@propietario.DNI</td>
+                <td>@propietario.Telefono</td>
+                <td>@propietario.Correo</td>
+
+                <td>
+                    <a asp-action="Edit"
+                       asp-route-id="@propietario.id">
+                        Editar
+                    </a>
+                    |
+                    <a asp-action="Details"
+                       asp-route-id="@propietario.id">
+                        Detalles
+                    </a>
+                    |
+                    <a asp-action="Delete"
+                       asp-route-id="@propietario.id">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
