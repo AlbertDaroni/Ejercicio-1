@@ -1,7 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using Inmobiliaria_.Net_Core.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<DataContext>(
+	options => options.UseMySql(
+		configuration["ConnectionStrings:DefaultConnection"],
+		ServerVersion.AutoDetect(configuration["ConnectionStrings:DefaultConnection"])
+	)
+);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 var app = builder.Build();
 

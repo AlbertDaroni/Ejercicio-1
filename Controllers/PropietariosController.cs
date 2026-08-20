@@ -52,7 +52,9 @@ namespace Inmobiliaria_.Net_Core.Models {
 }*/
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using Inmobiliaria_.Net_Core.Models;
 
@@ -60,10 +62,10 @@ namespace Inmobiliaria_.Net_Core.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PropietariosController : ControllerBase
-    {
-        private static readonly List<Propietario> propietarios = new();
-        private static int nextId = 1;
+    public class PropietariosController : ControllerBase {
+        private readonly ApplicationDbContext _context;
+
+        public PropietariosController(ApplicationDbContext context) { _context = context; }
 
         [HttpGet]
         public ActionResult<IEnumerable<Propietario>> GetAll()
