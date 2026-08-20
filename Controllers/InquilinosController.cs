@@ -97,7 +97,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         [HttpDelete("{id}")] // Eliminar
         public IActionResult Delete(int id) {
             var inquilino = inquilinos.FirstOrDefault(p => p.id == id);
-            if (inquilino == null) NotFound("Inquilino no encontrado");
+            if (inquilino == null) return NotFound("Inquilino no encontrado");
 
             inquilinos.Remove(inquilino);
             return NoContent();
