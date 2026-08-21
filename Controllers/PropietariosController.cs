@@ -285,6 +285,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
         // ==========================================
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             var propietario = repositorio.ObtenerPorId(id);
