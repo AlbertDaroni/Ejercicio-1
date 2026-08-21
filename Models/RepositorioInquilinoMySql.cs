@@ -162,37 +162,43 @@ namespace Inmobiliaria_.Net_Core.Models {
             return inquilinos;
         }
 
-        public IList<Inquilino> ObtenerTodos() {
-            var inquilinos = new List<Inquilino>();
+        public IList<Inquilino> ObtenerTodos()
+{
+    var inquilinos = new List<Inquilino>();
 
-            using (var connection = new MySqlConnection(connectionString)) {
-                string sql = @"
-                    SELECT *
-                    FROM Inquilinos
-                ";
+    using (var connection = new MySqlConnection(connectionString))
+    {
+        string sql = @"
+            SELECT *
+            FROM Inquilinos
+        ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
-                    connection.Open();
-                    using (var reader = command.ExecuteReader()) {
-                        while (reader.Read()) {
-                            Inquilino inquilinos = new Inquilino {
-                                id = reader.GetInt32("id"),
-                                Nombre = reader.GetString("Nombre"),
-                                Apellido = reader.GetString("Apellido"),
-                                DNI = reader.GetString("DNI"),
-                                Telefono = reader.GetString("Telefono"),
-                                Correo = reader.GetString("Correo")
-                            };
+        using (var command = new MySqlCommand(sql, connection))
+        {
+            connection.Open();
 
-                            inquilinos.Add(inquilino);
-                        }
-                    }
-                    connection.Close();
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Inquilino inquilino = new Inquilino
+                    {
+                        id = reader.GetInt32("id"),
+                        Nombre = reader.GetString("Nombre"),
+                        Apellido = reader.GetString("Apellido"),
+                        DNI = reader.GetString("DNI"),
+                        Telefono = reader.GetString("Telefono"),
+                        Correo = reader.GetString("Correo")
+                    };
+
+                    inquilinos.Add(inquilino);
                 }
             }
-
-            return inquilinos;
         }
+    }
+
+    return inquilinos;
+}
 
         public Inquilino? ObtenerPorId(int id) {
             Inquilino? inquilino = null;

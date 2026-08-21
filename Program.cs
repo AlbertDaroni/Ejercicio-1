@@ -11,6 +11,11 @@ builder.Services.AddScoped<
     RepositorioPropietarioMySql
 >();
 
+builder.Services.AddScoped<
+    IRepositorioInquilino,
+    RepositorioInquilinoMySql
+>();
+
 var app = builder.Build();
 
 // Configuración del pipeline HTTP

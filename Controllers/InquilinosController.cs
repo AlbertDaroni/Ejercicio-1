@@ -51,7 +51,7 @@ namespace Inmobiliaria_.Net_Core.Models {
     }
 }*/
 
-using Microsoft.AspNetCore.Mvc;
+/*using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using Inmobiliaria_.Net_Core.Models;
@@ -101,6 +101,30 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             inquilinos.Remove(inquilino);
             return NoContent();
+        }
+    }
+}*/
+
+using Microsoft.AspNetCore.Mvc;
+using Inmobiliaria_.Net_Core.Models;
+
+namespace Inmobiliaria_.Net_Core.Controllers
+{
+    public class InquilinosController : Controller
+    {
+        private readonly IRepositorioInquilino repositorio;
+
+        public InquilinosController(IRepositorioInquilino repositorio)
+        {
+            this.repositorio = repositorio;
+        }
+
+        // GET: /Inquilinos
+        public IActionResult Index()
+        {
+            var inquilinos = repositorio.ObtenerTodos();
+
+            return View(inquilinos);
         }
     }
 }
