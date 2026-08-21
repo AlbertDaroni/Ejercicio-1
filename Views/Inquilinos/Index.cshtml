@@ -1,5 +1,52 @@
 @model IEnumerable<Inmobiliaria_.Net_Core.Models.Inquilino>
 
+@{
+    ViewData["Title"] = "Inquilinos";
+}
+
 <h1>Inquilinos</h1>
 
-<p>La vista de inquilinos funciona correctamente.</p>
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        Nuevo inquilino
+    </a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var inquilino in Model)
+        {
+            <tr>
+                <td>@inquilino.Nombre</td>
+                <td>@inquilino.Apellido</td>
+                <td>@inquilino.DNI</td>
+                <td>@inquilino.Telefono</td>
+                <td>@inquilino.Correo</td>
+                <td>
+                    <a asp-action="Edit"
+                       asp-route-id="@inquilino.id"
+                       class="btn btn-warning">
+                        Editar
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@inquilino.id"
+                       class="btn btn-danger">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
