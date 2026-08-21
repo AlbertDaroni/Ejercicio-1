@@ -1,0 +1,49 @@
+@model Inmobiliaria_.Net_Core.Models.Propietario
+
+@{
+    ViewData["Title"] = "Eliminar propietario";
+}
+
+<h1>Eliminar propietario</h1>
+
+<h3>¿Está seguro que desea eliminar este propietario?</h3>
+
+<hr />
+
+<dt class="row">
+
+    <dt class="col-sm-3">Nombre</dt>
+    <dt class="col-sm-9">@Model.Nombre</dt>
+
+    <dt class="col-sm-3">Apellido</dt>
+    <dt class="col-sm-9">@Model.Apellido</dt>
+
+    <dt class="col-sm-3">DNI</dt>
+    <dt class="col-sm-9">@Model.DNI</dt>
+
+    <dt class="col-sm-3">Telefono</dt>
+    <dt class="col-sm-9">@Model.Telefono</dt>
+
+    <dt class="col-sm-3">Correo</dt>
+    <dt class="col-sm-9">@Model.Correo</dt>
+
+</dt>
+
+<form asp-action="Delete" method="post">
+
+    <input type="hidden" asp-for="id" />
+
+    <button type="submit" class="btn btn-danger">
+        Eliminar
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        cancelar
+    </a>
+
+</form>
+
+//Para que esta vista funcione con tu controlador, hay que cambiar el atributo del método DeleteConfirmed por este creo jajaja: 
+//[HttpPost, ActionName("Delete")]
+//[ValidateAntiForgeryToken]
+//public IActionResult DeleteConfirmed(int id)
