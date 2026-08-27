@@ -14,8 +14,8 @@ Para la primera entrega se implementa el ABM de:
 ## 👥 Integrantes del Grupo
 
 * **Matias Martinez** - *matias.e.martinez1993@gmail.com* - (https://github.com/MatiasMartinez-22) - Discord: `matiasaitam2224188`
-* **Alberto Daroni** - *albertodaroni@gmail.com* - (https://https://github.com/AlbertDaroni) - Discord: `white_shadow71717`
-* **Jonatan Aguero** - *david.joni2401@gmail.com* - (https://https://github.com/davidjoni2401-sudo) - Discord: `jonatan`
+* **Alberto Daroni** - *albertodaroni@gmail.com* - (https://github.com/AlbertDaroni) - Discord: `white_shadow71717`
+* **Jonatan Aguero** - *david.joni2401@gmail.com* - (https://github.com/davidjoni2401-sudo) - Discord: `jonatan`
 
 ---
 
@@ -78,9 +78,7 @@ Este archivo posee las instrucciones necesarias para crear e inicializar la base
 
 1. Clonar el repositorio.
 
-```bash
-git clone URL_DEL_REPOSITORIO
-```
+```http://localhost:5090```
 
 2. Abrir el proyecto en Visual Studio.
 
@@ -100,6 +98,7 @@ git clone URL_DEL_REPOSITORIO
 - Listado de propietarios.
 - Modificación de propietarios.
 - Baja de propietarios.
+- Eliminacion de propietarios.
 
 ### Inquilinos
 
@@ -107,6 +106,7 @@ git clone URL_DEL_REPOSITORIO
 - Listado de inquilinos.
 - Modificación de inquilinos.
 - Baja de inquilinos.
+- Eliminacion de inquilinos.
 
 ---
 
@@ -116,6 +116,6 @@ git clone URL_DEL_REPOSITORIO
 - C#
 - HTML
 - CSS
-- Base de datos SQL
+- Base de datos:  Xampp,  MySQL/MySqlConnector
 - Git
 - GitHub
