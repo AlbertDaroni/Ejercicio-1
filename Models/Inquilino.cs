@@ -6,5 +6,6 @@ using System.Threading.Tasks;
 
 namespace Inmobiliaria_.Net_Core.Models {
     public class Inquilino : Persona {
+        public override string ToString() { return $"Inquilino: {Nombre} {Apellido} - {DNI}"; }
     }
 }
