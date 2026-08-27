@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using MySqlConnector;
+using Inmobiliaria_.Net_Core.Models;
 
-namespace Inmobiliaria_.Net_Core.Models {
+namespace Inmobiliaria_.Net_Core.Repositorios {
     public class RepositorioInquilinoMySql : RepositorioBase, IRepositorioInquilino {
         public RepositorioInquilinoMySql(IConfiguration configuration) : base(configuration) {
             //https://www.nuget.org/packages/MySql.Data/

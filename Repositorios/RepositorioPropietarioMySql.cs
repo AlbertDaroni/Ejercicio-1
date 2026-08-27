@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using MySqlConnector;
+using Inmobiliaria_.Net_Core.Models;
 
-namespace Inmobiliaria_.Net_Core.Models
+namespace Inmobiliaria_.Net_Core.Repositorios
 {
     public class RepositorioPropietarioMySql : RepositorioBase, IRepositorioPropietario
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Inmobiliaria_.Net_Core.Models
+namespace Inmobiliaria_.Net_Core.Repositorios
 {
 	public abstract class RepositorioBase
 	{

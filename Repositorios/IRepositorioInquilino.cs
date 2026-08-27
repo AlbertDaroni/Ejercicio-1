@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Inmobiliaria_.Net_Core.Models;
 
-namespace Inmobiliaria_.Net_Core.Models {
+namespace Inmobiliaria_.Net_Core.Repositorios {
     public interface IRepositorioInquilino {
         int Alta(Inquilino inquilino);
         int Baja(int id);
