@@ -1,4 +1,5 @@
 using Inmobiliaria_.Net_Core.Models;
+using Inmobiliaria_.Net_Core.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 

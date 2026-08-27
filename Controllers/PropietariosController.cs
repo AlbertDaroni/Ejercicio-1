@@ -148,6 +148,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
 using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
+using Inmobiliaria_.Net_Core.Repositorios;
 
 namespace Inmobiliaria_.Net_Core.Controllers
 {
