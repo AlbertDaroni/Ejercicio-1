@@ -4,19 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Inmobiliaria_.Net_Core.Models;
 
-/*namespace Inmobiliaria_.Net_Core.Models
-{
-	public interface IRepositorioPropietario : IRepositorio<Propietario>
-	{
-		Propietario? ObtenerPorEmail(string email);
-		IList<Propietario> BuscarPorNombre(string nombre);
-	}
-}*/
-
-namespace Inmobiliaria_.Net_Core.Repositorios
-{
-    public interface IRepositorioPropietario
-    {
+namespace Inmobiliaria_.Net_Core.Repositorios {
+    public interface IRepositorioPropietario {
         int Alta(Propietario propietario);
         int Baja(int id);
         int Modificacion(Propietario propietario);
