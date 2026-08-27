@@ -156,9 +156,13 @@ namespace Inmobiliaria_.Net_Core.Controllers
     {
         private readonly IRepositorioPropietario repositorio;
 
-        public PropietariosController(IRepositorioPropietario repositorio)
+        private readonly ILogger<PropietariosController> logger;
+
+        public PropietariosController(IRepositorioPropietario repositorio,
+         ILogger<PropietariosController> logger)
         {
             this.repositorio = repositorio;
+            this.logger = logger;
         }
 
         // ==========================================
@@ -213,6 +217,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             repositorio.Alta(propietario);
 
+            logger.LogInformation("Se registró correctamente el propietario con ID {Id}", propietario.id);
+
             TempData["Mensaje"] = "El propietario fue registrado correctamente.";
 
             return RedirectToAction(nameof(Index));
@@ -262,6 +268,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             repositorio.Modificacion(propietario);
 
+            logger.LogInformation("Se actualizó correctamente el propietario con ID {Id}", propietario.id);
+
             TempData["Mensaje"] = "El propietario fue actualizado correctamente.";
 
             return RedirectToAction(nameof(Index));
@@ -301,6 +309,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
 
             repositorio.Baja(id);
+
+            logger.LogInformation("Se eliminó correctamente el propietario con ID {Id}",id);
 
             TempData["Mensaje"] = "El propietario fue eliminado correctamente.";
 

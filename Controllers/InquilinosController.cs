@@ -138,10 +138,12 @@ namespace Inmobiliaria_.Net_Core.Controllers
     public class InquilinosController : Controller
     {
         private readonly IRepositorioInquilino repositorio;
+        private readonly ILogger<InquilinosController> logger;
 
-        public InquilinosController(IRepositorioInquilino repositorio)
+        public InquilinosController(IRepositorioInquilino repositorio, ILogger<InquilinosController> logger)
         {
             this.repositorio = repositorio;
+            this.logger = logger;
         }
 
         // ==========================================
@@ -179,6 +181,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
 
             repositorio.Alta(inquilino);
+
+            logger.LogInformation("Se registró correctamente el inquilino con ID {Id}", inquilino.id);
 
             TempData["Mensaje"] = "El inquilino fue registrado correctamente.";
 
@@ -229,6 +233,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             repositorio.Modificacion(inquilino);
 
+            logger.LogInformation("Se actualizó correctamente el inquilino con ID {Id}", inquilino.id);
+
             TempData["Mensaje"] = "El inquilino fue actualizado correctamente.";
 
             return RedirectToAction(nameof(Index));
@@ -268,6 +274,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
 
             repositorio.Baja(id);
+
+            logger.LogInformation("Se eliminó correctamente el inquilino con ID {Id}", id);
 
             TempData["Mensaje"] = "El inquilino fue eliminado correctamente.";
 
