@@ -180,6 +180,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             repositorio.Alta(inquilino);
 
+            TempData["Mensaje"] = "El inquilino fue registrado correctamente.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -227,6 +229,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             repositorio.Modificacion(inquilino);
 
+            TempData["Mensaje"] = "El inquilino fue actualizado correctamente.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -264,6 +268,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
 
             repositorio.Baja(id);
+
+            TempData["Mensaje"] = "El inquilino fue eliminado correctamente.";
 
             return RedirectToAction(nameof(Index));
         }
