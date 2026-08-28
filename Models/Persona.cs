@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Inmobiliaria_.Net_Core.Models
-{
-    public class Persona
-    {
+namespace Inmobiliaria_.Net_Core.Models {
+    public class Persona {
         [Key]
         [Display(Name = "Código")]
         public int id { get; set; }
