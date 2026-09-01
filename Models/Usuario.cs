@@ -12,27 +12,27 @@ namespace Inmobiliaria_.Net_Core.Models {
 
         [Required(ErrorMessage = "Este campo es obligatorio")]
         [StringLength(100, ErrorMessage = "El nombre no puede superar los 100 caracteres.")]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es obligatorio")]
         [StringLength(100, ErrorMessage = "El apellido no puede superar los 100 caracteres.")]
-        public string Apellido { get; set; }
+        public string Apellido { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es obligatorio"), EmailAddress]
         [StringLength(100, ErrorMessage = "El correo no puede superar los 100 caracteres.")]
-        public string Correo { get; set; }
+        public string Correo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es obligatorio")]
-        public string Contraseña { get; set; }
+        public string Contraseña { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es obligatorio")]
-        public string Avatar { get; set; }
+        public string Avatar { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es obligatorio")]
-        public string Rol { get; set; }
+        public string Rol { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es obligatorio")]
-        public string Estado { get; set; }
+        public string Estado { get; set; } = "1";
 
         public override string ToString() {
             return @$"

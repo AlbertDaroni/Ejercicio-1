@@ -11,7 +11,7 @@ namespace Inmobiliaria_.Net_Core.Models {
         public int id { get; set; }
 
         [Required]
-        public string Direccion { get; set; }
+        public string Direccion { get; set; } = string.Empty;
 
         [Required]
         public int Cupo { get; set; }
@@ -29,7 +29,7 @@ namespace Inmobiliaria_.Net_Core.Models {
         public decimal Porcentaje_Seña { get; set; }
 
         [Required]
-        public string Estado { get; set; }
+        public string Estado { get; set; } = "1";
 
         [Required]
         public int ID_Propietario { get; set; }

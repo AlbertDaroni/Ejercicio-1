@@ -11,10 +11,10 @@ namespace Inmobiliaria_.Net_Core.Models {
         public int id { get; set; }
 
         [Required]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         [Required]
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
 
         public override string ToString() {
             return @$"
