@@ -29,7 +29,7 @@ namespace Inmobiliaria_.Net_Core.Models {
         public decimal Multa { get; set; } = 0;
 
         [Required(ErrorMessage = "Este campo es obligatorio")]
-        public string Estado { get; set; }
+        public string Estado { get; set; } = "1";
 
         [Required]
         public int ID_Inquilino { get; set; }

@@ -11,7 +11,7 @@ namespace Inmobiliaria_.Net_Core.Models {
         public int id { get; set; }
 
         [Required]
-        public string Concepto { get; set; }
+        public string Concepto { get; set; } = string.Empty;
 
         [Required]
         public DateTime Fecha_Pago { get; set; }
@@ -23,7 +23,7 @@ namespace Inmobiliaria_.Net_Core.Models {
         public decimal Importe { get; set; }
 
         [Required]
-        public string Estado { get; set; }
+        public string Estado { get; set; } = "1";
 
         [Required]
         public int ID_Inquilino { get; set; }
