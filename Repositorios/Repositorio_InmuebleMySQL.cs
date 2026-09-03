@@ -149,7 +149,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         }
 
         // OBTENER POR ATRIBUTO (Dirección, ID)
-        public IList<Inmueble> BuscarPorDireccion(string direccion) {
+        public IList<Inmueble> ObtenerPorDireccion(string direccion) {
             var inmuebles = new List<Inmueble>();
 
             using (var connection = new MySqlConnection(connectionString)) {
@@ -187,7 +187,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return inmuebles;
         }
 
-        public Inmueble? ObtenerPorId(int id) {
+        public Inmueble? ObtenerPorID(int id) {
             Inmueble? inmueble = null;
 
             using (var connection = new MySqlConnection(connectionString)) {

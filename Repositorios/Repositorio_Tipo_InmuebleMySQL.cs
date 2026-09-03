@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Repositorios {
-    public class RepositorioTipoInmuebleMySql : RepositorioBase, IRepositorio_Tipo_Inmueble {
-        public RepositorioTipoInmuebleMySql(IConfiguration configuration) : base(configuration) {}
+    public class Repositorio_Tipo_InmuebleMySQL : RepositorioBase, IRepositorio_Tipo_Inmueble {
+        public Repositorio_Tipo_InmuebleMySQL(IConfiguration configuration) : base(configuration) {}
 
         // ==========================================
         // ALTA

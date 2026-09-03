@@ -116,7 +116,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 Orden = reader.GetInt32("Orden"),
                                 ID_Inmueble = reader.GetInt32("ID_Inmueble")
                             };
-                            imagenes_inmuebles.Add(inmueble);
+                            imagenes_inmuebles.Add(imagen_inmueble);
                         }
                     }
                     connection.Close();
@@ -127,7 +127,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         }
 
         // OBTENER POR ATRIBUTO (ID)
-        public Imagen_Inmueble? ObtenerPorId(int id) {
+        public Imagen_Inmueble? ObtenerPorID(int id) {
             Imagen_Inmueble? imagen_inmueble = null;
 
             using (var connection = new MySqlConnection(connectionString)) {

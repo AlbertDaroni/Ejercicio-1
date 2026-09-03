@@ -5,7 +5,7 @@ using MySqlConnector;
 using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Repositorios {
-    public class Repositorio_ReservaMySQL : RepositorioBase, IRepositorio_Inmueble {
+    public class Repositorio_ReservaMySQL : RepositorioBase, IRepositorio_Reserva {
         public Repositorio_ReservaMySQL(IConfiguration configuration) : base(configuration) {
             //https://www.nuget.org/packages/MySql.Data/
             //https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/
@@ -31,7 +31,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                 ";
 
                 using (var command = new MySqlCommand(sql, connection)) {
-                    command.CommandType = CommandType.text;
+                    command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@fecha_creacion", r.Fecha_Creacion);
                     command.Parameters.AddWithValue("@fecha_inicio", r.Fecha_Inicio);
@@ -46,7 +46,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
                     connection.Open();
                     respuesta = Convert.ToInt32(command.ExecuteScalar());
-                    i.id = respuesta;
+                    r.id = respuesta;
                     connection.Close();
                 }
             }
@@ -155,7 +155,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return reservas;
         }
 
-        public Reserva? ObtenerPorID () {
+        public Reserva? ObtenerPorID (int id) {
             Reserva? reserva = null;
 
             using (var connection = new MySqlConnection(connectionString)) {

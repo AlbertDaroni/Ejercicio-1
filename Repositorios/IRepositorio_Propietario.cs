@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Repositorios {
-    public interface IRepositorioPropietario {
+    public interface IRepositorio_Propietario {
         int Alta(Propietario propietario);
         int Baja(int id);
         int Modificacion(Propietario propietario);
