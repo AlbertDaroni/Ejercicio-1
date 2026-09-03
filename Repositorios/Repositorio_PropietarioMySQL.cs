@@ -5,7 +5,7 @@ using MySqlConnector;
 using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Repositorios {
-    public class Repositorio_PropietarioMySQL : RepositorioBase, IRepositorioPropietario {
+    public class Repositorio_PropietarioMySQL : RepositorioBase, IRepositorio_Propietario {
         public Repositorio_PropietarioMySQL(IConfiguration configuration) : base(configuration) {
             //https://www.nuget.org/packages/MySql.Data/
             //https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/

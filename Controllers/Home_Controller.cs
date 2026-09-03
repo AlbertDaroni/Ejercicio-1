@@ -4,7 +4,7 @@ using Ejercicio_1.Models;
 
 namespace Ejercicio_1.Controllers;
 
-public class HomeController : Controller {
+public class Home_Controller : Controller {
     public IActionResult Index() { return View(); }
 
     public IActionResult Privacy() { return View(); }

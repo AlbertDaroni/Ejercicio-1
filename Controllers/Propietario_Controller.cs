@@ -3,11 +3,11 @@ using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
-    public class Propietarios_Controller : Controller {
-        private readonly IRepositorioPropietario repositorio;
-        private readonly ILogger<Propietarios_Controller> logger;
+    public class Propietario_Controller : Controller {
+        private readonly IRepositorio_Propietario repositorio;
+        private readonly ILogger<Propietario_Controller> logger;
 
-        public Propietarios_Controller(IRepositorioPropietario repositorio, ILogger<Propietarios_Controller> logger) {
+        public Propietario_Controller(IRepositorio_Propietario repositorio, ILogger<Propietario_Controller> logger) {
             this.repositorio = repositorio;
             this.logger = logger;
         }

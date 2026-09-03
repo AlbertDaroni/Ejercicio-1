@@ -8,7 +8,7 @@ builder.Services.AddControllersWithViews();
 
 // repositorio de Propietarios
 builder.Services.AddScoped<
-    IRepositorioPropietario,
+    IRepositorio_Propietario,
     Repositorio_PropietarioMySQL
 >();
 
