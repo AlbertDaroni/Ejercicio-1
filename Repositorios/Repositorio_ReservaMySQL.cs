@@ -4,12 +4,9 @@ using System.Data;
 using MySqlConnector;
 using Inmobiliaria_.Net_Core.Models;
 
-namespace Inmobiliaria_.Net_Core.Repositorios
-{
-    public class Repositorio_ReservaMySQL : RepositorioBase, IRepositorio_Reserva
-    {
-        public Repositorio_ReservaMySQL(IConfiguration configuration) : base(configuration)
-        {
+namespace Inmobiliaria_.Net_Core.Repositorios {
+    public class Repositorio_ReservaMySQL : RepositorioBase, IRepositorio_Reserva {
+        public Repositorio_ReservaMySQL(IConfiguration configuration) : base(configuration) {
             //https://www.nuget.org/packages/MySql.Data/
             //https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/
         }
