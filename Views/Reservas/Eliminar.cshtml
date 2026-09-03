@@ -1,0 +1,32 @@
+@model Inmobiliaria_.Net_Core.Models.Reserva
+
+@{ ViewData["Title"] = "Eliminar Reserva"; }
+
+<h1>Eliminar Reserva</h1>
+<h3>¿Está seguro que desea eliminar esta reserva?</h3>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Fecha de inicio</dt>
+    <dt class="col-sm-9">@Model.Fecha_Inicio</dt>
+
+    <dt class="col-sm-3">Fecha fin original</dt>
+    <dt class="col-sm-9">@Model.Fecha_Fin_Original</dt>
+
+    <dt class="col-sm-3">Fecha fin efectiva</dt>
+    <dt class="col-sm-9">@Model.Fecha_Fin_Efectiva</dt>
+
+    <dt class="col-sm-3">Monto</dt>
+    <dt class="col-sm-9">@Model.Monto_Dia</dt>
+
+    <dt class="col-sm-3">Multa</dt>
+    <dt class="col-sm-9">@Model.Multa</dt>
+</dl>
+
+<form asp-action="Eliminar" method="post">
+    <input type="hidden" asp-for="id">
+
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
+</form>

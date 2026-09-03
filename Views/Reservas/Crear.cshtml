@@ -1,0 +1,58 @@
+@model Inmobiliaria_.Net_Core.Models.Reserva
+
+@{ ViewData["Title"] = "Nueva Reserva"; }
+
+<h1>Nueva Reserva</h1>
+
+<form asp-action="Crear" method="post">
+    <div class="mb-3">
+        <label asp-for="Fecha_Inicio" class="form-label">Fecha de inicio</label>
+        <input asp-for="Fecha_Inicio" class="form-control" type="date">
+        <span asp-validation-for="Fecha_Inicio" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Fecha_Fin_Original" class="form-label">Fecha fin original</label>
+        <input asp-for="Fecha_Fin_Original" class="form-control" type="date">
+        <span asp-validation-for="Fecha_Fin_Original" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Fecha_Fin_Efectiva" class="form-label">Fecha fin efectiva</label>
+        <input asp-for="Fecha_Fin_Efectiva" class="form-control" type="date">
+        <span asp-validation-for="Fecha_Fin_Efectiva" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Monto_Dia" class="form-label">Monto</label>
+        <input asp-for="Monto_Dia" class="form-control" type="number">
+        <span asp-validation-for="Monto_Dia" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Multa" class="form-label">Multa</label>
+        <input asp-for="Multa" class="form-control" type="number">
+        <span asp-validation-for="Multa" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ID_Inmueble" class="form-label">Inmueble</label>
+        <select asp-for="ID_Inmueble" class="form-control" asp-items="ViewBag.Inmuebles">
+            <option value="">-- Seleccione un Inmueble --</option>
+        </select>
+        <span asp-validation-for="ID_Inmueble" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ID_Inquilino" class="form-label">Inquilino</label>
+        <select asp-for="ID_Inquilino" class="form-control" asp-items="ViewBag.Inquilinos">
+            <option value="">-- Seleccione un Inquilino --</option>
+        </select>
+        <span asp-validation-for="ID_Inquilino" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }
