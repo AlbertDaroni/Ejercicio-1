@@ -14,7 +14,7 @@ builder.Services.AddScoped<
 
 // Inyección de dependencia del repositorio de Inquilinos
 builder.Services.AddScoped<
-    IRepositorioInquilino,
+    IRepositorio_Inquilino,
     RepositorioInquilinoMySql
 >();
 

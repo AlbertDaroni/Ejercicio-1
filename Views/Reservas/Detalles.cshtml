@@ -1,0 +1,35 @@
+@model Inmobiliaria_.Net_Core.Models.Reserva
+
+@{ ViewData["Title"] = "Detalles de la Reserva"; }
+
+<h1>Detalles de la Reserva</h1>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Fecha de creación</dt>
+    <dd class="col-sm-9">@Model.Fecha_Creacion</dd>
+
+    <dt class="col-sm-3">Fecha de inicio</dt>
+    <dd class="col-sm-9">@Model.Fecha_Inicio</dd>
+
+    <dt class="col-sm-3">Fecha fin efectiva</dt>
+    <dd class="col-sm-9">@Model.Fecha_Fin_Efectiva</dd>
+
+    <dt class="col-sm-3">Fecha fin original</dt>
+    <dd class="col-sm-9">@Model.Fecha_Fin_Original</dd>
+
+    <dt class="col-sm-3">Monto</dt>
+    <dd class="col-sm-9">@Model.Monto_Dia</dd>
+
+    <dt class="col-sm-3">Multa</dt>
+    <dd class="col-sm-9">@Model.Multa</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">@Model.Estado</dd>
+</dl>
+
+<div>
+    <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
+    <a asp-action="Indice" class="btn btn-secondary">Volver</a>
+</div>

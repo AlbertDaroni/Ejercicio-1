@@ -24,23 +24,40 @@
                     <ul class="navbar-nav flex-grow-1">
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home_" asp-action="Index">
                                 Inicio
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietarios" asp-action="Index">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietario_" asp-action="Index">
                                 Propietarios
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino_" asp-action="Indice">
                                 Inquilinos
                             </a>
                         </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Reserva_" asp-action="Indice">
+                                Reservas
+                            </a>
+                        </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble_" asp-action="Indice">
+                                Inmuebles
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Tipo_Inmueble_" asp-action="Indice">
+                                Tipos de Inmuebles
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -62,5 +79,4 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>
