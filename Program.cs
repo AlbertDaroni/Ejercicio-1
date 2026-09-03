@@ -12,10 +12,26 @@ builder.Services.AddScoped<
     RepositorioPropietarioMySql
 >();
 
+// Inyección de dependencia del repositorio de Inquilinos
 builder.Services.AddScoped<
     IRepositorioInquilino,
     RepositorioInquilinoMySql
 >();
+
+// Repositorio Tipo de Inmueble
+
+builder.Services.AddScoped<
+    IRepositorio_Tipo_Inmueble,
+    RepositorioTipoInmuebleMySql
+>();
+
+// Repositorio Tipo de Inmueble
+
+builder.Services.AddScoped<
+    IRepositorio_Inmueble,
+    RepositorioInmuebleMySql
+>();
+
 
 var app = builder.Build();
 

@@ -7,10 +7,10 @@ using Inmobiliaria_.Net_Core.Models;
 namespace Inmobiliaria_.Net_Core.Repositorios;
 
 public interface IRepositorio_Imagen_Inmueble {
-    int Alta (Imagen imagen);
+    int Alta (Imagen_Inmueble imagen);
     int Baja (int id);
-    int Modificacion (Imagen imagen);
+    int Modificacion (Imagen_Inmueble imagen);
 
-    IList<Imagen> ObtenerTodos ();
-    Imagen? ObtenerPorID (int id);
+    IList<Imagen_Inmueble> ObtenerTodos ();
+    Imagen_Inmueble? ObtenerPorID (int id);
 }

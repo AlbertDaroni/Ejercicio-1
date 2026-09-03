@@ -2,12 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 
-namespace Inmobiliaria_.Net_Core.Controllers {
-    public class Inmueble : Controller {
+namespace Inmobiliaria_.Net_Core.Controllers
+{
+    public class InmuebleController : Controller
+    {
         private readonly IRepositorio_Inmueble repositorio;
-        private readonly ILogger<Inmueble> logger;
+        private readonly ILogger<InmuebleController> logger;
 
-        public Inmueble(IRepositorio_Inmueble repositorio, ILogger<Inmueble> logger) {
+        public InmuebleController(IRepositorio_Inmueble repositorio, ILogger<InmuebleController> logger)
+        {
             this.repositorio = repositorio;
             this.logger = logger;
         }
@@ -17,10 +20,11 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         public IActionResult Crear() { return View(); }
 
         [HttpPost]
-        public IActionResult Crear(Inmueble inmueble) {
+        public IActionResult Crear(Models.Inmueble inmueble)
+        {
             if (!ModelState.IsValid) return View(inmueble);
 
-            repositorio.Alta(inmueble);
+            int id = repositorio.Alta(inmueble);
             logger.LogInformation($"Se registró correctamente el Inmueble con el ID: {id}");
             TempData["Mensaje"] = "Se registró correctamente.";
 
@@ -29,14 +33,27 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Eliminar (dar de Baja)
         [HttpGet]
-        public IActionResult Eliminar(int id) {
-            if (!repositorio.ObtenerPorID(id)) return NotFound();
-            return View(repositorio.ObtenerPorID(id));
+        public IActionResult Eliminar(int id)
+        {
+            var inmueble = repositorio.ObtenerPorID(id);
+
+            if (inmueble == null)
+            {
+                return NotFound();
+            }
+
+            return View(inmueble);
         }
 
         [HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]
-        public IActionResult ConfirmarEliminar(int id) {
-            if (!repositorio.ObtenerPorID(id)) return NotFound();
+        public IActionResult ConfirmarEliminar(int id)
+        {
+            var inmueble = repositorio.ObtenerPorID(id);
+
+            if (inmueble == null)
+            {
+                return NotFound();
+            }
 
             repositorio.Baja(id);
             logger.LogInformation($"Se eliminó correctamente el Inmueble con el ID: {id}");
@@ -47,16 +64,29 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Modificar (Modificación)
         [HttpGet]
-        public IActionResult Modificar(int id) {
-            if (!repositorio.ObtenerPorID(id)) return NotFound();
-            return View(repositorio.ObtenerPorID(id));
+        public IActionResult Modificar(int id)
+        {
+            var inmueble = repositorio.ObtenerPorID(id);
+
+            if (inmueble == null)
+            {
+                return NotFound();
+            }
+
+            return View(inmueble);
         }
 
         [HttpPost]
-        public IActionResult Modificar(int id, Inmueble inmueble) {
+        public IActionResult Modificar(int id, Models.Inmueble inmueble)
+        {
             if (id != inmueble.id) return BadRequest();
             if (!ModelState.IsValid) return View(inmueble);
-            if (!repositorio.ObtenerPorID(id)) return NotFound();
+            var inmuebleExistente = repositorio.ObtenerPorID(id);
+
+            if (inmuebleExistente == null)
+            {
+                return NotFound();
+            }
 
             repositorio.Modificacion(inmueble);
             logger.LogInformation($"Se modificó correctamente el Inmueble con el ID: {id}");
@@ -66,12 +96,19 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Obtener todos
-        public IActionResult Indice() { return View(repositorio.ObtenerTodos()); }
+        public IActionResult Index() { return View(repositorio.ObtenerTodos()); }
 
         // Obtener por ID
-        public IActionResult Detalles(int id) {
-            if (!repositorio.ObtenerPorID(id)) return NotFound();
-            return View(repositorio.ObtenerPorID(id));
+       public IActionResult Detalles(int id)
+        {
+            var inmueble = repositorio.ObtenerPorID(id);
+
+            if (inmueble == null)
+            {
+                return NotFound();
+            }
+
+            return View(inmueble);
         }
 
         // Obtener por dirección

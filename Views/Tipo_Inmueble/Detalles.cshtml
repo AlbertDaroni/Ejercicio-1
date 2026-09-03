@@ -1,0 +1,43 @@
+@model Inmobiliaria_.Net_Core.Models.Tipo_Inmueble
+
+@{
+    ViewData["Title"] = "Detalles del Tipo de Inmueble";
+}
+
+<h1>Detalles del Tipo de Inmueble</h1>
+
+<hr />
+
+<div class="card" style="max-width: 600px;">
+    <div class="card-body">
+
+        <h5 class="card-title">@Model.Nombre</h5>
+
+        <p class="card-text">
+            <strong>ID:</strong>
+            @Model.id
+        </p>
+
+        <p class="card-text">
+            <strong>Nombre:</strong>
+            @Model.Nombre
+        </p>
+
+        <p class="card-text">
+            <strong>Descripción:</strong>
+            @Model.Descripcion
+        </p>
+
+        <a asp-action="Modificar"
+           asp-route-id="@Model.id"
+           class="btn btn-warning">
+            Modificar
+        </a>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Volver
+        </a>
+
+    </div>
+</div>
