@@ -13,7 +13,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         public Reserva(
             IRepositorio_Reserva repositorio_Reserva,
             IRepositorio_Inmueble repositorio_Inmueble,
-            IRepositorio_Inquilinos repositorio_Inquilino,
+            IRepositorio_Inquilino repositorio_Inquilino,
             ILogger<Reserva> logger
         ) {
             this.repositorio_Reserva = repositorio_Reserva;
