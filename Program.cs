@@ -13,7 +13,7 @@ builder.Services.AddScoped<
 >();
 
 builder.Services.AddScoped<
-    IRepositorioInquilino,
+    IRepositorio_Inquilino,
     RepositorioInquilinoMySql
 >();
 
