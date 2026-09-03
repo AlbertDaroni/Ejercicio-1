@@ -7,13 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Inyección de dependencia del repositorio de Propietarios
-builder.Services.AddScoped<IRepositorio_Propietario, RepositorioPropietarioMySql>();
-builder.Services.AddScoped<IRepositorio_Inquilino, RepositorioInquilinoMySql>();
+builder.Services.AddScoped<IRepositorio_Propietario, Repositorio_PropietarioMySQL>();
+builder.Services.AddScoped<IRepositorio_Inquilino, Repositorio_InquilinoMySQL>();
+builder.Services.AddScoped<IRepositorio_Inmueble, Repositorio_InmuebleMySQL>();
+builder.Services.AddScoped<IRepositorio_Imagen_Inmueble, Repositorio_Imagen_InmuebleMySQL>();
+builder.Services.AddScoped<IRepositorio_Reserva, Repositorio_ReservaMySQL>();
 // ¡¡¡¡¡¡¡¡¡ IMPORTATE !!!!!!!!!
-// Corregir los nombres de los 4 AddScoped<...> ("Repositorio<nombre>MySql.cs")
-builder.Services.AddScoped<IRepositorio_Imagen_Inmueble, RepositorioImagenInmuebleMySql>();
-builder.Services.AddScoped<IRepositorio_Inmueble, RepositorioInmuebleMySql>();
-builder.Services.AddScoped<IRepositorio_Reserva, RepositorioReservaMySql>();
+// Corregir el nombre del AddScoped<...> ("Repositorio<nombre>MySql.cs")
 builder.Services.AddScoped<IRepositorio_Tipo_Inmueble, RepositorioTipo_InmuebleMySql>();
 
 var app = builder.Build();
