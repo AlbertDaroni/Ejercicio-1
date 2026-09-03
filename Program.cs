@@ -6,30 +6,28 @@ var builder = WebApplication.CreateBuilder(args);
 // Agrega soporte para MVC: controladores + vistas
 builder.Services.AddControllersWithViews();
 
-// Inyección de dependencia del repositorio de Propietarios
+// repositorio de Propietarios
 builder.Services.AddScoped<
     IRepositorioPropietario,
-    RepositorioPropietarioMySql
+    Repositorio_PropietarioMySQL
 >();
 
-// Inyección de dependencia del repositorio de Inquilinos
+// repositorio de Inquilinos
 builder.Services.AddScoped<
     IRepositorio_Inquilino,
-    RepositorioInquilinoMySql
+    Repositorio_InquilinoMySQL
 >();
 
 // Repositorio Tipo de Inmueble
-
 builder.Services.AddScoped<
     IRepositorio_Tipo_Inmueble,
     RepositorioTipoInmuebleMySql
 >();
 
-// Repositorio Tipo de Inmueble
-
+// Repositorio de Inmueble
 builder.Services.AddScoped<
     IRepositorio_Inmueble,
-    RepositorioInmuebleMySql
+    Repositorio_InmuebleMySQL
 >();
 
 

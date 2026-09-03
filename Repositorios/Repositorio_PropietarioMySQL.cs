@@ -5,19 +5,19 @@ using MySqlConnector;
 using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Repositorios {
-    public class RepositorioInquilinoMySql : RepositorioBase, IRepositorio_Inquilino {
-        public RepositorioInquilinoMySql(IConfiguration configuration) : base(configuration) {
+    public class Repositorio_PropietarioMySQL : RepositorioBase, IRepositorioPropietario {
+        public Repositorio_PropietarioMySQL(IConfiguration configuration) : base(configuration) {
             //https://www.nuget.org/packages/MySql.Data/
             //https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/
         }
 
         // CREACIÓN, MODIFICACIÓN y ELIMINACIÓN
-        public int Alta(Inquilino i) {
+        public int Alta(Propietario p) {
             int respuesta = -1;
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    INSERT INTO Inquilinos
+                    INSERT INTO Propietarios
                     (Nombre, Apellido, DNI, Telefono, Correo)
                     VALUES
                     (@nombre, @apellido, @dni, @telefono, @correo);
@@ -28,15 +28,15 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                 using (var command = new MySqlCommand(sql, connection)) {
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.AddWithValue("@nombre", i.Nombre);
-                    command.Parameters.AddWithValue("@apellido", i.Apellido);
-                    command.Parameters.AddWithValue("@dni", i.DNI);
-                    command.Parameters.AddWithValue("@telefono", i.Telefono);
-                    command.Parameters.AddWithValue("@correo", i.Correo);
+                    command.Parameters.AddWithValue("@nombre", p.Nombre);
+                    command.Parameters.AddWithValue("@apellido", p.Apellido);
+                    command.Parameters.AddWithValue("@dni", p.DNI);
+                    command.Parameters.AddWithValue("@telefono", p.Telefono);
+                    command.Parameters.AddWithValue("@correo", p.Correo);
 
                     connection.Open();
                     respuesta = Convert.ToInt32(command.ExecuteScalar());
-                    i.id = respuesta;
+                    p.id = respuesta;
                     connection.Close();
                 }
             }
@@ -44,12 +44,12 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public int Modificacion(Inquilino i) {
+        public int Modificacion(Propietario p) {
             int respuesta = -1;
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    UPDATE Inquilinos
+                    UPDATE Propietarios
                     SET Nombre = @nombre,
                         Apellido = @apellido,
                         DNI = @dni,
@@ -61,12 +61,12 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                 using (var command = new MySqlCommand(sql, connection)) {
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.AddWithValue("@nombre", i.Nombre);
-                    command.Parameters.AddWithValue("@apellido", i.Apellido);
-                    command.Parameters.AddWithValue("@dni", i.DNI);
-                    command.Parameters.AddWithValue("@telefono", i.Telefono);
-                    command.Parameters.AddWithValue("@correo", i.Correo);
-                    command.Parameters.AddWithValue("@id", i.id);
+                    command.Parameters.AddWithValue("@nombre", p.Nombre);
+                    command.Parameters.AddWithValue("@apellido", p.Apellido);
+                    command.Parameters.AddWithValue("@dni", p.DNI);
+                    command.Parameters.AddWithValue("@telefono", p.Telefono);
+                    command.Parameters.AddWithValue("@correo", p.Correo);
+                    command.Parameters.AddWithValue("@id", p.id);
 
                     connection.Open();
                     respuesta = command.ExecuteNonQuery();
@@ -82,7 +82,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    DELETE FROM Inquilinos
+                    DELETE FROM Propietarios
                     WHERE id = @id;
                 ";
 
@@ -90,7 +90,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@id", id);
-                    
+
                     connection.Open();
                     respuesta = command.ExecuteNonQuery();
                     connection.Close();
@@ -101,21 +101,20 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         }
 
         // OBTENER TODOS
-        public IList<Inquilino> ObtenerTodos() {
-            var inquilinos = new List<Inquilino>();
+        public IList<Propietario> ObtenerTodos() {
+            var propietarios = new List<Propietario>();
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
-                    FROM Inquilinos
+                    FROM Propietarios
                 ";
 
                 using (var command = new MySqlCommand(sql, connection)) {
                     connection.Open();
-
                     using (var reader = command.ExecuteReader()) {
                         while (reader.Read()) {
-                            Inquilino inquilino = new Inquilino {
+                            Propietario propietario = new Propietario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -124,23 +123,24 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 Correo = reader.GetString("Correo")
                             };
 
-                            inquilinos.Add(inquilino);
+                            propietarios.Add(propietario);
                         }
                     }
+                    connection.Close();
                 }
             }
 
-            return inquilinos;
+            return propietarios;
         }
 
         // OBTENER POR ATRIBUTO (Email, Nombre, ID)
-        public Inquilino? ObtenerPorEmail(string email) {
-            Inquilino? inquilino = null;
+        public Propietario? ObtenerPorEmail(string email) {
+            Propietario? propietario = null;
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
-                    FROM Inquilinos
+                    FROM Propietarios
                     WHERE Correo = @correo;
                 ";
 
@@ -150,7 +150,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     connection.Open();
                     using (var reader = command.ExecuteReader()) {
                         if (reader.Read()) {
-                            inquilino = new Inquilino {
+                            propietario = new Propietario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -164,16 +164,16 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                 }
             }
 
-            return inquilino;
+            return propietario;
         }
 
-        public IList<Inquilino> BuscarPorNombre(string nombre) {
-            var inquilinos = new List<Inquilino>();
+        public IList<Propietario> BuscarPorNombre(string nombre) {
+            var propietarios = new List<Propietario>();
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
-                    FROM Inquilinos
+                    FROM Propietarios
                     WHERE Nombre LIKE @nombre
                     OR Apellido LIKE @nombre;
                 ";
@@ -184,7 +184,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     connection.Open();
                     using (var reader = command.ExecuteReader()) {
                         while (reader.Read()) {
-                            inquilinos.Add(new Inquilino {
+                            propietarios.Add(new Propietario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -198,16 +198,16 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                 }
             }
 
-            return inquilinos;
+            return propietarios;
         }
 
-        public Inquilino? ObtenerPorId(int id) {
-            Inquilino? inquilino = null;
+        public Propietario? ObtenerPorId(int id) {
+            Propietario? propietario = null;
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
-                    FROM Inquilinos
+                    FROM Propietarios
                     WHERE id = @id
                 ";
 
@@ -217,7 +217,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     connection.Open();
                     using (var reader = command.ExecuteReader()) {
                         if (reader.Read()) {
-                            inquilino = new Inquilino {
+                            propietario = new Propietario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -231,7 +231,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                 }
             }
 
-            return inquilino;
+            return propietario;
         }
     }
 }

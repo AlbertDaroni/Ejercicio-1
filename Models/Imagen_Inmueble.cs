@@ -14,13 +14,13 @@ namespace Inmobiliaria_.Net_Core.Models {
 		public string URL { get; set; } = string.Empty;
 
 		[Required]
-		public int esPortada { get; set; }
+		public int EsPortada { get; set; }
 
 		[Required]
-		public int orden { get; set; }
+		public int Orden { get; set; }
 
 		[Required]
-		public int id_inmueble { get; set; }
+		public int ID_Inmueble { get; set; }
 
 		[NotMapped] // El archivo cargado se marca como No Mapeado en la base de datos
 		public IFormFile? Archivo { get; set; } = null;
@@ -28,7 +28,7 @@ namespace Inmobiliaria_.Net_Core.Models {
 		public override string ToString() {
 			return @$"
 				URL: {URL}
-				Orden: {orden}
+				Orden: {Orden}
 			";
 		}
 	}
