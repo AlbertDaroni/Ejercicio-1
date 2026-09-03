@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Inyección de dependencia del repositorio de Propietarios
-builder.Services.AddScoped<IRepositorioPropietario, RepositorioPropietarioMySql>();
+builder.Services.AddScoped<IRepositorio_Propietario, RepositorioPropietarioMySql>();
 builder.Services.AddScoped<IRepositorio_Inquilino, RepositorioInquilinoMySql>();
 // ¡¡¡¡¡¡¡¡¡ IMPORTATE !!!!!!!!!
 // Corregir los nombres de los 4 AddScoped<...> ("Repositorio<nombre>MySql.cs")
