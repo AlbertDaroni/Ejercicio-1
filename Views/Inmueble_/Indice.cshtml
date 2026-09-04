@@ -1,0 +1,50 @@
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.Inmueble>
+
+@{ ViewData["Title"] = "Inmuebles"; }
+
+<h1>Inmuebles</h1>
+
+@if (TempData["Mensaje"] != null) {
+    <div class="alert alert-success">@TempData["Mensaje"]</div>
+}
+
+<p><a asp-action="Crear" class="btn btn-primary">Nuevo Inmueble</a></p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Dirección</th>
+            <th>Cupo</th>
+            <th>Latitud</th>
+            <th>Longitud</th>
+            <th>Precio del día</th>
+            <th>Porcentaje de la seña</th>
+            <th>Estado</th>
+            <th>Tipo de inmueble</th>
+            <th>Propietario</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inmueble in Model) {
+            <tr>
+                <td>@inmueble.id</td>
+                <td>@inmueble.Direccion</td>
+                <td>@inmueble.Cupo</td>
+                <td>@inmueble.Latitud</td>
+                <td>@inmueble.Longitud</td>
+                <td>@inmueble.Precio_Dia</td>
+                <td>@inmueble.Porcentaje_Seña</td>
+                <td>@inmueble.Estado</td>
+                <td>@inmueble.ID_Tipo</td>
+                <td>@inmueble.ID_Propietario</td>
+
+                <td>
+                    <a asp-action="Detalles" asp-route-id="@inmueble.id" class="btn btn-info btn-sm">Detalles</a>
+                    <a asp-action="Modificar" asp-route-id="@inmueble.id" class="btn btn-warning btn-sm">Modificar</a>
+                    <a asp-action="Eliminar" asp-route-id="@inmueble.id" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

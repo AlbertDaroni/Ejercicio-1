@@ -1,0 +1,44 @@
+@model Inmobiliaria_.Net_Core.Models.Inmueble
+
+@{ ViewData["Title"] = "Eliminar Inmueble"; }
+
+<h1>Eliminar Inmueble</h1>
+<h3>¿Está seguro que desea eliminar este inmueble?</h3>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Dirección</dt>
+    <dd class="col-sm-9">@Model.Direccion</dd>
+
+    <dt class="col-sm-3">Cupo</dt>
+    <dd class="col-sm-9">@Model.Cupo</dd>
+
+    <dt class="col-sm-3">Latitud</dt>
+    <dd class="col-sm-9">@Model.Latitud</dd>
+
+    <dt class="col-sm-3">Longitud</dt>
+    <dd class="col-sm-9">@Model.Longitud</dd>
+
+    <dt class="col-sm-3">Precio del día</dt>
+    <dd class="col-sm-9">@Model.Precio_Dia</dd>
+
+    <dt class="col-sm-3">Porcentaje de la seña</dt>
+    <dd class="col-sm-9">@Model.Porcentaje_Seña</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">@Model.Estado</dd>
+
+    <dt class="col-sm-3">Tipo de inmueble</dt>
+    <dd class="col-sm-9">@Model.ID_Tipo</dd>
+
+    <dt class="col-sm-3">Propietario</dt>
+    <dd class="col-sm-9">@Model.ID_Propietario</dd>
+</dl>
+
+<form asp-action="ConfirmarEliminar" method="post">
+    <input type="hidden" asp-for="id">
+
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
+</form>
