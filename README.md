@@ -1,14 +1,21 @@
 # Sistema Inmobiliario
 
-## Descripción
+## 📋 Descripción
 
-Sistema web desarrollado con ASP.NET MVC para la gestión
-de una inmobiliaria.
+Sistema web desarrollado con ASP.NET Core MVC para la gestión de una inmobiliaria.
 
-Para la primera entrega se implementa el ABM de:
+El proyecto permite administrar diferentes datos relacionados con el funcionamiento de una inmobiliaria, utilizando una arquitectura MVC y una base de datos MySQL.
+
+Actualmente el sistema trabaja con:
 
 - Propietarios
 - Inquilinos
+- Inmuebles
+- Tipos de Inmueble
+- Reservas
+
+Para acceder a los datos se implementó el patrón Repositorio, separando la lógica de acceso a la base de datos del resto de la aplicación.
+
 ---
 
 ## 👥 Integrantes del Grupo
@@ -19,11 +26,27 @@ Para la primera entrega se implementa el ABM de:
 
 ---
 
-## 📐 Modelado de Datos
+## 📐 Modelado del Sistema
 
-A continuación se presenta el esquema del modelo de datos correspondiente a la primera entrega del Sistema Inmobiliario.
+El sistema está organizado utilizando el patrón MVC (Modelo - Vista - Controlador).
 
-### Diagrama de Clases basado en la primera entrega
+### Modelos
+
+Los modelos representan las principales entidades utilizadas por el sistema:
+
+- Persona
+- Propietario
+- Inquilino
+- Inmueble
+- Imagen_Inmueble
+- Tipo_Inmueble
+- Reserva
+- Pago
+- Usuario
+
+`Propietario` e `Inquilino` heredan los datos generales definidos en la clase `Persona`.
+
+### Diagrama simplificado
 
 ```mermaid
 classDiagram
@@ -43,79 +66,288 @@ classDiagram
     class Inquilino {
     }
 
+    class Inmueble {
+        +int id
+    }
+
+    class Tipo_Inmueble {
+        +int id
+        +string Nombre
+        +string Descripcion
+    }
+
+    class Reserva {
+        +int id
+    }
+
+    class Imagen_Inmueble {
+        +int id
+    }
+
+    class Pago {
+        +int id
+    }
+
+    class Usuario {
+        +int id
+    }
+
     Persona <|-- Propietario
     Persona <|-- Inquilino
+
+    Propietario "1" --> "*" Inmueble : posee
+    Tipo_Inmueble "1" --> "*" Inmueble : clasifica
+    Inmueble "1" --> "*" Imagen_Inmueble : tiene
+    Inquilino "1" --> "*" Reserva : realiza
+    Inmueble "1" --> "*" Reserva : recibe
+    Reserva "1" --> "*" Pago : posee
 ```
 
-> El diagrama representa la relación entre Persona, Propietario e Inquilino.
+> El diagrama muestra de manera simplificada las principales entidades y relaciones del sistema.
 
-> Propietario e Inquilino heredan los datos generales definidos en Persona.
+---
 
 ## 🗄️ Base de Datos
 
-El proyecto utiliza una base de datos para almacenar la información de propietarios e inquilinos.
+El proyecto utiliza **MySQL** como sistema gestor de base de datos.
+
+La aplicación realiza el acceso a los datos mediante repositorios y utiliza **MySqlConnector** para establecer la conexión con MySQL.
 
 El repositorio contiene el archivo:
 
-`bd.sql`
+`DataBase/bd.sql`
 
-Este archivo posee las instrucciones necesarias para crear e inicializar la base de datos del sistema.
+Este archivo contiene las instrucciones necesarias para crear e inicializar la base de datos utilizada por el sistema.
 
-### Pasos para crear la base de datos
+### Configuración de la base de datos
 
-1. Abrir el gestor de base de datos utilizado para el proyecto.
-2. Crear una nueva conexión con el servidor de base de datos.
-3. Abrir el archivo `bd.sql`.
+1. Iniciar MySQL desde XAMPP o desde el servidor MySQL utilizado.
+2. Abrir un gestor de base de datos.
+3. Abrir el archivo `DataBase/bd.sql`.
 4. Ejecutar completamente el script.
-5. Verificar que se haya creado correctamente la base de datos.
-6. Verificar que existan las tablas correspondientes a Propietarios e Inquilinos.
-7. Configurar la cadena de conexión del proyecto en `appsettings.json`.
-8. Ejecutar el proyecto ASP.NET MVC.
+5. Verificar que la base de datos y sus tablas hayan sido creadas correctamente.
+6. Configurar la cadena de conexión correspondiente en `appsettings.json`.
+7. Ejecutar el proyecto.
+
+---
+
+## 🗂️ Patrón Repositorio
+
+Para organizar el acceso a los datos se utiliza el patrón Repositorio.
+
+Se definieron interfaces para indicar las operaciones disponibles y clases encargadas de realizar las consultas sobre MySQL.
+
+Entre los repositorios utilizados se encuentran:
+
+- Repositorio de Propietarios
+- Repositorio de Inquilinos
+- Repositorio de Inmuebles
+- Repositorio de Imágenes de Inmuebles
+- Repositorio de Tipos de Inmueble
+- Repositorio de Reservas
+
+Esto permite separar las consultas SQL de los controladores y mantener una mejor organización del proyecto.
+
+---
+
+## 🔄 Inyección de Dependencias
+
+Los repositorios utilizados por los controladores se registran mediante el sistema de inyección de dependencias de ASP.NET Core.
+
+De esta forma, los controladores trabajan con las interfaces de los repositorios en lugar de crear directamente las clases encargadas del acceso a MySQL.
 
 ---
 
 ## ⚙️ Ejecución del Proyecto
 
-1. Clonar el repositorio.
+### 1. Clonar el repositorio
 
-```http://localhost:5090```
+```bash
+git clone https://github.com/AlbertDaroni/Ejercicio-1.git
+```
 
-2. Abrir el proyecto en Visual Studio.
+### 2. Ingresar al proyecto
 
-3. Configurar la conexión con la base de datos.
+```bash
+cd Ejercicio-1
+```
 
-4. Ejecutar el archivo `bd.sql` para crear la base de datos.
+### 3. Preparar la base de datos
 
-5. Ejecutar el proyecto ASP.NET MVC.
+Ejecutar el archivo:
+
+```text
+DataBase/bd.sql
+```
+
+### 4. Configurar la conexión
+
+Configurar la cadena de conexión a MySQL dentro de:
+
+```text
+appsettings.json
+```
+
+Los datos de usuario, contraseña, servidor y base de datos deben coincidir con la configuración local de MySQL.
+
+### 5. Restaurar dependencias
+
+```bash
+dotnet restore
+```
+
+### 6. Compilar el proyecto
+
+```bash
+dotnet build
+```
+
+### 7. Ejecutar
+
+```bash
+dotnet run
+```
+
+Una vez iniciado, ingresar desde el navegador a la dirección indicada por ASP.NET Core en la terminal.
 
 ---
 
-## ✅ Funcionalidades de la Primera Entrega
+## ✅ Funcionalidades Implementadas
 
-### Propietarios
+### 👤 Propietarios
 
-- Alta de propietarios.
-- Listado de propietarios.
-- Modificación de propietarios.
-- Baja de propietarios.
-- Eliminacion de propietarios.
+Permite realizar operaciones de administración sobre los propietarios:
 
-### Inquilinos
+- Alta.
+- Listado.
+- Consulta de detalles.
+- Modificación.
+- Baja o eliminación.
 
-- Alta de inquilinos.
-- Listado de inquilinos.
-- Modificación de inquilinos.
-- Baja de inquilinos.
-- Eliminacion de inquilinos.
+### 👥 Inquilinos
+
+Permite realizar operaciones de administración sobre los inquilinos:
+
+- Alta.
+- Listado.
+- Consulta de detalles.
+- Modificación.
+- Baja o eliminación.
+
+### 🏠 Inmuebles
+
+Se incorporó la administración de inmuebles dentro del sistema.
+
+Entre las operaciones disponibles se encuentran:
+
+- Alta de inmuebles.
+- Listado de inmuebles.
+- Consulta de detalles.
+- Modificación.
+- Eliminación.
+- Asociación con los datos correspondientes del sistema.
+
+### 🏷️ Tipos de Inmueble
+
+Permite administrar los diferentes tipos utilizados para clasificar los inmuebles.
+
+Por ejemplo:
+
+- Casa.
+- Departamento.
+- Local.
+- Terreno.
+
+Las operaciones implementadas incluyen:
+
+- Alta.
+- Listado.
+- Consulta de detalles.
+- Modificación.
+- Eliminación.
+
+### 📅 Reservas
+
+Se incorporó la gestión de reservas de los inmuebles.
+
+Las reservas permiten relacionar la información correspondiente al inmueble y al inquilino involucrado en la operación.
+
+Se implementaron las operaciones necesarias para administrar las reservas dentro del sistema.
+
+### 🖼️ Imágenes de Inmuebles
+
+El proyecto incluye el modelo y repositorio correspondiente para trabajar con imágenes asociadas a los inmuebles.
 
 ---
 
-## 🛠️ Tecnologías utilizadas
+## 🏗️ Estructura General del Proyecto
 
-- ASP.NET MVC
+```text
+Ejercicio-1/
+│
+├── Controllers/
+│   ├── Home_Controller.cs
+│   ├── Propietario_Controller.cs
+│   ├── Inquilino_Controller.cs
+│   ├── Inmueble_Controller.cs
+│   ├── Tipo_Inmueble_Controller.cs
+│   └── Reserva_Controller.cs
+│
+├── Models/
+│   ├── Persona.cs
+│   ├── Propietario.cs
+│   ├── Inquilino.cs
+│   ├── Inmueble.cs
+│   ├── Imagen_Inmueble.cs
+│   ├── Tipo_Inmueble.cs
+│   ├── Reserva.cs
+│   ├── Pago.cs
+│   └── Usuario.cs
+│
+├── Repositorios/
+│   ├── Interfaces
+│   ├── Repositorios MySQL
+│   └── RepositorioBase.cs
+│
+├── Views/
+│   ├── Propietario_/
+│   ├── Inquilino_/
+│   ├── Inmueble_/
+│   ├── Tipo_Inmueble_/
+│   ├── Reserva_/
+│   └── Shared/
+│
+├── DataBase/
+│   └── bd.sql
+│
+├── wwwroot/
+├── Program.cs
+├── appsettings.json
+└── README.md
+```
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+- ASP.NET Core MVC
 - C#
+- Razor / CSHTML
 - HTML
 - CSS
-- Base de datos:  Xampp,  MySQL/MySqlConnector
+- Bootstrap
+- MySQL
+- MySqlConnector
+- XAMPP
 - Git
 - GitHub
+
+---
+
+## 📌 Estado del Proyecto
+
+El proyecto se encuentra actualmente en desarrollo como parte del trabajo práctico de la materia.
+
+En esta etapa se amplió el sistema inicial de gestión de propietarios e inquilinos, incorporando la gestión de inmuebles, tipos de inmueble y reservas, junto con sus correspondientes controladores, vistas y repositorios.
+
+El proyecto continuará evolucionando en las siguientes etapas de acuerdo con los requerimientos establecidos para el sistema inmobiliario.
