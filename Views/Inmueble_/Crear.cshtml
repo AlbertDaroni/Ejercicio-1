@@ -61,7 +61,7 @@
 
             <div class="mb-3">
                 <label asp-for="ID_Tipo" class="form-label">Tipo de inmueble</label>
-                <select asp-for="ID_Tipo" class="form-control" asp-items="ViewBag.Tipo_Inmuebles">
+                <select asp-for="ID_Tipo" class="form-control" asp-items="(SelectList)ViewBag.Tipo_Inmuebles">
                     <option value="">-- Seleccione un tipo de inmueble --</option>
                 </select>
                 <span asp-validation-for="ID_Tipo" class="text-danger"></span>
@@ -69,7 +69,7 @@
 
             <div class="mb-3">
                 <label asp-for="ID_Propietario" class="form-label">Propietario</label>
-                <select asp-for="ID_Propietario" class="form-control" asp-items="ViewBag.Propietarios">
+                <select asp-for="ID_Propietario" class="form-control" asp-items="(SelectList)ViewBag.Propietarios">
                     <option value="">-- Seleccione un Propietario --</option>
                 </select>
                 <span asp-validation-for="ID_Propietario" class="text-danger"></span>

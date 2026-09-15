@@ -37,7 +37,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation($"Se registró correctamente el Tipo de Inmueble con el ID: {tipo_Inmueble.id}");
             TempData["Mensaje"] = "Se registró correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
         // Eliminar (dar de baja)

@@ -25,6 +25,22 @@ CREATE TABLE Tipo_Inmuebles (
     descripcion VARCHAR(100) NOT NULL
 );
 
+INSERT INTO Tipo_Inmuebles (nombre, descripcion) VALUES
+('Departamento / Piso', 'Vivienda en edificio de 1 a 4 ambientes, tamaño de 30-120m2, antigüedad variable de estreno a antiguo.'),
+('Casa Residencial', 'Propiedad unifamiliar de 2+ ambientes con patio, tamaño de 100-300m2, antigüedad de 0 a 50 años.'),
+('Monoambiente / Estudio', 'Espacio único integrado con baño, tamaño compacto de 20-40m2, ideal para solteros o estreno.'),
+('Oficina Comercial', 'Espacio laboral diáfano o privado, tamaño de 40-500m2, infraestructura moderna o remodelada.'),
+('Local Comercial', 'Ubicado a pie de calle con salón y depósito, tamaño de 50-200m2, alta circulación de personas.'),
+('Terreno / Lote Urbano', 'Lote sin edificar listo para construir, tamaño de 150-1000m2, sin antigüedad (tierra virgen).'),
+('Casa de Campo / Quinta', 'Propiedad de descanso con parque y pileta, tamaño de 500+m2, ambientes amplios y estilo rústico.'),
+('Ph (Propiedad Horizontal)', 'Vivienda tipo casa sin expensas en complejo, 2 a 4 ambientes, 50-100m2, antigüedad de 20+ años.'),
+('Depósito / Galpón', 'Espacio industrial techado con techos altos, tamaño de 200-2000m2, construcción fuerte y antigua.'),
+('Cochera / Garaje', 'Espacio exclusivo para estacionar un vehículo, tamaño de 12-15m2, sin ambientes internos.'),
+('Penthouse', 'Departamento de lujo en último piso con terraza, 4+ ambientes, 150+m2, acabados modernos.'),
+('Duplex / Triplex', 'Vivienda distribuida en dos o tres plantas, 3 a 5 ambientes, 80-150m2, diseño moderno.'),
+('Consultorio Médico', 'Espacio adaptado para salud con sala de espera, 2 ambientes, 30-60m2, infraestructura sanitaria.'),
+('Edificio Completo', 'Estructura corporativa o residencial entera, múltiples ambientes, 1000+m2, antigüedad variable.');
+
 CREATE TABLE Usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     Nombre VARCHAR(100) NOT NULL,

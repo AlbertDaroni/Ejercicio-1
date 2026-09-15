@@ -118,7 +118,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
-                    FROM Inmuebles
+                    FROM Inmuebles i
+                    JOIN Propietarios p ON i.id_propietario = p.id
                     ORDER BY Direccion ASC
                 ";
 
@@ -155,7 +156,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
-                    FROM Inmuebles
+                    FROM Inmuebles i
+                    JOIN Propietarios p ON i.id_propietario = p.id
                     WHERE Direccion LIKE @direccion
                     ORDER BY Direccion ASC;
                 ";
@@ -193,7 +195,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
-                    FROM Inmuebles
+                    FROM Inmuebles i
+                    JOIN Propietarios p ON i.id_propietario = p.id
                     WHERE id = @id
                 ";
 
