@@ -126,7 +126,7 @@ CREATE TABLE Pagos (
     estado VARCHAR(1) NOT NULL,
     id_reserva INT,
     id_usuario_creador INT,
-    id_usuario_finalizador INT,
+    id_usuario_finalizador INT NULL,
 
     CONSTRAINT fk_pago_reserva
     FOREIGN KEY (id_reserva)
