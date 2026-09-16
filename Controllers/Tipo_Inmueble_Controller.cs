@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
+
+    [Authorize(Roles = "Administrador")]
     public class Tipo_Inmueble_Controller : Controller {
         private readonly IRepositorio_Tipo_Inmueble repositorio_Tipo_Inmueble;
         private readonly IRepositorio_Propietario repositorio_Propietario;
