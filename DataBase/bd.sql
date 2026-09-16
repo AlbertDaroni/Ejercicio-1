@@ -121,7 +121,7 @@ CREATE TABLE Pagos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     concepto VARCHAR(50) NOT NULL,
     fecha_pago DATE NOT NULL,
-    fecha_anulacion DATETIME NOT NULL,
+    fecha_anulacion DATETIME NULL,
     importe DECIMAL(10,2) NOT NULL,
     estado VARCHAR(1) NOT NULL,
     id_reserva INT,
