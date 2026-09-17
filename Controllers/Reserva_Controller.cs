@@ -52,10 +52,16 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             reserva.Fecha_Creacion = DateTime.Now;
             reserva.Estado = "1";
-            int idUsuarioActual = 1; //int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "1");
-            
+
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (idUsuarioClaim == null)
+                return Unauthorized();
+
+            int idUsuarioActual = int.Parse(idUsuarioClaim);
+
             reserva.ID_Usuario_Creador = idUsuarioActual;
-            reserva.ID_Usuario_Finalizador = idUsuarioActual;
+            reserva.ID_Usuario_Finalizador = null;
 
             repositorio_Reserva.Alta(reserva);
             logger.LogInformation($"Se registró correctamente la Reserva con el ID: {reserva.id}");
