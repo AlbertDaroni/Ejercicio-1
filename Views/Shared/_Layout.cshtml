@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Ejercicio_1</title>
+    <title>@ViewData["Title"] - Inmobiliaria</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -22,7 +22,6 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home_" asp-action="Index">
                                 Inicio
@@ -53,47 +52,29 @@
                             </a>
                         </li>
                         
-                        @if (User.IsInRole("Administrador"))
-                        {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tipo_Inmueble_" asp-action="Indice">
-                                Tipos de Inmuebles
-                            </a>
-                        </li>
-                        }                      
-
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
+                        @if (User.IsInRole("Administrador")) {
                             <li class="nav-item">
-                                <span class="nav-link text-success">
-                                    Hola, @User.Identity.Name
-                                </span>
-                            </li>
-
-                            <li class="nav-item">
-                                <form asp-controller="Cuenta"
-                                    asp-action="Logout"
-                                    method="post"
-                                    class="d-inline">
-
-                                    <button type="submit"
-                                            class="btn btn-link nav-link text-danger">
-                                        Cerrar sesión
-                                    </button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                asp-controller="Cuenta"
-                                asp-action="Login">
-                                    Iniciar sesión
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Tipo_Inmueble_" asp-action="Indice">
+                                    Tipos de Inmuebles
                                 </a>
                             </li>
+                        }                      
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated) {
+                            <li class="nav-item">
+                                <span class="nav-link text-success">Hola, @User.Identity.Name</span>
+                            </li>
+
+                            <li class="nav-item">
+                                <form asp-controller="Cuenta" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-link nav-link text-danger"> Cerrar sesión </button>
+                                </form>
+                            </li>
+                        } else {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Cuenta" asp-action="Login">Iniciar sesión</a>
+                            </li>
                         }
-                    
                     </ul>                    
                 </div>
             </div>
@@ -107,7 +88,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - Ejercicio_1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - Ejercicio 1 - <a asp-area="" asp-controller="Home_" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

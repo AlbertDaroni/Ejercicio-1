@@ -41,13 +41,9 @@
                     |
                     <a asp-action="Detalles" asp-route-id="@reserva.id">Detalles</a>
                     |
-                    @if (User.IsInRole("Administrador"))
-                    {
+                    @if (User.IsInRole("Administrador")) {
                         <text> | </text>
-                        <a asp-action="Eliminar"
-                        asp-route-id="@reserva.id">
-                            Eliminar
-                        </a>
+                        <a asp-action="Eliminar" asp-route-id="@reserva.id">Eliminar</a>
                     }
                 </td>
             </tr>

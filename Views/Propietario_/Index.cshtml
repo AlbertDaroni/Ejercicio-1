@@ -1,31 +1,17 @@
 @model IEnumerable<Inmobiliaria_.Net_Core.Models.Propietario>
 
-@{
-    ViewData["Title"] = "Propietarios";
-}
+@{ ViewData["Title"] = "Propietarios"; }
 
 <h1>Propietarios</h1>
 
-@if (TempData["Mensaje"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show"
-         role="alert">
-
+@if (TempData["Mensaje"] != null) {
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["Mensaje"]
-
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Cerrar">
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
 }
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">
-        Nuevo propietario
-    </a>
-</p>
+<p><a asp-action="Create" class="btn btn-primary">Nuevo propietario</a></p>
 
 <table class="table">
     <thead>
@@ -38,34 +24,21 @@
             <th>Acciones</th>
         </tr>
     </thead>
-
     <tbody>
-        @foreach (var propietario in Model)
-        {
+        @foreach (var propietario in Model) {
             <tr>
                 <td>@propietario.Nombre</td>
                 <td>@propietario.Apellido</td>
                 <td>@propietario.DNI</td>
                 <td>@propietario.Telefono</td>
                 <td>@propietario.Correo</td>
-
                 <td>
-                    <a asp-action="Edit"
-                       asp-route-id="@propietario.id">
-                        Editar
-                    </a>
+                    <a asp-action="Edit" asp-route-id="@propietario.id">Editar</a>
                     |
-                    <a asp-action="Details"
-                       asp-route-id="@propietario.id">
-                        Detalles
-                    </a>
+                    <a asp-action="Details" asp-route-id="@propietario.id">Detalles</a>
                     |
-                    @if (User.IsInRole("Administrador"))
-                    {
-                        <a asp-action="Delete"
-                        asp-route-id="@propietario.id">
-                            Eliminar
-                        </a>
+                    @if (User.IsInRole("Administrador")) {
+                        <a asp-action="Delete" asp-route-id="@propietario.id">Eliminar</a>
                     }
                 </td>
             </tr>

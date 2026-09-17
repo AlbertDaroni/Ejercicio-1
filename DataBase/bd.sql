@@ -25,6 +25,8 @@ CREATE TABLE Tipo_Inmuebles (
     descripcion VARCHAR(100) NOT NULL
 );
 
+-- Tipos de Inmuebles iniciales
+
 INSERT INTO Tipo_Inmuebles (nombre, descripcion) VALUES
 ('Departamento / Piso', 'Vivienda en edificio de 1 a 4 ambientes, tamaño de 30-120m2, antigüedad variable de estreno a antiguo.'),
 ('Casa Residencial', 'Propiedad unifamiliar de 2+ ambientes con patio, tamaño de 100-300m2, antigüedad de 0 a 50 años.'),
@@ -54,31 +56,9 @@ CREATE TABLE Usuarios (
 
 -- Usuarios iniciales para autenticación y roles
 
-INSERT INTO Usuarios
-(Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado)
-VALUES
-(
-    'Admin',
-    'Sistema',
-    'admin@inmobiliaria.com',
-    '1234',
-    'avatar.png',
-    'Administrador',
-    '1'
-);
-
-INSERT INTO Usuarios
-(Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado)
-VALUES
-(
-    'Empleado',
-    'Prueba',
-    'empleado@inmobiliaria.com',
-    '1234',
-    'avatar.png',
-    'Empleado',
-    '1'
-);
+INSERT INTO Usuarios (Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado) VALUES
+('Admin', 'Sistema', 'admin@inmobiliaria.com', '1234', 'avatar.png', 'Administrador', '1'),
+('Empleado', 'Prueba', 'empleado@inmobiliaria.com', '1234', 'avatar.png', 'Empleado', '1');
 
 CREATE TABLE Inmuebles (
     id INT PRIMARY KEY AUTO_INCREMENT,

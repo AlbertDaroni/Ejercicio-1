@@ -30,8 +30,7 @@ builder.Services.AddScoped<IRepositorio_Pago, Repositorio_PagoMySQL>();
 var app = builder.Build();
 
 // Configuración del pipeline HTTP
-if (!app.Environment.IsDevelopment())
-{
+if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home_/Error");
     app.UseHsts();
 }

@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Inmobiliaria_.Net_Core.Models
-{
-    public class LoginViewModel
-    {
+namespace Inmobiliaria_.Net_Core.Models {
+    public class LoginViewModel {
         [Required]
         [EmailAddress]
         public string Correo { get; set; } = string.Empty;

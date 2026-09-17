@@ -1,22 +1,17 @@
 @model IEnumerable<Inmobiliaria_.Net_Core.Models.Pago>
 
-@{
-    ViewData["Title"] = "Pagos";
-}
+@{ ViewData["Title"] = "Pagos"; }
 
 <h1>Pagos</h1>
 
-@if (TempData["Mensaje"] != null)
-{
+@if (TempData["Mensaje"] != null) {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["Mensaje"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
 }
 
-<p>
-    <a asp-action="Crear" class="btn btn-primary">Nuevo Pago</a>
-</p>
+<p><a asp-action="Crear" class="btn btn-primary">Nuevo Pago</a></p>
 
 <table class="table">
     <thead>
@@ -29,10 +24,8 @@
             <th>Acciones</th>
         </tr>
     </thead>
-
     <tbody>
-        @foreach (var pago in Model)
-        {
+        @foreach (var pago in Model) {
             <tr>
                 <td>@pago.Concepto</td>
                 <td>@pago.Fecha_Pago.ToString("dd/MM/yyyy")</td>
@@ -40,23 +33,9 @@
                 <td>@pago.Estado</td>
                 <td>@pago.ID_Reserva</td>
                 <td>
-                    <a asp-action="Modificar"
-                    asp-route-id="@pago.id"
-                    class="btn btn-warning btn-sm">
-                        Editar
-                    </a>
-
-                    <a asp-action="Detalles"
-                    asp-route-id="@pago.id"
-                    class="btn btn-info btn-sm">
-                        Detalles
-                    </a>
-
-                    <a asp-action="Eliminar"
-                    asp-route-id="@pago.id"
-                    class="btn btn-danger btn-sm">
-                        Eliminar
-                    </a>
+                    <a asp-action="Modificar" asp-route-id="@pago.id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Detalles" asp-route-id="@pago.id" class="btn btn-info btn-sm">Detalles</a>
+                    <a asp-action="Eliminar" asp-route-id="@pago.id" class="btn btn-danger btn-sm">Eliminar</a>
                 </td>
             </tr>
         }

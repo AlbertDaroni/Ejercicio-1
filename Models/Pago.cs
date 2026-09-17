@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Inmobiliaria_.Net_Core.Models
-{
-    public class Pago
-    {
+namespace Inmobiliaria_.Net_Core.Models {
+    public class Pago {
         [Key]
         public int id { get; set; }
 
@@ -33,8 +31,7 @@ namespace Inmobiliaria_.Net_Core.Models
 
         public int? ID_Usuario_Finalizador { get; set; }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return $@"
                 Concepto: {Concepto}
                 Fecha de pago: {Fecha_Pago}
