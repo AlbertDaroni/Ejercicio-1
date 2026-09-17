@@ -52,6 +52,34 @@ CREATE TABLE Usuarios (
     Estado VARCHAR(1) NOT NULL
 );
 
+-- Usuarios iniciales para autenticación y roles
+
+INSERT INTO Usuarios
+(Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado)
+VALUES
+(
+    'Admin',
+    'Sistema',
+    'admin@inmobiliaria.com',
+    '1234',
+    'avatar.png',
+    'Administrador',
+    '1'
+);
+
+INSERT INTO Usuarios
+(Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado)
+VALUES
+(
+    'Empleado',
+    'Prueba',
+    'empleado@inmobiliaria.com',
+    '1234',
+    'avatar.png',
+    'Empleado',
+    '1'
+);
+
 CREATE TABLE Inmuebles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     direccion VARCHAR(50) NOT NULL,
