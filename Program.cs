@@ -25,6 +25,7 @@ builder.Services.AddScoped<IRepositorio_Imagen_Inmueble, Repositorio_Imagen_Inmu
 builder.Services.AddScoped<IRepositorio_Reserva, Repositorio_ReservaMySQL>();
 builder.Services.AddScoped<IRepositorio_Tipo_Inmueble, Repositorio_Tipo_InmuebleMySQL>();
 builder.Services.AddScoped<IRepositorio_Usuario, Repositorio_UsuarioMySQL>();
+builder.Services.AddScoped<IRepositorio_Pago, Repositorio_PagoMySQL>();
 
 var app = builder.Build();
 

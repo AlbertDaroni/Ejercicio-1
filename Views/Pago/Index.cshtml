@@ -1,0 +1,65 @@
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.Pago>
+
+@{
+    ViewData["Title"] = "Pagos";
+}
+
+<h1>Pagos</h1>
+
+<p>
+    <a asp-action="Crear" class="btn btn-primary">Registrar nuevo pago</a>
+</p>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Concepto</th>
+            <th>Fecha de pago</th>
+            <th>Importe</th>
+            <th>Estado</th>
+            <th>Reserva</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var pago in Model)
+        {
+            <tr>
+                <td>@pago.id</td>
+                <td>@pago.Concepto</td>
+                <td>@pago.Fecha_Pago.ToString("dd/MM/yyyy")</td>
+                <td>$ @pago.Importe.ToString("N2")</td>
+
+                <td>
+                    @if (pago.Estado == "1")
+                    {
+                        <span>Activo</span>
+                    }
+                    else
+                    {
+                        <span>Anulado</span>
+                    }
+                </td>
+
+                <td>@pago.ID_Reserva</td>
+
+                <td>
+                    <a asp-action="Detalles"
+                       asp-route-id="@pago.id"
+                       class="btn btn-info btn-sm">
+                        Detalles
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
