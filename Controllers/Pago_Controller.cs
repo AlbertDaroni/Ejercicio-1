@@ -63,15 +63,11 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Modificar
         [HttpGet]
-        public IActionResult Modificar(int id)
-        {
+        public IActionResult Modificar(int id) {
             var pago = repositorio_Pago.ObtenerPorID(id);
 
-            if (pago == null)
-                return NotFound();
-
-            if (pago.Estado == "0")
-            {
+            if (pago == null) return NotFound();
+            if (pago.Estado == "0") {
                 TempData["Mensaje"] = "No se puede modificar un pago anulado.";
                 return RedirectToAction(nameof(Index));
             }
@@ -82,26 +78,21 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         // Modificar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Modificar(Pago pago)
-        {
+        public IActionResult Modificar(Pago pago) {
             ModelState.Remove(nameof(pago.ID_Usuario_Creador));
             ModelState.Remove(nameof(pago.ID_Usuario_Finalizador));
             ModelState.Remove(nameof(pago.Fecha_Anulacion));
             ModelState.Remove(nameof(pago.Estado));
 
-            if (!ModelState.IsValid)
-                return View(pago);
+            if (!ModelState.IsValid) return View(pago);
 
             var pagoExistente = repositorio_Pago.ObtenerPorID(pago.id);
 
-            if (pagoExistente == null)
-                return NotFound();
-
-            if (pagoExistente.Estado == "0")
-                {
-                    TempData["Mensaje"] = "No se puede modificar un pago anulado.";
-                    return RedirectToAction(nameof(Index));
-                }
+            if (pagoExistente == null) return NotFound();
+            if (pagoExistente.Estado == "0") {
+                TempData["Mensaje"] = "No se puede modificar un pago anulado.";
+                return RedirectToAction(nameof(Index));
+            }
 
             pago.ID_Usuario_Creador = pagoExistente.ID_Usuario_Creador;
             pago.ID_Usuario_Finalizador = pagoExistente.ID_Usuario_Finalizador;
@@ -110,10 +101,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             repositorio_Pago.Modificacion(pago);
 
-            logger.LogInformation(
-                $"Se modificó correctamente el Pago con ID: {pago.id}"
-            );
-
+            logger.LogInformation($"Se modificó correctamente el Pago con ID: {pago.id}");
             TempData["Mensaje"] = "El pago se modificó correctamente.";
 
             return RedirectToAction(nameof(Index));
@@ -138,38 +126,28 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Eliminar
         [Authorize(Roles = "Administrador")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarEliminar(int id)
-        {
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ConfirmarEliminar(int id) {
             var pago = repositorio_Pago.ObtenerPorID(id);
 
-            if (pago == null)
-                return NotFound();
-
-            if (pago.Estado == "0")
-            {
+            if (pago == null) return NotFound();
+            if (pago.Estado == "0") {
                 TempData["Mensaje"] = "El pago ya se encuentra anulado.";
                 return RedirectToAction(nameof(Index));
             }
 
             var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (idUsuarioClaim == null)
-                return Unauthorized();
+            if (idUsuarioClaim == null) return Unauthorized();
 
             int idUsuario = int.Parse(idUsuarioClaim);
 
             repositorio_Pago.Baja(id, idUsuario);
 
-            logger.LogInformation(
-                $"Se anuló correctamente el Pago con el ID: {id}"
-            );
-
+            logger.LogInformation($"Se anuló correctamente el Pago con el ID: {id}");
             TempData["Mensaje"] = "El pago se anuló correctamente.";
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

@@ -98,12 +98,10 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
        
-        public int Baja(int id, int idUsuario)
-            {
+        public int Baja(int id, int idUsuario) {
                 int respuesta = -1;
 
-                using (var connection = new MySqlConnection(connectionString))
-                {
+                using (var connection = new MySqlConnection(connectionString)) {
                     string sql = @"
                         UPDATE Pagos
                         SET estado = 0,
@@ -112,8 +110,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                         WHERE id = @id;
                     ";
 
-                    using (var command = new MySqlCommand(sql, connection))
-                    {
+                    using (var command = new MySqlCommand(sql, connection)) {
                         command.CommandType = CommandType.Text;
 
                         command.Parameters.AddWithValue("@id", id);
