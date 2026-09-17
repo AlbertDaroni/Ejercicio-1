@@ -3,6 +3,7 @@ using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
     public class Pago_Controller : Controller {
@@ -40,7 +41,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         public IActionResult Crear(Pago pago) {
             pago.Estado = "1";
             pago.Fecha_Anulacion = null;
-            pago.ID_Usuario_Creador = 1; // <-- Cambiar cuando se agregue la autenticación
+            pago.ID_Usuario_Creador =int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             pago.ID_Usuario_Finalizador = null;
 
             ModelState.Remove(nameof(pago.Estado));
@@ -106,15 +107,27 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarEliminar(int id) {
+        public IActionResult ConfirmarEliminar(int id)
+        {
             var pago = repositorio_Pago.ObtenerPorID(id);
 
-            if (pago == null) return NotFound();
+            if (pago == null)
+                return NotFound();
 
-            repositorio_Pago.Baja(id);
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            logger.LogInformation( $"Se eliminó correctamente el Pago con el ID: {id}");
-            TempData["Mensaje"] = "Se eliminó correctamente.";
+            if (idUsuarioClaim == null)
+                return Unauthorized();
+
+            int idUsuario = int.Parse(idUsuarioClaim);
+
+            repositorio_Pago.Baja(id, idUsuario);
+
+            logger.LogInformation(
+                $"Se anuló correctamente el Pago con el ID: {id}"
+            );
+
+            TempData["Mensaje"] = "El pago se anuló correctamente.";
 
             return RedirectToAction(nameof(Index));
         }
