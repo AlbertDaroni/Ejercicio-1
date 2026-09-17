@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
-using Microsoft.AspNetCore.Mvc.Rendering; // Para usar SelectList
+using Microsoft.AspNetCore.Mvc.Rendering; // Para usar SelectList.
+using Microsoft.AspNetCore.Authorization; // Para usar autorizacion.
 
 namespace Inmobiliaria_.Net_Core.Controllers {
     public class Inmueble_Controller : Controller {
@@ -48,6 +49,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Eliminar (dar de Baja)
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public IActionResult Eliminar(int id) {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
@@ -55,7 +57,8 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return View(inmueble);
         }
 
-        [HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]
+        [Authorize(Roles = "Administrador")]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult ConfirmarEliminar(int id) {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();

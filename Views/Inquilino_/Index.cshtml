@@ -55,11 +55,14 @@
                         Editar
                     </a>
 
+                    @if (User.IsInRole("Administrador"))
+                    {                    
                     <a asp-action="Delete"
                        asp-route-id="@inquilino.id"
                        class="btn btn-danger">
                         Eliminar
-                    </a>
+                    </a>                        
+                    }
                 </td>
             </tr>
         }

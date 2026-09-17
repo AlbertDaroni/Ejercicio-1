@@ -60,10 +60,13 @@
                         Detalles
                     </a>
                     |
-                    <a asp-action="Delete"
-                       asp-route-id="@propietario.id">
-                        Eliminar
-                    </a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Delete"
+                        asp-route-id="@propietario.id">
+                            Eliminar
+                        </a>
+                    }
                 </td>
             </tr>
         }

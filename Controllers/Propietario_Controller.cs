@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
     public class Propietario_Controller : Controller {
@@ -100,6 +101,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         // MOSTRAR CONFIRMACIÓN DE ELIMINACIÓN
         // GET: /Propietarios/Delete/5
         // ==========================================
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public IActionResult Delete(int id) {
             var propietario = repositorio.ObtenerPorId(id);
@@ -113,6 +115,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         // ELIMINAR PROPIETARIO
         // POST: /Propietarios/Delete/5
         // ==========================================
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Delete")]
