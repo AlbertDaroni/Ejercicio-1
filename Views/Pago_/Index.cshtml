@@ -6,21 +6,21 @@
 
 <h1>Pagos</h1>
 
-<p>
-    <a asp-action="Crear" class="btn btn-primary">Registrar nuevo pago</a>
-</p>
-
 @if (TempData["Mensaje"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["Mensaje"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
 }
 
-<table class="table table-striped">
+<p>
+    <a asp-action="Crear" class="btn btn-primary">Nuevo Pago</a>
+</p>
+
+<table class="table">
     <thead>
         <tr>
-            <th>ID</th>
             <th>Concepto</th>
             <th>Fecha de pago</th>
             <th>Importe</th>
@@ -34,28 +34,21 @@
         @foreach (var pago in Model)
         {
             <tr>
-                <td>@pago.id</td>
                 <td>@pago.Concepto</td>
                 <td>@pago.Fecha_Pago.ToString("dd/MM/yyyy")</td>
                 <td>$ @pago.Importe.ToString("N2")</td>
-
-                <td>
-                    @if (pago.Estado == "1")
-                    {
-                        <span>Activo</span>
-                    }
-                    else
-                    {
-                        <span>Anulado</span>
-                    }
-                </td>
-
+                <td>@pago.Estado</td>
                 <td>@pago.ID_Reserva</td>
-
                 <td>
+                    <a asp-action="Modificar"
+                    asp-route-id="@pago.id"
+                    class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
+
                     <a asp-action="Detalles"
-                       asp-route-id="@pago.id"
-                       class="btn btn-info btn-sm">
+                    asp-route-id="@pago.id"
+                    class="btn btn-info btn-sm">
                         Detalles
                     </a>
                 </td>

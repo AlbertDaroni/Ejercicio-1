@@ -83,5 +83,54 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+    // Modificar - mostrar formulario
+        [HttpGet]
+        public IActionResult Modificar(int id)
+        {
+            var pago = repositorio_Pago.ObtenerPorID(id);
+
+            if (pago == null)
+                return NotFound();
+
+            return View(pago);
+        }
+
+        // Modificar - guardar cambios
+        [HttpPost]
+        public IActionResult Modificar(Pago pago)
+        {
+            ModelState.Remove(nameof(pago.ID_Usuario_Creador));
+            ModelState.Remove(nameof(pago.ID_Usuario_Finalizador));
+
+            if (!ModelState.IsValid)
+            {
+                return View(pago);
+            }
+
+            pago.ID_Usuario_Finalizador = 1;
+
+            repositorio_Pago.Modificacion(pago);
+
+            logger.LogInformation(
+                $"Se modificó correctamente el Pago con ID: {pago.id}"
+            );
+
+            TempData["Mensaje"] = "El pago se modificó correctamente.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Ver detalles
+        [HttpGet]
+        public IActionResult Detalles(int id)
+        {
+            var pago = repositorio_Pago.ObtenerPorID(id);
+
+            if (pago == null)
+                return NotFound();
+
+            return View(pago);
+        }
+
     }
 }

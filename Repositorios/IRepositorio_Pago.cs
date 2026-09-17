@@ -12,7 +12,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios
 
         IList<Pago> ObtenerTodos();
 
-        Pago? ObtenerPorId(int id);
+        Pago? ObtenerPorID(int id);
 
         IList<Pago> ObtenerPorReserva(int idReserva);
     }

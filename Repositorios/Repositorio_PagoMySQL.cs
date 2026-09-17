@@ -220,45 +220,49 @@ namespace Inmobiliaria_.Net_Core.Repositorios
         }
 
         
-        public Pago? ObtenerPorId(int id)
+        public Pago? ObtenerPorID(int id)
+{
+    Pago? pago = null;
+
+    using (var connection = new MySqlConnection(connectionString))
+    {
+        string sql = @"SELECT *
+                       FROM Pagos
+                       WHERE id = @id";
+
+        using (var command = new MySqlCommand(sql, connection))
         {
-            Pago? pago = null;
+            command.Parameters.AddWithValue("@id", id);
 
-            using (var connection = new MySqlConnection(connectionString))
+            connection.Open();
+
+            using (var reader = command.ExecuteReader())
             {
-                string sql = @"
-                    SELECT
-                        id,
-                        concepto,
-                        fecha_pago,
-                        fecha_anulacion,
-                        importe,
-                        estado,
-                        id_reserva,
-                        id_usuario_creador,
-                        id_usuario_finalizador
-                    FROM Pagos
-                    WHERE id = @id;
-                ";
-
-                using (var command = new MySqlCommand(sql, connection))
+                if (reader.Read())
                 {
-                    command.Parameters.AddWithValue("@id", id);
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
+                    pago = new Pago
                     {
-                        if (reader.Read())
-                        {
-                            pago = MapearPago(reader);
-                        }
-                    }
+                        id = reader.GetInt32("id"),
+                        Concepto = reader.GetString("concepto"),
+                        Fecha_Pago = reader.GetDateTime("fecha_pago"),
+                        Fecha_Anulacion = reader.IsDBNull(reader.GetOrdinal("fecha_anulacion"))
+                            ? null
+                            : reader.GetDateTime("fecha_anulacion"),
+                        Importe = reader.GetDecimal("importe"),
+                        Estado = reader.GetString("estado"),
+                        ID_Reserva = reader.GetInt32("id_reserva"),
+                        ID_Usuario_Creador = reader.GetInt32("id_usuario_creador"),
+                        ID_Usuario_Finalizador = reader.IsDBNull(reader.GetOrdinal("id_usuario_finalizador"))
+                            ? null
+                            : reader.GetInt32("id_usuario_finalizador")
+                    };
                 }
             }
-
-            return pago;
         }
+    }
+
+    return pago;
+}
 
         
         public IList<Pago> ObtenerPorReserva(int idReserva)
