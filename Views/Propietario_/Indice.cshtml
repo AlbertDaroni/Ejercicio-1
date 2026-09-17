@@ -11,7 +11,7 @@
     </div>
 }
 
-<p><a asp-action="Create" class="btn btn-primary">Nuevo propietario</a></p>
+<p><a asp-action="Crear" class="btn btn-primary">Nuevo propietario</a></p>
 
 <table class="table">
     <thead>
@@ -33,12 +33,12 @@
                 <td>@propietario.Telefono</td>
                 <td>@propietario.Correo</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@propietario.id">Editar</a>
+                    <a asp-action="Modificar" asp-route-id="@propietario.id">Editar</a>
                     |
-                    <a asp-action="Details" asp-route-id="@propietario.id">Detalles</a>
+                    <a asp-action="Detalles" asp-route-id="@propietario.id">Detalles</a>
                     |
                     @if (User.IsInRole("Administrador")) {
-                        <a asp-action="Delete" asp-route-id="@propietario.id">Eliminar</a>
+                        <a asp-action="Eliminar" asp-route-id="@propietario.id">Eliminar</a>
                     }
                 </td>
             </tr>

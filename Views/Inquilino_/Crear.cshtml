@@ -1,13 +1,10 @@
-@model Inmobiliaria_.Net_Core.Models.Propietario
+@model Inmobiliaria_.Net_Core.Models.Inquilino
 
-@{
-    ViewData["Title"] = "Nuevo propietario";
-}
+@{ ViewData["Title"] = "Nuevo inquilino"; }
 
-<h1>Nuevo propietario</h1>
+<h1>Nuevo inquilino</h1>
 
-<form asp-action="Create" method="post">
-
+<form asp-action="Crear" method="post">
     <div class="mb-3">
         <label asp-for="Nombre" class="form-label"></label>
         <input asp-for="Nombre" class="form-control" />
@@ -38,16 +35,8 @@
         <span asp-validation-for="Correo" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-success">
-        Guardar
-    </button>
-
-    <a asp-action="Index" class="btn btn-secondary">
-        Cancelar
-    </a>
-
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
 </form>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+@section Scripts { <partial name="_ValidationScriptsPartial"> }

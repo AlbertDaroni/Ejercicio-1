@@ -1,8 +1,6 @@
 @model Inmobiliaria_.Net_Core.Models.Propietario
 
-@{
-    ViewData["Title"] = "Detalles del propietario";
-}
+@{ ViewData["Title"] = "Detalles del propietario"; }
 
 <h1>Detalles del propietario</h1>
 
@@ -26,14 +24,6 @@
 </dl>
 
 <div>
-    <a asp-action="Edit"
-       asp-route-id="@Model.id"
-       class="btn btn-warning">
-        Editar
-    </a>
-
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Volver
-    </a>
+    <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
+    <a asp-action="Indice" class="btn btn-secondary">Volver</a>
 </div>

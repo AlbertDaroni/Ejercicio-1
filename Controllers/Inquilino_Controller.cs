@@ -13,114 +13,86 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             this.logger = logger;
         }
 
-        // ==========================================
-        // LISTAR INQUILINOS
-        // GET: /Inquilinos
-        // ==========================================
-        public IActionResult Index() {
+        // Listar
+        public IActionResult Indice() {
             var inquilinos = repositorio.ObtenerTodos();
-
             return View(inquilinos);
         }
 
-        // ==========================================
-        // MOSTRAR FORMULARIO DE ALTA
-        // GET: /Inquilinos/Create
-        // ==========================================
+        // Crear
         [HttpGet]
-        public IActionResult Create() {
-            return View();
-        }
+        public IActionResult Crear() { return View(); }
 
-        // ==========================================
-        // GUARDAR NUEVO INQUILINO
-        // POST: /Inquilinos/Create
-        // ==========================================
+        // Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Inquilino inquilino) {
-            if (!ModelState.IsValid) { return View(inquilino); }
+        public IActionResult Crear(Inquilino inquilino) {
+            if (!ModelState.IsValid) return View(inquilino);
 
             repositorio.Alta(inquilino);
 
             logger.LogInformation("Se registró correctamente el inquilino con ID {Id}", inquilino.id);
-
             TempData["Mensaje"] = "El inquilino fue registrado correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
-        // ==========================================
-        // MOSTRAR FORMULARIO DE EDICIÓN
-        // GET: /Inquilinos/Edit/5
-        // ==========================================
+        // Modificar
         [HttpGet]
-        public IActionResult Edit(int id) {
-            var inquilino = repositorio.ObtenerPorId(id);
-
-            if (inquilino == null) { return NotFound(); }
-
+        public IActionResult Modificar(int id) {
+            var inquilino = repositorio.ObtenerPorID(id);
+            if (inquilino == null) return NotFound();
             return View(inquilino);
         }
 
-        // ==========================================
-        // GUARDAR MODIFICACIÓN
-        // POST: /Inquilinos/Edit/5
-        // ==========================================
+        // Modificar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Inquilino inquilino) {
+        public IActionResult Modificar(int id, Inquilino inquilino) {
             if (id != inquilino.id) { return BadRequest(); }
-
             if (!ModelState.IsValid) { return View(inquilino); }
 
-            var inquilinoExistente = repositorio.ObtenerPorId(id);
-
-            if (inquilinoExistente == null) { return NotFound(); }
+            var inquilinoExistente = repositorio.ObtenerPorID(id);
+            if (inquilinoExistente == null) return NotFound();
 
             repositorio.Modificacion(inquilino);
 
             logger.LogInformation("Se actualizó correctamente el inquilino con ID {Id}", inquilino.id);
-
             TempData["Mensaje"] = "El inquilino fue actualizado correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
-        // ==========================================
-        // MOSTRAR CONFIRMACIÓN DE ELIMINACIÓN
-        // GET: /Inquilinos/Delete/5
-        // ==========================================
+        // Eliminar
         [Authorize(Roles = "Administrador")]
         [HttpGet]
-        public IActionResult Delete(int id) {
-            var inquilino = repositorio.ObtenerPorId(id);
-
-            if (inquilino == null) { return NotFound(); }
-
+        public IActionResult Eliminar(int id) {
+            var inquilino = repositorio.ObtenerPorID(id);
+            if (inquilino == null) return NotFound();
             return View(inquilino);
         }
 
-        // ==========================================
-        // ELIMINAR INQUILINO
-        // POST: /Inquilinos/Delete/5
-        // ==========================================
+        // Eliminar
         [Authorize(Roles = "Administrador")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int id) {
-            var inquilino = repositorio.ObtenerPorId(id);
-
-            if (inquilino == null) { return NotFound(); }
+        [HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]
+        public IActionResult ConfirmarEliminar(int id) {
+            var inquilino = repositorio.ObtenerPorID(id);
+            if (inquilino == null) return NotFound();
 
             repositorio.Baja(id);
 
             logger.LogInformation("Se eliminó correctamente el inquilino con ID {Id}", id);
-
             TempData["Mensaje"] = "El inquilino fue eliminado correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
+        }
+
+        // Detalles
+        [HttpGet]
+        public IActionResult Detalles(int id) {
+            var inquilino = repositorio.ObtenerPorID(id);
+            if (inquilino == null) return NotFound();
+            return View(inquilino);
         }
     }
 }

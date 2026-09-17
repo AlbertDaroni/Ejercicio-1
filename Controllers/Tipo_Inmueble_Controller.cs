@@ -12,13 +12,17 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         private readonly IRepositorio_Propietario repositorio_Propietario;
         private readonly ILogger<Tipo_Inmueble_Controller> logger;
 
-        public Tipo_Inmueble_Controller(IRepositorio_Tipo_Inmueble repositorio, IRepositorio_Propietario repositorio_Propietario, ILogger<Tipo_Inmueble_Controller> logger) {
+        public Tipo_Inmueble_Controller(
+            IRepositorio_Tipo_Inmueble repositorio,
+            IRepositorio_Propietario repositorio_Propietario,
+            ILogger<Tipo_Inmueble_Controller> logger
+        ) {
             this.repositorio_Tipo_Inmueble = repositorio;
             this.repositorio_Propietario = repositorio_Propietario;
             this.logger = logger;
         }
 
-        // Crear (dar de alta)
+        // Crear
         [HttpGet]
         public IActionResult Crear() {
             ViewBag.Tipo_Inmuebles = new SelectList(repositorio_Tipo_Inmueble.ObtenerTodos(), "id", "Nombre");
@@ -43,7 +47,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return RedirectToAction(nameof(Indice));
         }
 
-        // Eliminar (dar de baja)
+        // Eliminar
         [HttpGet]
         public IActionResult Eliminar(int id) {
             var tipo_Inmueble = repositorio_Tipo_Inmueble.ObtenerPorID(id);
@@ -51,6 +55,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return View(tipo_Inmueble);
         }
 
+        // Eliminar
         [HttpPost]
         public IActionResult ConfirmarEliminar(int id) {
             var tipo_Inmueble = repositorio_Tipo_Inmueble.ObtenerPorID(id);
@@ -63,7 +68,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return RedirectToAction(nameof(Index));
         }
 
-        // Modificar (Modificación)
+        // Modificar
         [HttpGet]
         public IActionResult Modificar(int id) {
             var tipo_Inmueble = repositorio_Tipo_Inmueble.ObtenerPorID(id);
@@ -75,6 +80,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return View(tipo_Inmueble);
         }
 
+        // Modificar
         [HttpPost]
         public IActionResult Modificar(int id, Tipo_Inmueble tipo_Inmueble) {
             if (id != tipo_Inmueble.id) return BadRequest();

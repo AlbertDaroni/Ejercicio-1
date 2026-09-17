@@ -6,10 +6,7 @@ using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Repositorios {
     public class Repositorio_InquilinoMySQL : RepositorioBase, IRepositorio_Inquilino {
-        public Repositorio_InquilinoMySQL(IConfiguration configuration) : base(configuration) {
-            //https://www.nuget.org/packages/MySql.Data/
-            //https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/
-        }
+        public Repositorio_InquilinoMySQL(IConfiguration configuration) : base(configuration) {}
 
         // CREACIÓN, MODIFICACIÓN y ELIMINACIÓN
         public int Alta(Inquilino i) {
@@ -201,7 +198,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return inquilinos;
         }
 
-        public Inquilino? ObtenerPorId(int id) {
+        public Inquilino? ObtenerPorID(int id) {
             Inquilino? inquilino = null;
 
             using (var connection = new MySqlConnection(connectionString)) {

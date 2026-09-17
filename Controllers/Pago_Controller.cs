@@ -34,6 +34,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return View();
         }
 
+        // Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Crear(Pago pago) {

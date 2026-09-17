@@ -11,7 +11,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         int Modificacion(Inquilino inquilino);
 
         IList<Inquilino> ObtenerTodos();
-        Inquilino? ObtenerPorId(int id);
+        Inquilino? ObtenerPorID(int id);
 
         Inquilino? ObtenerPorEmail(string email);
         IList<Inquilino> BuscarPorNombre(string nombre);

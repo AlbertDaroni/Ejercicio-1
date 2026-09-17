@@ -9,9 +9,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
     public class Repositorio_Tipo_InmuebleMySQL : RepositorioBase, IRepositorio_Tipo_Inmueble {
         public Repositorio_Tipo_InmuebleMySQL(IConfiguration configuration) : base(configuration) {}
 
-        // ==========================================
-        // ALTA
-        // ==========================================
+        // CREACIÓN, MODIFICACIÓN y ELIMINACIÓN
         public int Alta(Tipo_Inmueble tipo_Inmueble) {
             int respuesta = -1;
 
@@ -38,9 +36,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        // ==========================================
-        // BAJA
-        // ==========================================
         public int Baja(int id) {
             int respuesta = -1;
 
@@ -64,9 +59,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        // ==========================================
-        // MODIFICACIÓN
-        // ==========================================
         public int Modificacion(Tipo_Inmueble tipo_Inmueble) {
             int respuesta = -1;
 
@@ -94,9 +86,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        // ==========================================
-        // OBTENER TODOS
-        // ==========================================
+        // Obtener todos
         public IList<Tipo_Inmueble> ObtenerTodos() {
             var tipos = new List<Tipo_Inmueble>();
 
@@ -127,9 +117,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return tipos;
         }
 
-        // ==========================================
-        // OBTENER POR ID
-        // ==========================================
+        // Obtener por ID
         public Tipo_Inmueble? ObtenerPorID(int id) {
             Tipo_Inmueble? tipo = null;
 
@@ -160,9 +148,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return tipo;
         }
 
-        // ==========================================
-        // BUSCAR POR NOMBRE
-        // ==========================================
+        // Obtener por nombre
         public IList<Tipo_Inmueble> ObtenerPorNombre(string nombre) {
             var tipos = new List<Tipo_Inmueble>();
 

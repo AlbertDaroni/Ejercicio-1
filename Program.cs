@@ -8,11 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Agrega soporte para MVC: controladores + vistas
 builder.Services.AddControllersWithViews();
 // Agrega soporte para autenticación con cookies.
-builder.Services.AddAuthentication(
-    CookieAuthenticationDefaults.AuthenticationScheme
-    )
-    .AddCookie(options =>
-    {
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => {
         options.LoginPath = "/Cuenta/Login";
         options.AccessDeniedPath = "/Cuenta/AccesoDenegado";
     });

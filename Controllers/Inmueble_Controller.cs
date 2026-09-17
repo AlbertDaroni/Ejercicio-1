@@ -23,7 +23,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             this.logger = logger;
         }
 
-        // Crear (dar de Alta)
+        // Crear
         [HttpGet]
         public IActionResult Crear() {
             ViewBag.Propietarios = new SelectList(repositorio_Propietario.ObtenerTodos(), "id", "Nombre");
@@ -48,7 +48,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return RedirectToAction(nameof(Indice));
         }
 
-        // Eliminar (dar de Baja)
+        // Eliminar
         [Authorize(Roles = "Administrador")]
         [HttpGet]
         public IActionResult Eliminar(int id) {
@@ -70,7 +70,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return RedirectToAction(nameof(Indice));
         }
 
-        // Modificar (Modificación)
+        // Modificar
         [HttpGet]
         public IActionResult Modificar(int id) {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);

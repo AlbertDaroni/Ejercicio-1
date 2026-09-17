@@ -5,12 +5,11 @@ using System.Security.Claims;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 
-
 namespace Inmobiliaria_.Net_Core.Controllers {
-    public class CuentaController : Controller {
+    public class Cuenta_Controller : Controller {
         private readonly IRepositorio_Usuario repositorio;
 
-        public CuentaController(IRepositorio_Usuario repositorio) {
+        public Cuenta_Controller(IRepositorio_Usuario repositorio) {
             this.repositorio = repositorio;
         }
 
@@ -24,7 +23,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             var usuario = repositorio.ObtenerPorCorreo(login.Correo);
 
             if (usuario == null){
-                ModelState.AddModelError("", "El correo es incorrescto.");
+                ModelState.AddModelError("", "El correo es incorrecto.");
                 return View(login);
             }
 

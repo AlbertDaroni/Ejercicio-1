@@ -61,7 +61,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return respuesta;
         }
-
        
         public int Modificacion(Pago pago) {
             int respuesta = -1;
@@ -102,7 +101,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return respuesta;
         }
-
        
         public int Baja(int id) {
             int respuesta = -1;
@@ -126,7 +124,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return respuesta;
         }
-
         
         public IList<Pago> ObtenerTodos() {
             var pagos = new List<Pago>();
@@ -158,7 +155,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return pagos;
         }
-
         
         public Pago? ObtenerPorID(int id) {
             Pago? pago = null;
@@ -200,7 +196,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return pago;
         }
-
         
         public IList<Pago> ObtenerPorReserva(int idReserva) {
             var pagos = new List<Pago>();
@@ -235,11 +230,9 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return pagos;
         }
-
         
         // MAPEO DE MYSQL -> PAGO 
         // Para evitar repeticiones de los metodos obtener, para evitar eso hacemos pagos.Add(MapearPago(reader));
-        
         private Pago MapearPago(MySqlDataReader reader) {
             return new Pago {
                 id = reader.GetInt32("id"),

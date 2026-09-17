@@ -1,17 +1,13 @@
 @model Inmobiliaria_.Net_Core.Models.Inquilino
 
-@{
-    ViewData["Title"] = "Eliminar inquilino";
-}
+@{ ViewData["Title"] = "Eliminar inquilino"; }
 
 <h1>Eliminar inquilino</h1>
-
 <h3>¿Está seguro que desea eliminar este inquilino?</h3>
 
 <hr />
 
 <dl class="row">
-
     <dt class="col-sm-3">Nombre</dt>
     <dd class="col-sm-9">@Model.Nombre</dd>
 
@@ -26,19 +22,11 @@
 
     <dt class="col-sm-3">Correo</dt>
     <dd class="col-sm-9">@Model.Correo</dd>
-
 </dl>
 
-<form asp-action="Delete" method="post">
+<form asp-action="ConfirmarEliminar" method="post">
+    <input type="hidden" asp-for="id">
 
-    <input type="hidden" asp-for="id" />
-
-    <button type="submit" class="btn btn-danger">
-        Eliminar
-    </button>
-
-    <a asp-action="Index" class="btn btn-secondary">
-        Cancelar
-    </a>
-
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
 </form>

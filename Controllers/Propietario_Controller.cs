@@ -13,124 +13,87 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             this.logger = logger;
         }
 
-        // ==========================================
-        // LISTAR PROPIETARIOS
-        // GET: /Propietarios
-        // ==========================================
-        public IActionResult Index() {
+        // Listar
+        public IActionResult Indice() {
             var propietarios = repositorio.ObtenerTodos();
-
             return View(propietarios);
         }
 
-        // ==========================================
-        // DETALLE DE UN PROPIETARIO
-        // GET: /Propietarios/Details/5
-        // ==========================================
-        public IActionResult Details(int id) {
-            var propietario = repositorio.ObtenerPorId(id);
-
-            if (propietario == null) { return NotFound(); }
-
+        // Detalles
+        public IActionResult Detalles(int id) {
+            var propietario = repositorio.ObtenerPorID(id);
+            if (propietario == null) return NotFound();
             return View(propietario);
         }
 
-        // ==========================================
-        // MOSTRAR FORMULARIO DE ALTA
-        // GET: /Propietarios/Create
-        // ==========================================
+        // Crear
         [HttpGet]
-        public IActionResult Create() { return View(); }
+        public IActionResult Crear() { return View(); }
 
-        // ==========================================
-        // GUARDAR NUEVO PROPIETARIO
-        // POST: /Propietarios/Create
-        // ==========================================
+        // Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Propietario propietario) {
-            if (!ModelState.IsValid) { return View(propietario); }
+        public IActionResult Crear(Propietario propietario) {
+            if (!ModelState.IsValid) return View(propietario);
 
             repositorio.Alta(propietario);
 
-            logger.LogInformation("Se registró correctamente el propietario con ID {Id}", propietario.id);
-
+            logger.LogInformation("Se registró correctamente el propietario con ID: ", propietario.id);
             TempData["Mensaje"] = "El propietario fue registrado correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
-        // ==========================================
-        // MOSTRAR FORMULARIO DE MODIFICACIÓN
-        // GET: /Propietarios/Edit/5
-        // ==========================================
+        // Modificar
         [HttpGet]
-        public IActionResult Edit(int id) {
-            var propietario = repositorio.ObtenerPorId(id);
-
-            if (propietario == null) { return NotFound(); }
-
+        public IActionResult Modificar(int id) {
+            var propietario = repositorio.ObtenerPorID(id);
+            if (propietario == null) return NotFound();
             return View(propietario);
         }
 
-        // ==========================================
-        // GUARDAR MODIFICACIÓN
-        // POST: /Propietarios/Edit/5
-        // ==========================================
+        // Modificar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Propietario propietario) {
-            if (id != propietario.id) { return BadRequest(); }
+        public IActionResult Modificar(int id, Propietario propietario) {
+            if (id != propietario.id) return BadRequest();
+            if (!ModelState.IsValid) return View(propietario);
 
-            if (!ModelState.IsValid) { return View(propietario); }
-
-            var propietarioExistente = repositorio.ObtenerPorId(id);
-
-            if (propietarioExistente == null) { return NotFound(); }
+            var propietarioExistente = repositorio.ObtenerPorID(id);
+            if (propietarioExistente == null) return NotFound(); 
 
             repositorio.Modificacion(propietario);
 
-            logger.LogInformation("Se actualizó correctamente el propietario con ID {Id}", propietario.id);
-
+            logger.LogInformation("Se actualizó correctamente el propietario con ID: ", propietario.id);
             TempData["Mensaje"] = "El propietario fue actualizado correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
-        // ==========================================
-        // MOSTRAR CONFIRMACIÓN DE ELIMINACIÓN
-        // GET: /Propietarios/Delete/5
-        // ==========================================
+        // Eliminar
         [Authorize(Roles = "Administrador")]
         [HttpGet]
-        public IActionResult Delete(int id) {
-            var propietario = repositorio.ObtenerPorId(id);
+        public IActionResult Eliminar(int id) {
+            var propietario = repositorio.ObtenerPorID(id);
 
             if (propietario == null) { return NotFound(); }
 
             return View(propietario);
         }
 
-        // ==========================================
-        // ELIMINAR PROPIETARIO
-        // POST: /Propietarios/Delete/5
-        // ==========================================
+        // Eliminar
         [Authorize(Roles = "Administrador")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int id) {
-            var propietario = repositorio.ObtenerPorId(id);
-
-            if (propietario == null) { return NotFound(); }
+        [HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]
+        public IActionResult ConfirmarEliminar(int id) {
+            var propietario = repositorio.ObtenerPorID(id);
+            if (propietario == null) return NotFound();
 
             repositorio.Baja(id);
 
-            logger.LogInformation("Se eliminó correctamente el propietario con ID {Id}",id);
-
+            logger.LogInformation("Se eliminó correctamente el propietario con ID: ", d);
             TempData["Mensaje"] = "El propietario fue eliminado correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
     }
 }
