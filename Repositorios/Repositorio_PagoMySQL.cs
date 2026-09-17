@@ -71,12 +71,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     SET
                         concepto = @concepto,
                         fecha_pago = @fecha_pago,
-                        fecha_anulacion = @fecha_anulacion,
                         importe = @importe,
-                        estado = @estado,
-                        id_reserva = @id_reserva,
-                        id_usuario_creador = @id_usuario_creador,
-                        id_usuario_finalizador = @id_usuario_finalizador
+                        id_reserva = @id_reserva
                     WHERE id = @id;
                 ";
 
@@ -85,12 +81,12 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
                     command.Parameters.AddWithValue("@concepto", pago.Concepto);
                     command.Parameters.AddWithValue("@fecha_pago", pago.Fecha_Pago);
-                    command.Parameters.AddWithValue("@fecha_anulacion", pago.Fecha_Anulacion.HasValue ? pago.Fecha_Anulacion.Value : DBNull.Value);
+                    //command.Parameters.AddWithValue("@fecha_anulacion", pago.Fecha_Anulacion.HasValue ? pago.Fecha_Anulacion.Value : DBNull.Value);
                     command.Parameters.AddWithValue("@importe", pago.Importe);
-                    command.Parameters.AddWithValue("@estado", pago.Estado);
+                    //command.Parameters.AddWithValue("@estado", pago.Estado);
                     command.Parameters.AddWithValue("@id_reserva", pago.ID_Reserva);
-                    command.Parameters.AddWithValue("@id_usuario_creador", pago.ID_Usuario_Creador.HasValue ? pago.ID_Usuario_Creador.Value : DBNull.Value);
-                    command.Parameters.AddWithValue("@id_usuario_finalizador", pago.ID_Usuario_Finalizador.HasValue ? pago.ID_Usuario_Finalizador.Value : DBNull.Value);
+                   // command.Parameters.AddWithValue("@id_usuario_creador", pago.ID_Usuario_Creador.HasValue ? pago.ID_Usuario_Creador.Value : DBNull.Value);
+                    //command.Parameters.AddWithValue("@id_usuario_finalizador", pago.ID_Usuario_Finalizador.HasValue ? pago.ID_Usuario_Finalizador.Value : DBNull.Value);
                     command.Parameters.AddWithValue("@id", pago.id);
 
                     connection.Open();
@@ -102,28 +98,35 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
        
-        public int Baja(int id) {
-            int respuesta = -1;
+        public int Baja(int id, int idUsuario)
+            {
+                int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString)) {
-                string sql = @"
-                    DELETE FROM Pagos
-                    WHERE id = @id;
-                ";
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    string sql = @"
+                        UPDATE Pagos
+                        SET estado = 0,
+                            fecha_anulacion = NOW(),
+                            id_usuario_finalizador = @idUsuario
+                        WHERE id = @id;
+                    ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
-                    command.CommandType = CommandType.Text;
+                    using (var command = new MySqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
 
-                    command.Parameters.AddWithValue("@id", id);
+                        command.Parameters.AddWithValue("@id", id);
+                        command.Parameters.AddWithValue("@idUsuario", idUsuario);
 
-                    connection.Open();
-                    respuesta = command.ExecuteNonQuery();
-                    connection.Close();
+                        connection.Open();
+
+                        respuesta = command.ExecuteNonQuery();
+                    }
                 }
-            }
 
-            return respuesta;
-        }
+                return respuesta;
+            }
         
         public IList<Pago> ObtenerTodos() {
             var pagos = new List<Pago>();
