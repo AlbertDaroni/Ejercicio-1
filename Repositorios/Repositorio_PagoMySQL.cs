@@ -251,7 +251,9 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                         Importe = reader.GetDecimal("importe"),
                         Estado = reader.GetString("estado"),
                         ID_Reserva = reader.GetInt32("id_reserva"),
-                        ID_Usuario_Creador = reader.GetInt32("id_usuario_creador"),
+                        ID_Usuario_Creador = reader.IsDBNull(reader.GetOrdinal("id_usuario_creador"))
+                            ? null
+                            : reader.GetInt32("id_usuario_creador"),
                         ID_Usuario_Finalizador = reader.IsDBNull(reader.GetOrdinal("id_usuario_finalizador"))
                             ? null
                             : reader.GetInt32("id_usuario_finalizador")

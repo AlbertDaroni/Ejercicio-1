@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria_.Net_Core.Controllers
 {
@@ -130,6 +131,40 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 return NotFound();
 
             return View(pago);
+        }
+
+                // Eliminar (dar de baja)
+        [Authorize(Roles = "Administrador")]
+        [HttpGet]
+        public IActionResult Eliminar(int id)
+        {
+            var pago = repositorio_Pago.ObtenerPorID(id);
+
+            if (pago == null)
+                return NotFound();
+
+            return View(pago);
+        }
+
+        [Authorize(Roles = "Administrador")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ConfirmarEliminar(int id)
+        {
+            var pago = repositorio_Pago.ObtenerPorID(id);
+
+            if (pago == null)
+                return NotFound();
+
+            repositorio_Pago.Baja(id);
+
+            logger.LogInformation(
+                $"Se eliminó correctamente el Pago con el ID: {id}"
+            );
+
+            TempData["Mensaje"] = "Se eliminó correctamente.";
+
+            return RedirectToAction(nameof(Index));
         }
 
     }

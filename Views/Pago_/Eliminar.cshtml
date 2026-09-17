@@ -1,0 +1,45 @@
+@model Inmobiliaria_.Net_Core.Models.Pago
+
+@{
+    ViewData["Title"] = "Eliminar Pago";
+}
+
+<h1>Eliminar Pago</h1>
+
+<div class="alert alert-danger">
+    <strong>¿Está seguro que desea eliminar este pago?</strong>
+    <p class="mb-0">Esta acción no se puede deshacer.</p>
+</div>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Concepto</dt>
+    <dd class="col-sm-9">@Model.Concepto</dd>
+
+    <dt class="col-sm-3">Fecha de pago</dt>
+    <dd class="col-sm-9">@Model.Fecha_Pago.ToString("dd/MM/yyyy")</dd>
+
+    <dt class="col-sm-3">Importe</dt>
+    <dd class="col-sm-9">@Model.Importe.ToString("N2")</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">@Model.Estado</dd>
+
+    <dt class="col-sm-3">Reserva</dt>
+    <dd class="col-sm-9">@Model.ID_Reserva</dd>
+</dl>
+
+<form asp-action="ConfirmarEliminar" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="id" value="@Model.id" />
+
+    <button type="submit" class="btn btn-danger">
+        Eliminar
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Cancelar
+    </a>
+</form>
