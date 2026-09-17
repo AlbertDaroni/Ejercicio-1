@@ -6,10 +6,7 @@ using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Repositorios {
     public class Repositorio_InmuebleMySQL : RepositorioBase, IRepositorio_Inmueble {
-        public Repositorio_InmuebleMySQL(IConfiguration configuration) : base(configuration) {
-            //https://www.nuget.org/packages/MySql.Data/
-            //https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/
-        }
+        public Repositorio_InmuebleMySQL(IConfiguration configuration) : base(configuration) {}
 
         // CREACIÓN, MODIFICACIÓN y ELIMINACIÓN
         public int Alta(Inmueble i) {
@@ -117,9 +114,10 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT *
+                    SELECT i.*, p.id, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
                     FROM Inmuebles i
                     JOIN Propietarios p ON i.id_propietario = p.id
+                    JOIN Tipo_Inmuebles ti ON i.id_tipo = ti.id
                     ORDER BY Direccion ASC
                 ";
 
@@ -137,8 +135,21 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 Porcentaje_Seña = reader.GetDecimal("Porcentaje_Seña"),
                                 Estado = reader.GetString("Estado"),
                                 ID_Propietario = reader.GetInt32("ID_Propietario"),
-                                ID_Tipo = reader.GetInt32("ID_Tipo")
+                                ID_Tipo = reader.GetInt32("ID_Tipo"),
+
+                                Propietario = new Propietario {
+                                    id = reader.GetInt32("id"),
+                                    Nombre = reader.GetString("PropietarioNombre"),
+                                    Apellido = reader.GetString("Apellido")
+                                },
+
+                                Tipo_Inmueble = new Tipo_Inmueble {
+                                    id = reader.GetInt32("id"),
+                                    Nombre = reader.GetString("Nombre"),
+                                    Descripcion = reader.GetString("Descripcion")
+                                }
                             };
+
                             inmuebles.Add(inmueble);
                         }
                     }
@@ -155,9 +166,10 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT *
+                    SELECT i.*, p.id, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
                     FROM Inmuebles i
                     JOIN Propietarios p ON i.id_propietario = p.id
+                    JOIN Tipo_Inmuebles ti ON i.id_tipo = ti.id
                     WHERE Direccion LIKE @direccion
                     ORDER BY Direccion ASC;
                 ";
@@ -178,7 +190,19 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 Porcentaje_Seña = reader.GetDecimal("Porcentaje_Seña"),
                                 Estado = reader.GetString("Estado"),
                                 ID_Propietario = reader.GetInt32("ID_Propietario"),
-                                ID_Tipo = reader.GetInt32("ID_Tipo")
+                                ID_Tipo = reader.GetInt32("ID_Tipo"),
+
+                                Propietario = new Propietario {
+                                    id = reader.GetInt32("id"),
+                                    Nombre = reader.GetString("PropietarioNombre"),
+                                    Apellido = reader.GetString("Apellido")
+                                },
+
+                                Tipo_Inmueble = new Tipo_Inmueble {
+                                    id = reader.GetInt32("id"),
+                                    Nombre = reader.GetString("Nombre"),
+                                    Descripcion = reader.GetString("Descripcion")
+                                }
                             });
                         }
                     }
@@ -194,10 +218,11 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT *
+                    SELECT i.*, p.id, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
                     FROM Inmuebles i
                     JOIN Propietarios p ON i.id_propietario = p.id
-                    WHERE id = @id
+                    JOIN Tipo_Inmuebles ti ON i.id_tipo = ti.id
+                    WHERE i.id = @id
                 ";
 
                 using (var command = new MySqlCommand(sql, connection)) {
@@ -216,7 +241,19 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 Porcentaje_Seña = reader.GetDecimal("Porcentaje_Seña"),
                                 Estado = reader.GetString("Estado"),
                                 ID_Propietario = reader.GetInt32("ID_Propietario"),
-                                ID_Tipo = reader.GetInt32("ID_Tipo")
+                                ID_Tipo = reader.GetInt32("ID_Tipo"),
+
+                                Propietario = new Propietario {
+                                    id = reader.GetInt32("id"),
+                                    Nombre = reader.GetString("PropietarioNombre"),
+                                    Apellido = reader.GetString("Apellido")
+                                },
+
+                                Tipo_Inmueble = new Tipo_Inmueble {
+                                    id = reader.GetInt32("id"),
+                                    Nombre = reader.GetString("Nombre"),
+                                    Descripcion = reader.GetString("Descripcion")
+                                }
                             };
                         }
                     }

@@ -27,13 +27,15 @@
     <dd class="col-sm-9">@Model.Porcentaje_Seña</dd>
 
     <dt class="col-sm-3">Estado</dt>
-    <dd class="col-sm-9">@Model.Estado</dd>
+    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activo" : "Inactivo")</dd>
 
     <dt class="col-sm-3">Tipo de inmueble</dt>
-    <dd class="col-sm-9">@Model.ID_Tipo</dd>
+    <dd class="col-sm-9"><b>@Model.Tipo_Inmueble.Nombre</b><p>@Model.Tipo_Inmueble.Descripcion</p></dd>
 
     <dt class="col-sm-3">Propietario</dt>
-    <dd class="col-sm-9">@Model.ID_Propietario</dd>
+    <dd class="col-sm-9">@(Model.Propietario.Apellido + " " + Model.Propietario.Nombre)
+        <a href="/Propietario_/Detalles/@Model.Propietario.id">Detalles</a>
+    </dd>
 </dl>
 
 <form asp-action="ConfirmarEliminar" method="post">

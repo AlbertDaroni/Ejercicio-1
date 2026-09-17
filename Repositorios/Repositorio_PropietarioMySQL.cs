@@ -198,7 +198,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return propietarios;
         }
 
-        public Propietario? ObtenerPorId(int id) {
+        public Propietario? ObtenerPorID(int id) {
             Propietario? propietario = null;
 
             using (var connection = new MySqlConnection(connectionString)) {

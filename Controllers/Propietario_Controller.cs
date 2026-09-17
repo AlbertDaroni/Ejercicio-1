@@ -90,7 +90,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             repositorio.Baja(id);
 
-            logger.LogInformation("Se eliminó correctamente el propietario con ID: ", d);
+            logger.LogInformation("Se eliminó correctamente el propietario con ID: ", id);
             TempData["Mensaje"] = "El propietario fue eliminado correctamente.";
 
             return RedirectToAction(nameof(Indice));

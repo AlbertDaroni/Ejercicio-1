@@ -29,13 +29,13 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietario_" asp-action="Index">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietario_" asp-action="Indice">
                                 Propietarios
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino_" asp-action="Index">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino_" asp-action="Indice">
                                 Inquilinos
                             </a>
                         </li>
@@ -66,13 +66,13 @@
                             </li>
 
                             <li class="nav-item">
-                                <form asp-controller="Cuenta" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-danger"> Cerrar sesión </button>
+                                <form asp-controller="Cuenta_" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-link nav-link text-danger">Cerrar sesión </button>
                                 </form>
                             </li>
                         } else {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Cuenta" asp-action="Login">Iniciar sesión</a>
+                                <a class="nav-link text-dark" asp-controller="Cuenta_" asp-action="Login">Iniciar sesión</a>
                             </li>
                         }
                     </ul>                    
