@@ -40,7 +40,15 @@ namespace Inmobiliaria_.Net_Core.Models {
         public int ID_Usuario_Creador { get; set; }
 
         [Required]
-        public int ID_Usuario_Finalizador { get; set; }
+        public int? ID_Usuario_Finalizador { get; set; }
+
+        public Inquilino? Inquilino { get; set; } = null!;
+
+        public Inmueble? Inmueble { get; set; } = null!;
+        
+        public Usuario? Usuario_Creador { get; set; } = null!;
+
+        public Usuario? Usuario_Finalizador { get; set; } = null!;
 
         public override string ToString() {
             return @$"

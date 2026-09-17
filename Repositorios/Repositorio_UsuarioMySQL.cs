@@ -40,5 +40,40 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return usuario;
         }
+    
+        public IList<Usuario> ObtenerTodos() {
+            var usuarios = new List<Usuario>();
+
+            using (var connection = new MySqlConnection(connectionString)) {
+                string sql = @"
+                    SELECT *
+                    FROM Usuarios
+                    ORDER BY Apellido;
+                ";
+
+                using (var command = new MySqlCommand(sql, connection)) {
+                    connection.Open();
+                    using (var reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            var usuario = new Usuario {
+                                id = reader.GetInt32("id"),
+                                Nombre = reader.GetString("Nombre"),
+                                Apellido = reader.GetString("Apellido"),
+                                Correo = reader.GetString("Correo"),
+                                Contraseña = reader.GetString("Contraseña"),
+                                Avatar = reader.GetString("Avatar"),
+                                Rol = reader.GetString("Rol"),
+                                Estado = reader.GetString("Estado")
+                            };
+
+                            usuarios.Add(usuario);
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+
+            return usuarios;
+        }
     }
 }

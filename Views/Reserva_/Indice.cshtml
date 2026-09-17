@@ -32,15 +32,14 @@
                 <td>@reserva.Fecha_Inicio</td>
                 <td>@reserva.Fecha_Fin_Original</td>
                 <td>@reserva.Fecha_Fin_Efectiva</td>
-                <td>@reserva.Monto_Dia</td>
-                <td>@reserva.Multa</td>
-                <td>@reserva.Estado</td>
+                <td>$@reserva.Monto_Dia</td>
+                <td>$@reserva.Multa</td>
+                <td>@(reserva.Estado == "1" ? "Activa" : "Inactiva")</td>
 
                 <td>
                     <a asp-action="Modificar" asp-route-id="@reserva.id">Editar</a>
                     |
                     <a asp-action="Detalles" asp-route-id="@reserva.id">Detalles</a>
-                    |
                     @if (User.IsInRole("Administrador")) {
                         <text> | </text>
                         <a asp-action="Eliminar" asp-route-id="@reserva.id">Eliminar</a>

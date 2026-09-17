@@ -34,6 +34,8 @@ namespace Inmobiliaria_.Net_Core.Models {
         [Required(ErrorMessage = "Este campo es obligatorio")]
         public string Estado { get; set; } = "1";
 
+        public string ApellidoYNombre => $"{Apellido} {Nombre}";
+
         public override string ToString() {
             return @$"
                 {Avatar}

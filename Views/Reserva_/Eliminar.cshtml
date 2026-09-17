@@ -8,6 +8,9 @@
 <hr />
 
 <dl class="row">
+    <dt class="col-sm-3">Fecha de creación</dt>
+    <dd class="col-sm-9">@Model.Fecha_Creacion</dd>
+    
     <dt class="col-sm-3">Fecha de inicio</dt>
     <dt class="col-sm-9">@Model.Fecha_Inicio</dt>
 
@@ -18,10 +21,35 @@
     <dt class="col-sm-9">@Model.Fecha_Fin_Efectiva</dt>
 
     <dt class="col-sm-3">Monto</dt>
-    <dt class="col-sm-9">@Model.Monto_Dia</dt>
+    <dt class="col-sm-9">$@Model.Monto_Dia</dt>
 
     <dt class="col-sm-3">Multa</dt>
-    <dt class="col-sm-9">@Model.Multa</dt>
+    <dt class="col-sm-9">$@Model.Multa</dt>
+    
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activa" : "Inactiva")</dd>
+
+    <dt class="col-sm-3">Inquilino</dt>
+    <dd class="col-sm-9">@(Model.Inquilino.Apellido + " " + Model.Inquilino.Nombre)
+        <a href="/Inquilino_/Detalles/@Model.Inquilino.id">Detalles</a>
+    </dd>
+
+    <dt class="col-sm-3">Inmueble</dt>
+    <dd class="col-sm-9"><a href="/Inmueble_/Detalles/@Model.Inmueble.id">Detalles</a></dd>
+
+    <dt class="col-sm-3">Usuario creador</dt>
+    <dd class="col-sm-9">
+        <p class="col-sm-9">@Model.Usuario_Creador.Avatar</p>
+        <p class="col-sm-9">@(Model.Usuario_Creador.Apellido + " " + Model.Usuario_Creador.Nombre)</p>
+        <p class="col-sm-9">@Model.Usuario_Creador.Correo</p>
+    </dd>
+
+    <dt class="col-sm-3">Usuario finalizador</dt>
+    <dd class="col-sm-9">
+        <p class="col-sm-9">@Model.Usuario_Finalizador.Avatar</p>
+        <p class="col-sm-9">@(Model.Usuario_Finalizador.Apellido + " " + Model.Usuario_Finalizador.Nombre)</p>
+        <p class="col-sm-9">@Model.Usuario_Finalizador.Correo</p>
+    </dd>
 </dl>
 
 <form asp-action="ConfirmarEliminar" method="post">

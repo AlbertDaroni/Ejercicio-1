@@ -6,17 +6,12 @@ using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Repositorios {
     public class Repositorio_ReservaMySQL : RepositorioBase, IRepositorio_Reserva {
-        public Repositorio_ReservaMySQL(IConfiguration configuration) : base(configuration) {
-            //https://www.nuget.org/packages/MySql.Data/
-            //https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/
-        }
+        public Repositorio_ReservaMySQL(IConfiguration configuration) : base(configuration) {}
 
-        public int Alta(Reserva r)
-        {
+        public int Alta(Reserva r) {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     INSERT INTO Reservas (
                         fecha_creacion, fecha_inicio, fecha_fin_original,
@@ -32,8 +27,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     SELECT LAST_INSERT_ID();
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@fecha_creacion", r.Fecha_Creacion);
@@ -48,11 +42,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     command.Parameters.AddWithValue("@id_usuario_finalizador", r.ID_Usuario_Finalizador);
 
                     connection.Open();
-
                     respuesta = Convert.ToInt32(command.ExecuteScalar());
-
                     r.id = respuesta;
-
                     connection.Close();
                 }
             }
@@ -60,12 +51,10 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public int Modificacion(Reserva r)
-        {
+        public int Modificacion(Reserva r) {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     UPDATE Reservas
                     SET fecha_creacion = @fecha_creacion,
@@ -81,8 +70,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     WHERE id = @id;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@fecha_creacion", r.Fecha_Creacion);
@@ -97,9 +85,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     command.Parameters.AddWithValue("@id_usuario_finalizador", r.ID_Usuario_Finalizador);
 
                     connection.Open();
-
                     respuesta = command.ExecuteNonQuery();
-
                     connection.Close();
                 }
             }
@@ -107,27 +93,22 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public int Baja(int id)
-        {
+        public int Baja(int id) {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     DELETE FROM Reservas
                     WHERE id = @id;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@id", id);
 
                     connection.Open();
-
                     respuesta = command.ExecuteNonQuery();
-
                     connection.Close();
                 }
             }
@@ -135,27 +116,20 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public IList<Reserva> ObtenerTodos()
-        {
+        public IList<Reserva> ObtenerTodos() {
             var reservas = new List<Reserva>();
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
                     FROM Reservas
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Reserva reserva = new Reserva
-                            {
+                    using (var reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            Reserva reserva = new Reserva {
                                 id = reader.GetInt32("id"),
                                 Fecha_Creacion = reader.GetDateTime("Fecha_Creacion"),
                                 Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
@@ -172,7 +146,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                             reservas.Add(reserva);
                         }
                     }
-
                     connection.Close();
                 }
             }
@@ -180,30 +153,32 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return reservas;
         }
 
-        public Reserva? ObtenerPorID(int id)
-        {
+        public Reserva? ObtenerPorID(int id) {
             Reserva? reserva = null;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT *
-                    FROM Reservas
-                    WHERE id = @id
+                    SELECT 
+                        r.*,
+                        inq.id AS InqId, inq.Nombre AS InqNombre, inq.Apellido AS InqApellido,
+                        inm.id AS InmId,
+                        u1.Nombre AS U1Nombre, u1.Apellido AS U1Apellido, u1.Correo AS U1Correo, u1.Avatar AS U1Avatar,
+                        u2.Nombre AS U2Nombre, u2.Apellido AS U2Apellido, u2.Correo AS U2Correo, u2.Avatar AS U2Avatar
+                    FROM Reservas r
+                    JOIN Inquilinos inq ON r.id_inquilino = inq.id
+                    JOIN Inmuebles inm ON r.id_inmueble = inm.id
+                    JOIN Usuarios u1 ON r.id_usuario_creador = u1.id
+                    JOIN Usuarios u2 ON r.id_usuario_finalizador = u2.id
+                    WHERE r.id = @id
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.Parameters.AddWithValue("@id", id);
 
                     connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            reserva = new Reserva
-                            {
+                    using (var reader = command.ExecuteReader()) {
+                        if (reader.Read()) {
+                            reserva = new Reserva {
                                 id = reader.GetInt32("id"),
                                 Fecha_Creacion = reader.GetDateTime("Fecha_Creacion"),
                                 Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
@@ -214,11 +189,34 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 ID_Inquilino = reader.GetInt32("ID_Inquilino"),
                                 ID_Inmueble = reader.GetInt32("ID_Inmueble"),
                                 ID_Usuario_Creador = reader.GetInt32("ID_Usuario_Creador"),
-                                ID_Usuario_Finalizador = reader.GetInt32("ID_Usuario_Finalizador")
+                                ID_Usuario_Finalizador = reader.GetInt32("ID_Usuario_Finalizador"),
+
+                                Inquilino = new Inquilino {
+                                    id = reader.GetInt32("InqId"),
+                                    Nombre = reader.GetString("InqNombre"),
+                                    Apellido = reader.GetString("InqApellido")
+                                },
+
+                                Inmueble = new Inmueble {
+                                    id = reader.GetInt32("InmId")
+                                },
+
+                                Usuario_Creador = new Usuario {
+                                    Nombre = reader.GetString("U1Nombre"),
+                                    Apellido = reader.GetString("U1Apellido"),
+                                    Correo = reader.GetString("U1Correo"),
+                                    Avatar = reader.GetString("U1Avatar")
+                                },
+
+                                Usuario_Finalizador = new Usuario {
+                                    Nombre = reader.GetString("U2Nombre"),
+                                    Apellido = reader.GetString("U2Apellido"),
+                                    Correo = reader.GetString("U2Correo"),
+                                    Avatar = reader.GetString("U2Avatar")
+                                }
                             };
                         }
                     }
-
                     connection.Close();
                 }
             }

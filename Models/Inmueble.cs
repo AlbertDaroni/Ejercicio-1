@@ -37,9 +37,9 @@ namespace Inmobiliaria_.Net_Core.Models {
         [Required]
         public int ID_Tipo { get; set; }
 
-        public Propietario Propietario { get; set; }
+        public Propietario Propietario { get; set; } = null!;
 
-        public Tipo_Inmueble Tipo_Inmueble { get; set; }
+        public Tipo_Inmueble Tipo_Inmueble { get; set; } = null!;
 
         public override string ToString() {
             return @$"

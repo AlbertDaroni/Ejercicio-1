@@ -3,26 +3,26 @@
 @{ ViewData["Title"] = "Eliminar inquilino"; }
 
 <h1>Eliminar inquilino</h1>
-<h3>¿Está seguro que desea eliminar este propietario?</h3>
+<h3>¿Está seguro que desea eliminar este inquilino?</h3>
 
 <hr />
 
-<dt class="row">
+<dl class="row">
     <dt class="col-sm-3">Nombre</dt>
-    <dt class="col-sm-9">@Model.Nombre</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
 
     <dt class="col-sm-3">Apellido</dt>
-    <dt class="col-sm-9">@Model.Apellido</dt>
+    <dd class="col-sm-9">@Model.Apellido</dd>
 
     <dt class="col-sm-3">DNI</dt>
-    <dt class="col-sm-9">@Model.DNI</dt>
+    <dd class="col-sm-9">@Model.DNI</dd>
 
     <dt class="col-sm-3">Telefono</dt>
-    <dt class="col-sm-9">@Model.Telefono</dt>
+    <dd class="col-sm-9">@Model.Telefono</dd>
 
     <dt class="col-sm-3">Correo</dt>
-    <dt class="col-sm-9">@Model.Correo</dt>
-</dt>
+    <dd class="col-sm-9">@Model.Correo</dd>
+</dl>
 
 <form asp-action="ConfirmarEliminar" method="post">
     <input type="hidden" asp-for="id" />

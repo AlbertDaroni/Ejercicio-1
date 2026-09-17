@@ -10,17 +10,20 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         private readonly IRepositorio_Reserva repositorio_Reserva;
         private readonly IRepositorio_Inmueble repositorio_Inmueble;
         private readonly IRepositorio_Inquilino repositorio_Inquilino;
+        private readonly IRepositorio_Usuario repositorio_Usuario;
         private readonly ILogger<Reserva_Controller> logger;
 
         public Reserva_Controller(
             IRepositorio_Reserva repositorio_Reserva,
             IRepositorio_Inmueble repositorio_Inmueble,
             IRepositorio_Inquilino repositorio_Inquilino,
+            IRepositorio_Usuario repositorio_Usuario,
             ILogger<Reserva_Controller> logger
         ) {
             this.repositorio_Reserva = repositorio_Reserva;
             this.repositorio_Inmueble = repositorio_Inmueble;
             this.repositorio_Inquilino = repositorio_Inquilino;
+            this.repositorio_Usuario = repositorio_Usuario;
             this.logger = logger;
         }
 
@@ -28,7 +31,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         [HttpGet]
         public IActionResult Crear() {
             ViewBag.Inmuebles = new SelectList(repositorio_Inmueble.ObtenerTodos(), "id", "Direccion");
-            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "DNI", "Apellido");
+            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre");
 
             return View();
         }
@@ -42,7 +45,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             if (!ModelState.IsValid) {
                 ViewBag.Inmuebles = new SelectList(repositorio_Inmueble.ObtenerTodos(), "id", "Direccion");
-                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "DNI", "Apellido");
+                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre");
                 
                 return View(reserva);
             }
@@ -91,7 +94,8 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (reserva == null) return NotFound();
 
             ViewBag.Inmuebles = new SelectList(repositorio_Inmueble.ObtenerTodos(), "id", "Direccion", reserva.ID_Inmueble);
-            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "Apellido", reserva.ID_Inquilino);
+            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre", reserva.ID_Inquilino);
+            ViewBag.Usuarios = new SelectList(repositorio_Usuario.ObtenerTodos(), "id", "ApellidoYNombre");
 
             return View(reserva);
         }
@@ -103,18 +107,14 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             ModelState.Remove(nameof(reserva.Fecha_Creacion));
             if (!ModelState.IsValid) {
                 ViewBag.Inmuebles = new SelectList(repositorio_Inmueble.ObtenerTodos(), "id", "Direccion", reserva.ID_Inmueble);
-                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "Apellido", reserva.ID_Inquilino);
+                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre", reserva.ID_Inquilino);
+                ViewBag.Usuarios = new SelectList(repositorio_Usuario.ObtenerTodos(), "id", "ApellidoYNombre");
 
                 return View(reserva);
             }
 
-            var reservaExistente = repositorio_Reserva.ObtenerPorID(id);
-            if (reservaExistente == null) return NotFound();
-
-            reserva.ID_Usuario_Finalizador = 1; // int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "1");
-            reserva.Fecha_Creacion = reservaExistente.Fecha_Creacion;
-
             repositorio_Reserva.Modificacion(reserva);
+
             logger.LogInformation($"Se modificó correctamente la Reserva con el ID: {id}");
             TempData["Mensaje"] = "Se modificó correctamente.";
 

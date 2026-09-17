@@ -34,5 +34,7 @@ namespace Inmobiliaria_.Net_Core.Models {
         [EmailAddress(ErrorMessage = "El correo electrónico no es válido.")]
         [Display(Name = "Correo electrónico")]
         public string Correo { get; set; } = string.Empty;
+
+        public string ApellidoYNombre => $"{Apellido} {Nombre}";
     }
 }

@@ -40,6 +40,15 @@
     </div>
 
     <div class="mb-3">
+        <label asp-for="Estado" class="form-label">Estado</label>
+        <select asp-for="Estado" class="form-control">
+            <option value="1">Activo</option>
+            <option value="0">Inactivo</option>
+        </select>
+        <span asp-validation-for="Estado" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
         <label asp-for="ID_Inmueble" class="form-label">Inmueble</label>
         <select asp-for="ID_Inmueble" class="form-control" asp-items="ViewBag.Inmuebles">
             <option value="">-- Seleccione un Inmueble --</option>
@@ -53,6 +62,14 @@
             <option value="">-- Seleccione un Inquilino --</option>
         </select>
         <span asp-validation-for="ID_Inquilino" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ID_Usuario_Finalizador" class="form-label">Usuario Finalizador</label>
+        <select asp-for="ID_Usuario_Finalizador" class="form-control" asp-items="ViewBag.Usuarios">
+            <option value="">-- Seleccione un Inquilino --</option>
+        </select>
+        <span asp-validation-for="ID_Usuario_Finalizador" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-success">Guardar</button>
