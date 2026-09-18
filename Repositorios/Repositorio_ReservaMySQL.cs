@@ -93,23 +93,28 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public int Baja(int id) {
+        public int Baja(int id, int idUsuario)
+        {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
-                    DELETE FROM Reservas
+                    UPDATE Reservas
+                    SET estado = 0,
+                        id_usuario_finalizador = @idUsuario
                     WHERE id = @id;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@idUsuario", idUsuario);
 
                     connection.Open();
                     respuesta = command.ExecuteNonQuery();
-                    connection.Close();
                 }
             }
 
@@ -140,7 +145,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 ID_Inquilino = reader.GetInt32("ID_Inquilino"),
                                 ID_Inmueble = reader.GetInt32("ID_Inmueble"),
                                 ID_Usuario_Creador = reader.GetInt32("ID_Usuario_Creador"),
-                                ID_Usuario_Finalizador = reader.GetInt32("ID_Usuario_Finalizador")
+                                ID_Usuario_Finalizador =reader.IsDBNull(reader.GetOrdinal("id_usuario_finalizador"))? null
+                                    : reader.GetInt32("id_usuario_finalizador"),
                             };
 
                             reservas.Add(reserva);
@@ -168,7 +174,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     JOIN Inquilinos inq ON r.id_inquilino = inq.id
                     JOIN Inmuebles inm ON r.id_inmueble = inm.id
                     JOIN Usuarios u1 ON r.id_usuario_creador = u1.id
-                    JOIN Usuarios u2 ON r.id_usuario_finalizador = u2.id
+                    LEFT JOIN Usuarios u2 ON r.id_usuario_finalizador = u2.id
                     WHERE r.id = @id
                 ";
 
@@ -189,7 +195,10 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 ID_Inquilino = reader.GetInt32("ID_Inquilino"),
                                 ID_Inmueble = reader.GetInt32("ID_Inmueble"),
                                 ID_Usuario_Creador = reader.GetInt32("ID_Usuario_Creador"),
-                                ID_Usuario_Finalizador = reader.GetInt32("ID_Usuario_Finalizador"),
+                                ID_Usuario_Finalizador =
+                                    reader.IsDBNull(reader.GetOrdinal("ID_Usuario_Finalizador"))
+                                        ? null
+                                        : reader.GetInt32("ID_Usuario_Finalizador"),
 
                                 Inquilino = new Inquilino {
                                     id = reader.GetInt32("InqId"),
@@ -208,12 +217,16 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                     Avatar = reader.GetString("U1Avatar")
                                 },
 
-                                Usuario_Finalizador = new Usuario {
-                                    Nombre = reader.GetString("U2Nombre"),
-                                    Apellido = reader.GetString("U2Apellido"),
-                                    Correo = reader.GetString("U2Correo"),
-                                    Avatar = reader.GetString("U2Avatar")
-                                }
+                                Usuario_Finalizador =
+                                    reader.IsDBNull(reader.GetOrdinal("U2Nombre"))
+                                        ? null
+                                        : new Usuario
+                                        {
+                                            Nombre = reader.GetString("U2Nombre"),
+                                            Apellido = reader.GetString("U2Apellido"),
+                                            Correo = reader.GetString("U2Correo"),
+                                            Avatar = reader.GetString("U2Avatar")
+                                        }
                             };
                         }
                     }

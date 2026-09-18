@@ -46,9 +46,16 @@
 
     <dt class="col-sm-3">Usuario finalizador</dt>
     <dd class="col-sm-9">
-        <p class="col-sm-9">@Model.Usuario_Finalizador.Avatar</p>
-        <p class="col-sm-9">@(Model.Usuario_Finalizador.Apellido + " " + Model.Usuario_Finalizador.Nombre)</p>
-        <p class="col-sm-9">@Model.Usuario_Finalizador.Correo</p>
+        @if (Model.Usuario_Finalizador != null)
+        {
+            <p>@Model.Usuario_Finalizador.Avatar</p>
+            <p>@Model.Usuario_Finalizador.Apellido @Model.Usuario_Finalizador.Nombre</p>
+            <p>@Model.Usuario_Finalizador.Correo</p>
+        }
+        else
+        {
+            <p>No finalizada</p>
+        }
     </dd>
 </dl>
 

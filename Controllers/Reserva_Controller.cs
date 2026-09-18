@@ -52,10 +52,16 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             reserva.Fecha_Creacion = DateTime.Now;
             reserva.Estado = "1";
-            int idUsuarioActual = 1; //int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "1");
-            
+
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (idUsuarioClaim == null)
+                return Unauthorized();
+
+            int idUsuarioActual = int.Parse(idUsuarioClaim);
+
             reserva.ID_Usuario_Creador = idUsuarioActual;
-            reserva.ID_Usuario_Finalizador = idUsuarioActual;
+            reserva.ID_Usuario_Finalizador = null;
 
             repositorio_Reserva.Alta(reserva);
             logger.LogInformation($"Se registró correctamente la Reserva con el ID: {reserva.id}");
@@ -76,13 +82,27 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarEliminar(int id) {
+        public IActionResult ConfirmarEliminar(int id)
+        {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
-            if (reserva == null) return NotFound();
 
-            repositorio_Reserva.Baja(id);
-            logger.LogInformation($"Se eliminó correctamente la Reserva con el ID: {id}");
-            TempData["Mensaje"] = "Se eliminó correctamente.";
+            if (reserva == null)
+                return NotFound();
+
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (idUsuarioClaim == null)
+                return Unauthorized();
+
+            int idUsuario = int.Parse(idUsuarioClaim);
+
+            repositorio_Reserva.Baja(id, idUsuario);
+
+            logger.LogInformation(
+                $"Se finalizó correctamente la Reserva con el ID: {id}"
+            );
+
+            TempData["Mensaje"] = "La reserva se finalizó correctamente.";
 
             return RedirectToAction(nameof(Indice));
         }

@@ -7,7 +7,7 @@ using Inmobiliaria_.Net_Core.Models;
 namespace Inmobiliaria_.Net_Core.Repositorios {
     public interface IRepositorio_Reserva {
         int Alta (Reserva reserva);
-        int Baja (int id);
+        int Baja(int id, int idUsuario);
         int Modificacion (Reserva reserva);
 
         IList<Reserva> ObtenerTodos ();
