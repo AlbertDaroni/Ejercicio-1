@@ -82,13 +82,27 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmarEliminar(int id) {
+        public IActionResult ConfirmarEliminar(int id)
+        {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
-            if (reserva == null) return NotFound();
 
-            repositorio_Reserva.Baja(id);
-            logger.LogInformation($"Se eliminó correctamente la Reserva con el ID: {id}");
-            TempData["Mensaje"] = "Se eliminó correctamente.";
+            if (reserva == null)
+                return NotFound();
+
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (idUsuarioClaim == null)
+                return Unauthorized();
+
+            int idUsuario = int.Parse(idUsuarioClaim);
+
+            repositorio_Reserva.Baja(id, idUsuario);
+
+            logger.LogInformation(
+                $"Se finalizó correctamente la Reserva con el ID: {id}"
+            );
+
+            TempData["Mensaje"] = "La reserva se finalizó correctamente.";
 
             return RedirectToAction(nameof(Indice));
         }
