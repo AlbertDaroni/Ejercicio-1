@@ -93,21 +93,17 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public int Baja(int id, int idUsuario)
-        {
+        public int Baja(int id, int idUsuario) {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     UPDATE Reservas
-                    SET estado = 0,
-                        id_usuario_finalizador = @idUsuario
+                    SET estado = 0, id_usuario_finalizador = @idUsuario
                     WHERE id = @id;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@id", id);
@@ -115,6 +111,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
                     connection.Open();
                     respuesta = command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
 
