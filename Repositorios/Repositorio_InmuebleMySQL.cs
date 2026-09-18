@@ -114,7 +114,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT i.*, p.id, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
+                    SELECT i.*, p.id AS PropietarioID, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
                     FROM Inmuebles i
                     JOIN Propietarios p ON i.id_propietario = p.id
                     JOIN Tipo_Inmuebles ti ON i.id_tipo = ti.id
@@ -138,7 +138,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 ID_Tipo = reader.GetInt32("ID_Tipo"),
 
                                 Propietario = new Propietario {
-                                    id = reader.GetInt32("id"),
+                                    id = reader.GetInt32("PropietarioID"),
                                     Nombre = reader.GetString("PropietarioNombre"),
                                     Apellido = reader.GetString("Apellido")
                                 },
@@ -166,7 +166,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT i.*, p.id, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
+                    SELECT i.*, p.id AS PropietarioID, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
                     FROM Inmuebles i
                     JOIN Propietarios p ON i.id_propietario = p.id
                     JOIN Tipo_Inmuebles ti ON i.id_tipo = ti.id
@@ -193,7 +193,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 ID_Tipo = reader.GetInt32("ID_Tipo"),
 
                                 Propietario = new Propietario {
-                                    id = reader.GetInt32("id"),
+                                    id = reader.GetInt32("PropietarioID"),
                                     Nombre = reader.GetString("PropietarioNombre"),
                                     Apellido = reader.GetString("Apellido")
                                 },
@@ -218,7 +218,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT i.*, p.id, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
+                    SELECT i.*, p.id AS PropietarioID, p.Nombre AS PropietarioNombre, p.Apellido, ti.*
                     FROM Inmuebles i
                     JOIN Propietarios p ON i.id_propietario = p.id
                     JOIN Tipo_Inmuebles ti ON i.id_tipo = ti.id
@@ -244,7 +244,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 ID_Tipo = reader.GetInt32("ID_Tipo"),
 
                                 Propietario = new Propietario {
-                                    id = reader.GetInt32("id"),
+                                    id = reader.GetInt32("PropietarioID"),
                                     Nombre = reader.GetString("PropietarioNombre"),
                                     Apellido = reader.GetString("Apellido")
                                 },
