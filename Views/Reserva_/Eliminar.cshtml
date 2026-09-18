@@ -1,9 +1,11 @@
 @model Inmobiliaria_.Net_Core.Models.Reserva
 
-@{ ViewData["Title"] = "Eliminar Reserva"; }
+@{
+    ViewData["Title"] = "Finalizar Reserva";
+}
 
-<h1>Eliminar Reserva</h1>
-<h3>¿Está seguro que desea eliminar esta reserva?</h3>
+<h1>Finalizar Reserva</h1>
+<h3>¿Está seguro que desea finalizar esta reserva?</h3>
 
 <hr />
 
@@ -59,6 +61,6 @@
 <form asp-action="ConfirmarEliminar" method="post">
     <input type="hidden" asp-for="id">
 
-    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <button type="submit" class="btn btn-danger">Finalizar</button>
     <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
 </form>
