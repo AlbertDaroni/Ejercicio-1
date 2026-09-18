@@ -11,6 +11,6 @@ public interface IRepositorio_Imagen_Inmueble {
     int Baja (int id);
     int Modificacion (Imagen_Inmueble imagen);
 
-    IList<Imagen_Inmueble> ObtenerTodos ();
+    IList<Imagen_Inmueble> ObtenerTodos (int id_inmueble);
     Imagen_Inmueble? ObtenerPorID (int id);
 }

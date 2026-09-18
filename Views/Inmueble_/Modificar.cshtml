@@ -4,9 +4,23 @@
 
 <h1>Editar Inmueble</h1>
 
-<form asp-action="Modificar" method="post">
+<form asp-action="Modificar" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="id">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Imágenes</label>
+        <div class="d-flex gap-2">
+            @if (ViewBag.Imagenes != null) {
+                @foreach (var imagen in ViewBag.Imagenes) { <img src="@imagen.URL" width="500" class="img-thumbnail" alt="Imagen del inmueble"> }
+            } else { <p class="text-muted">No hay imágenes cargadas.</p> }
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Agregar Imágenes</label>
+        <input name="ArchivosImagenes" class="form-control" type="file" multiple>
+    </div>
 
     <div class="mb-3">
         <label asp-for="Direccion" class="form-label">Dirección</label>
@@ -40,7 +54,7 @@
 
     <div class="mb-3">
         <label asp-for="Porcentaje_Seña" class="form-label">Porcentaje de la seña</label>
-        <input asp-for="Porcentaje_Seña" class="form-control">
+        <input asp-for="Porcentaje_Seña" class="form-control" min="0" max="100">
         <span asp-validation-for="Porcentaje_Seña" class="text-danger"></span>
     </div>
 
@@ -51,12 +65,6 @@
             <option value="0">Inactivo</option>
         </select>
         <span asp-validation-for="Estado" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="ID_Tipo" class="form-label">Tipo de inmueble</label>
-        <input asp-for="ID_Tipo" class="form-control">
-        <span asp-validation-for="ID_Tipo" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

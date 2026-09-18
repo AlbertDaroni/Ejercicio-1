@@ -77,7 +77,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    DELETE FROM Imagen_Inmueble
+                    DELETE FROM Imagen_Inmuebles
                     WHERE id = @id;
                 ";
 
@@ -96,16 +96,21 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         }
 
         // OBTENER TODOS
-        public IList<Imagen_Inmueble> ObtenerTodos() {
+        public IList<Imagen_Inmueble> ObtenerTodos(int id_inmueble) {
             var imagenes_inmuebles = new List<Imagen_Inmueble>();
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
                     FROM Imagen_Inmuebles
+                    WHERE id_inmueble = @id_inmueble
                 ";
 
                 using (var command = new MySqlCommand(sql, connection)) {
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.AddWithValue("@id_inmueble", id_inmueble);
+
                     connection.Open();
                     using (var reader = command.ExecuteReader()) {
                         while (reader.Read()) {
@@ -133,7 +138,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
-                    FROM Imagen_Inmueble
+                    FROM Imagen_Inmuebles
                     WHERE id = @id
                 ";
 

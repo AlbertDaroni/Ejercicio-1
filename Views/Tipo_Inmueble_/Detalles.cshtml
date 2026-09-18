@@ -10,9 +10,8 @@
     <div class="card-body">
         <h5 class="card-title">@Model.Nombre</h5>
 
-        <p class="card-text"><strong>ID:</strong>@Model.id</p>
-        <p class="card-text"><strong>Nombre:</strong>@Model.Nombre</p>
-        <p class="card-text"><strong>Descripción:</strong>@Model.Descripcion</p>
+        <p class="card-text"><strong>Nombre: </strong>@Model.Nombre</p>
+        <p class="card-text"><strong>Descripción: </strong>@Model.Descripcion</p>
 
         <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Modificar</a>
         <a asp-action="Indice" class="btn btn-secondary">Volver</a>

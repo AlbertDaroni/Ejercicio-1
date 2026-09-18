@@ -22,9 +22,6 @@ namespace Inmobiliaria_.Net_Core.Models {
 		[Required]
 		public int ID_Inmueble { get; set; }
 
-		[NotMapped] // El archivo cargado se marca como No Mapeado en la base de datos
-		public IFormFile? Archivo { get; set; } = null;
-
 		public override string ToString() {
 			return @$"
 				URL: {URL}

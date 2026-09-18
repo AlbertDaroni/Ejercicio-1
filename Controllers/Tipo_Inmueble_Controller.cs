@@ -65,7 +65,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation($"Se eliminó correctamente el Tipo de Inmueble con el ID: {id}");
             TempData["Mensaje"] = "Se eliminó correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
         // Modificar
@@ -75,7 +75,6 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (tipo_Inmueble == null) return NotFound();
 
             ViewBag.Tipo_Inmuebles = new SelectList(repositorio_Tipo_Inmueble.ObtenerTodos(), "id", "Nombre");
-            ViewBag.Propietarios = new SelectList(repositorio_Propietario.ObtenerTodos(), "DNI", "Apellido");
 
             return View(tipo_Inmueble);
         }
@@ -86,7 +85,6 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (id != tipo_Inmueble.id) return BadRequest();
             if (!ModelState.IsValid) {
                 ViewBag.Tipo_Inmuebles = new SelectList(repositorio_Tipo_Inmueble.ObtenerTodos(), "id", "Nombre");
-                ViewBag.Propietarios = new SelectList(repositorio_Propietario.ObtenerTodos(), "DNI", "Apellido");
 
                 return View(tipo_Inmueble);
             }
@@ -98,7 +96,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation($"Se modificó correctamente el Tipo de Inmueble con el ID: {id}");
             TempData["Mensaje"] = "Se modificó correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
         // Obtener todos
