@@ -10,8 +10,8 @@ builder.Services.AddControllersWithViews();
 // Agrega soporte para autenticación con cookies.
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
-        options.LoginPath = "/Cuenta/Login";
-        options.AccessDeniedPath = "/Cuenta/AccesoDenegado";
+        options.LoginPath = "/Cuenta_/Login";
+        options.AccessDeniedPath = "/Cuenta_/AccesoDenegado";
     });
 
 // Inyección de dependencia de los repositorios
