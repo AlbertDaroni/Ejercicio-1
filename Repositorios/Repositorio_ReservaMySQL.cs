@@ -13,6 +13,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
+                    UPDATE Inmuebles SET estado = 0 WHERE id = @id_inmueble;
+
                     INSERT INTO Reservas (
                         fecha_creacion, fecha_inicio, fecha_fin_original,
                         fecha_fin_efectiva, monto_dia, multa,
@@ -83,6 +85,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     command.Parameters.AddWithValue("@id_inmueble", r.ID_Inmueble);
                     command.Parameters.AddWithValue("@id_usuario_creador", r.ID_Usuario_Creador);
                     command.Parameters.AddWithValue("@id_usuario_finalizador", r.ID_Usuario_Finalizador);
+                    command.Parameters.AddWithValue("@id", r.id);
 
                     connection.Open();
                     respuesta = command.ExecuteNonQuery();

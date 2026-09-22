@@ -4,6 +4,7 @@ using Inmobiliaria_.Net_Core.Repositorios;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
+    [Authorize]
     public class Propietario_Controller : Controller {
         private readonly IRepositorio_Propietario repositorio;
         private readonly ILogger<Propietario_Controller> logger;
@@ -31,8 +32,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         public IActionResult Crear() { return View(); }
 
         // Crear
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Crear(Propietario propietario) {
             if (!ModelState.IsValid) return View(propietario);
 
@@ -53,8 +53,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Modificar
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Modificar(int id, Propietario propietario) {
             if (id != propietario.id) return BadRequest();
             if (!ModelState.IsValid) return View(propietario);
@@ -71,8 +70,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Eliminar
-        [Authorize(Roles = "Administrador")]
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public IActionResult Eliminar(int id) {
             var propietario = repositorio.ObtenerPorID(id);
 
@@ -82,8 +80,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Eliminar
-        [Authorize(Roles = "Administrador")]
-        [HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]
+        [HttpPost, ValidateAntiForgeryToken, ActionName("Delete"), Authorize(Roles = "Administrador")]
         public IActionResult ConfirmarEliminar(int id) {
             var propietario = repositorio.ObtenerPorID(id);
             if (propietario == null) return NotFound();

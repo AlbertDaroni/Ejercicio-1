@@ -1,3 +1,4 @@
+@using System.Security.Claims
 @model IEnumerable<Inmobiliaria_.Net_Core.Models.Inmueble>
 
 @{ ViewData["Title"] = "Inmuebles"; }
@@ -36,10 +37,15 @@
                 <td>%@inmueble.Porcentaje_Seña</td>
                 <td>@(inmueble.Estado == "1" ? "Activo" : "Inactivo")</td>
                 <td>@inmueble.Tipo_Inmueble.Nombre</td>
-                <td><a href=/Propietario_/Detalles/@inmueble.Propietario.id>@(inmueble.Propietario.Apellido + " " + inmueble.Propietario.Nombre)</a></td>
+                <td><a href=/Propietario_/Detalles/@inmueble.Propietario.id>@(inmueble.Propietario.ApellidoYNombre)</a></td>
                 <td>
                     <a asp-action="Detalles" asp-route-id="@inmueble.id" class="btn btn-info btn-sm">Detalles</a>
-                    <a asp-action="Modificar" asp-route-id="@inmueble.id" class="btn btn-warning btn-sm">Modificar</a>
+                    @if (inmueble.Estado == "1") {
+                        <a href="/Reserva_/Crear" class="btn btn-info btn-sm">Reservar</a>
+                    }
+                    @if (inmueble.ID_Propietario.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Administrador")) {
+                        <a asp-action="Modificar" asp-route-id="@inmueble.id" class="btn btn-warning btn-sm">Modificar</a>
+                    }
                     @if (User.IsInRole("Administrador")) {
                         <a asp-action="Eliminar" asp-route-id="@inmueble.id" class="btn btn-danger btn-sm">Eliminar</a>
                     }

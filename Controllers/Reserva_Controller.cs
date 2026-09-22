@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering; // Para usar SelectList.
 using Microsoft.AspNetCore.Authorization; // Para usar autorisacion.
 
 namespace Inmobiliaria_.Net_Core.Controllers {
+    [Authorize]
     public class Reserva_Controller : Controller {
         private readonly IRepositorio_Reserva repositorio_Reserva;
         private readonly IRepositorio_Inmueble repositorio_Inmueble;
@@ -38,50 +39,43 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         [HttpPost]
         public IActionResult Crear(Reserva reserva) {
-            ModelState.Remove(nameof(reserva.Fecha_Creacion));
-            ModelState.Remove(nameof(reserva.Estado));
             ModelState.Remove(nameof(reserva.ID_Usuario_Creador));
-            ModelState.Remove(nameof(reserva.ID_Usuario_Finalizador));
 
-            if (!ModelState.IsValid) {
-                ViewBag.Inmuebles = new SelectList(repositorio_Inmueble.ObtenerTodos(), "id", "Direccion");
-                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre");
-                
-                return View(reserva);
-            }
-
-            reserva.Fecha_Creacion = DateTime.Now;
-            reserva.Estado = "1";
+            if (!ModelState.IsValid) retornar();
+            if (reserva.Fecha_Inicio < DateTime.Now) retornar();
+            if (reserva.Fecha_Inicio >= reserva.Fecha_Fin_Original) retornar();
+            if (reserva.Fecha_Inicio <= reserva.Fecha_Fin_Efectiva) retornar();
+            if (reserva.Fecha_Fin_Original > reserva.Fecha_Fin_Efectiva) retornar();
 
             var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (idUsuarioClaim == null)
-                return Unauthorized();
-
+            if (idUsuarioClaim == null) return Unauthorized();
             int idUsuarioActual = int.Parse(idUsuarioClaim);
-
             reserva.ID_Usuario_Creador = idUsuarioActual;
-            reserva.ID_Usuario_Finalizador = null;
 
             repositorio_Reserva.Alta(reserva);
+
             logger.LogInformation($"Se registró correctamente la Reserva con el ID: {reserva.id}");
             TempData["Mensaje"] = "Se registró correctamente.";
 
             return RedirectToAction(nameof(Indice));
+
+            IActionResult retornar() {
+                ViewBag.Inmuebles = new SelectList(repositorio_Inmueble.ObtenerTodos(), "id", "Direccion");
+                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre");
+
+                return View(reserva);
+            }
         }
 
         // Eliminar
-        [Authorize(Roles = "Administrador")]
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public IActionResult Eliminar(int id) {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
             if (reserva == null) return NotFound();
             return View(reserva);
         }
 
-        [Authorize(Roles = "Administrador")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador")]
         public IActionResult ConfirmarEliminar(int id) {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
             if (reserva == null) return NotFound();

@@ -19,7 +19,6 @@ namespace Inmobiliaria_.Net_Core.Models {
         [Required(ErrorMessage = "Este campo es obligatorio"), Display(Name = "Fecha fin original")]
         public DateTime Fecha_Fin_Original { get; set; }
 
-        [Required(ErrorMessage = "Este campo es obligatorio"), Display(Name = "Fecha fin efectiva")]
         public DateTime Fecha_Fin_Efectiva { get; set; }
 
         [Required(ErrorMessage = "Este campo es obligatorio")]

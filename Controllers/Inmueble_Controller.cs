@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering; // Para usar SelectList.
 using Microsoft.AspNetCore.Authorization; // Para usar autorizacion.
 
 namespace Inmobiliaria_.Net_Core.Controllers {
+    [Authorize]
     public class Inmueble_Controller : Controller {
         private readonly IWebHostEnvironment environment;
         private readonly IRepositorio_Inmueble repositorio_Inmueble;
@@ -77,16 +78,14 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Eliminar
-        [Authorize(Roles = "Administrador")]
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public IActionResult Eliminar(int id) {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();
             return View(inmueble);
         }
 
-        [Authorize(Roles = "Administrador")]
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador")]
         public IActionResult ConfirmarEliminar(int id) {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();
@@ -169,6 +168,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Obtener todos
+        [AllowAnonymous]
         public IActionResult Indice() { return View(repositorio_Inmueble.ObtenerTodos()); }
 
         // Obtener por ID
