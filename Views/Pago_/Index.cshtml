@@ -31,19 +31,15 @@
                 <td>@pago.Fecha_Pago.ToString("dd/MM/yyyy")</td>
                 <td>$ @pago.Importe.ToString("N2")</td>
                 <td>
-                    @if (pago.Estado == "1")
-                    {
+                    @if (pago.Estado == "1") {
                         <span class="badge bg-success">Activo</span>
-                    }
-                    else
-                    {
+                    } else {
                         <span class="badge bg-danger">Anulado</span>
                     }
                 </td>
                 <td>@pago.ID_Reserva</td>
                 <td>
-                    @if (pago.Estado == "1")
-                    {
+                    @if (pago.Estado == "1") {
                         <a asp-action="Modificar"
                         asp-route-id="@pago.id"
                         class="btn btn-warning">Editar</a>

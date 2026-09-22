@@ -1,17 +1,13 @@
 @model Inmobiliaria_.Net_Core.Models.Usuario
 
-@{
-    ViewData["Title"] = "Dar de baja Usuario";
-}
+@{ ViewData["Title"] = "Dar de baja Usuario"; }
 
 <h1>Dar de baja Usuario</h1>
-
 <h3>¿Está seguro que desea dar de baja este usuario?</h3>
 
 <hr />
 
 <dl class="row">
-
     <dt class="col-sm-3">Nombre</dt>
     <dd class="col-sm-9">@Model.Nombre</dd>
 
@@ -25,27 +21,11 @@
     <dd class="col-sm-9">@Model.Rol</dd>
 
     <dt class="col-sm-3">Estado actual</dt>
-    <dd class="col-sm-9">
-        @(Model.Estado == "1" ? "Activo" : "Inactivo")
-    </dd>
-
+    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activo" : "Inactivo")</dd>
 </dl>
 
-<form asp-action="Eliminar"
-      asp-route-id="@Model.id"
-      method="post">
-
-    <input type="hidden"
-           asp-for="id" />
-
-    <button type="submit"
-            class="btn btn-danger">
-        Dar de baja
-    </button>
-
-    <a asp-action="Indice"
-       class="btn btn-secondary">
-        Cancelar
-    </a>
-
+<form asp-action="Eliminar" asp-route-id="@Model.id" method="post">
+    <input type="hidden" asp-for="id">
+    <button type="submit" class="btn btn-danger">Dar de baja</button>
+    <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
 </form>

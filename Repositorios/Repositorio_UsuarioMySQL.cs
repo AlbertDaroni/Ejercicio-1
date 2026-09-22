@@ -1,24 +1,15 @@
 using MySqlConnector;
 using Inmobiliaria_.Net_Core.Models;
 
-namespace Inmobiliaria_.Net_Core.Repositorios
-{
-    public class Repositorio_UsuarioMySQL : RepositorioBase, IRepositorio_Usuario
-    {
-        public Repositorio_UsuarioMySQL(IConfiguration configuration)
-            : base(configuration)
-        {
-        }
+namespace Inmobiliaria_.Net_Core.Repositorios {
+    public class Repositorio_UsuarioMySQL : RepositorioBase, IRepositorio_Usuario {
+        public Repositorio_UsuarioMySQL(IConfiguration configuration) : base(configuration) {}
 
-        // ==========================================
-        // ALTA - CREAR USUARIO
-        // ==========================================
-        public int Alta(Usuario usuario)
-        {
+        // CREACIÓN, MODIFICACIÓN y ELIMINACIÓN
+        public int Alta(Usuario usuario) {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     INSERT INTO Usuarios
                     (Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado)
@@ -28,8 +19,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                     SELECT LAST_INSERT_ID();
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
                     command.Parameters.AddWithValue("@Apellido", usuario.Apellido);
                     command.Parameters.AddWithValue("@Correo", usuario.Correo);
@@ -39,25 +29,19 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                     command.Parameters.AddWithValue("@Estado", usuario.Estado);
 
                     connection.Open();
-
                     respuesta = Convert.ToInt32(command.ExecuteScalar());
-
                     usuario.id = respuesta;
+                    connection.Close();
                 }
             }
 
             return respuesta;
         }
 
-        // ==========================================
-        // MODIFICACIÓN - EDITAR USUARIO
-        // ==========================================
-        public int Modificacion(Usuario usuario)
-        {
+        public int Modificacion(Usuario usuario) {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     UPDATE Usuarios
                     SET Nombre = @Nombre,
@@ -70,8 +54,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                     WHERE id = @id;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
                     command.Parameters.AddWithValue("@Apellido", usuario.Apellido);
                     command.Parameters.AddWithValue("@Correo", usuario.Correo);
@@ -82,51 +65,41 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                     command.Parameters.AddWithValue("@id", usuario.id);
 
                     connection.Open();
-
                     respuesta = command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
 
             return respuesta;
         }
 
-        // ==========================================
-        // BAJA LÓGICA - INACTIVAR USUARIO
-        // ==========================================
-        public int Baja(int id)
-        {
+        public int Baja(int id) {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-            UPDATE Usuarios
-            SET Estado = '0'
-            WHERE id = @id;
-        ";
+                    UPDATE Usuarios
+                    SET Estado = '0'
+                    WHERE id = @id;
+                ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.Parameters.AddWithValue("@id", id);
 
                     connection.Open();
-
                     respuesta = command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
 
             return respuesta;
         }
 
-        // ==========================================
-        // OBTENER TODOS LOS USUARIOS
-        // ==========================================
-        public IList<Usuario> ObtenerTodos()
-        {
+        // Obtener todos
+        public IList<Usuario> ObtenerTodos() {
             var usuarios = new List<Usuario>();
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT id, Nombre, Apellido, Correo,
                            Contraseña, Avatar, Rol, Estado
@@ -134,16 +107,11 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                     ORDER BY Apellido, Nombre;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var usuario = new Usuario
-                            {
+                    using (var reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            var usuario = new Usuario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -157,41 +125,32 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                             usuarios.Add(usuario);
                         }
                     }
+                    connection.Close();
                 }
             }
 
             return usuarios;
         }
 
-        // ==========================================
-        // OBTENER USUARIO POR ID
-        // ==========================================
-        public Usuario? ObtenerPorID(int id)
-        {
+        // Obtener por ID
+        public Usuario? ObtenerPorID(int id) {
             Usuario? usuario = null;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT id, Nombre, Apellido, Correo,
-                           Contraseña, Avatar, Rol, Estado
+                    SELECT id, Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado
                     FROM Usuarios
                     WHERE id = @id
                     LIMIT 1;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.Parameters.AddWithValue("@id", id);
 
                     connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            usuario = new Usuario
-                            {
+                    using (var reader = command.ExecuteReader()) {
+                        if (reader.Read()) {
+                            usuario = new Usuario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -203,42 +162,32 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                             };
                         }
                     }
+                    connection.Close();
                 }
             }
 
             return usuario;
         }
 
-        // ==========================================
-        // OBTENER USUARIO POR CORREO
-        // Se utiliza también para el Login
-        // ==========================================
-        public Usuario? ObtenerPorCorreo(string correo)
-        {
+        // Obtener por correo
+        public Usuario? ObtenerPorCorreo(string correo) {
             Usuario? usuario = null;
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT id, Nombre, Apellido, Correo,
-                           Contraseña, Avatar, Rol, Estado
+                    SELECT id, Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado
                     FROM Usuarios
                     WHERE Correo = @correo
                     LIMIT 1;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.Parameters.AddWithValue("@correo", correo);
 
                     connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            usuario = new Usuario
-                            {
+                    using (var reader = command.ExecuteReader()) {
+                        if (reader.Read()) {
+                            usuario = new Usuario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -250,6 +199,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios
                             };
                         }
                     }
+                    connection.Close();
                 }
             }
 

@@ -1,15 +1,12 @@
 @model Inmobiliaria_.Net_Core.Models.Usuario
 
-@{
-    ViewData["Title"] = "Detalles del Usuario";
-}
+@{ ViewData["Title"] = "Detalles del Usuario"; }
 
 <h1>Detalles del Usuario</h1>
 
 <hr />
 
 <dl class="row">
-
     <dt class="col-sm-3">Nombre</dt>
     <dd class="col-sm-9">@Model.Nombre</dd>
 
@@ -26,19 +23,8 @@
     <dd class="col-sm-9">@Model.Rol</dd>
 
     <dt class="col-sm-3">Estado</dt>
-    <dd class="col-sm-9">
-        @(Model.Estado == "1" ? "Activo" : "Inactivo")
-    </dd>
-
+    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activo" : "Inactivo")</dd>
 </dl>
 
-<a asp-action="Modificar"
-   asp-route-id="@Model.id"
-   class="btn btn-warning">
-    Editar
-</a>
-
-<a asp-action="Indice"
-   class="btn btn-secondary">
-    Volver
-</a>
+<a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
+<a asp-action="Indice" class="btn btn-secondary">Volver</a>
