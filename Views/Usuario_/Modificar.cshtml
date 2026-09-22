@@ -1,0 +1,137 @@
+@model Inmobiliaria_.Net_Core.Models.Usuario
+
+@{
+    ViewData["Title"] = "Modificar Usuario";
+}
+
+<h1>Modificar Usuario</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Modificar"
+              asp-route-id="@Model.id"
+              method="post">
+
+            <input type="hidden" asp-for="id" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger">
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Nombre"
+                       class="form-label"></label>
+
+                <input asp-for="Nombre"
+                       class="form-control" />
+
+                <span asp-validation-for="Nombre"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Apellido"
+                       class="form-label"></label>
+
+                <input asp-for="Apellido"
+                       class="form-control" />
+
+                <span asp-validation-for="Apellido"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Correo"
+                       class="form-label"></label>
+
+                <input asp-for="Correo"
+                       type="email"
+                       class="form-control" />
+
+                <span asp-validation-for="Correo"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Contraseña"
+                       class="form-label"></label>
+
+                <input asp-for="Contraseña"
+                       type="password"
+                       class="form-control" />
+
+                <span asp-validation-for="Contraseña"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Avatar"
+                       class="form-label"></label>
+
+                <input asp-for="Avatar"
+                       class="form-control" />
+
+                <span asp-validation-for="Avatar"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Rol"
+                       class="form-label"></label>
+
+                <select asp-for="Rol"
+                        class="form-select">
+
+                    <option value="Administrador">
+                        Administrador
+                    </option>
+
+                    <option value="Empleado">
+                        Empleado
+                    </option>
+
+                </select>
+
+                <span asp-validation-for="Rol"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Estado"
+                       class="form-label"></label>
+
+                <select asp-for="Estado"
+                        class="form-select">
+
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+
+                </select>
+
+                <span asp-validation-for="Estado"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Guardar cambios
+            </button>
+
+            <a asp-action="Indice"
+               class="btn btn-secondary">
+                Cancelar
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
