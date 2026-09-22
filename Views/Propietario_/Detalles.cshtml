@@ -24,6 +24,8 @@
 </dl>
 
 <div>
-    <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
+    @if (User.Identity != null && User.Identity.IsAuthenticated) {
+        <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
+    }
     <a asp-action="Indice" class="btn btn-secondary">Volver</a>
 </div>

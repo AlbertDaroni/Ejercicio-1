@@ -21,6 +21,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Detalles
+        [AllowAnonymous]
         public IActionResult Detalles(int id) {
             var propietario = repositorio.ObtenerPorID(id);
             if (propietario == null) return NotFound();

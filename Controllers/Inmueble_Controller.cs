@@ -172,6 +172,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         public IActionResult Indice() { return View(repositorio_Inmueble.ObtenerTodos()); }
 
         // Obtener por ID
+        [AllowAnonymous]
         public IActionResult Detalles(int id) {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();
