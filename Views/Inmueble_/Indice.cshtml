@@ -35,7 +35,13 @@
                 <td>@inmueble.Longitud</td>
                 <td>$@inmueble.Precio_Dia</td>
                 <td>%@inmueble.Porcentaje_Seña</td>
-                <td>@(inmueble.Estado == "1" ? "Activo" : "Inactivo")</td>
+                <td>
+                    if (inmueble.Estado == "1") {
+                        <span class="badge bg-success">Activo</span>
+                    } else {
+                        <span class="badge bg-danger">Inactivo</span>
+                    }
+                </td>
                 <td>@inmueble.Tipo_Inmueble.Nombre</td>
                 <td><a href=/Propietario_/Detalles/@inmueble.Propietario.id>@(inmueble.Propietario.ApellidoYNombre)</a></td>
                 <td>

@@ -1,0 +1,42 @@
+@model Inmobiliaria_.Net_Core.Models.SignUpViewModel
+
+@{ ViewData["Title"] = "Registrarse"; }
+
+<h1>Registrarse</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-5">
+        <form asp-action="SignUp" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label">Nombre</label>
+                <input asp-for="Nombre" class="form-control">
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Apellido" class="form-label">Apellido</label>
+                <input asp-for="Apellido" class="form-control">
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Correo" class="form-label">Correo</label>
+                <input asp-for="Correo" class="form-control">
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Contraseña" class="form-label">Contraseña</label>
+                <input asp-for="Contraseña" class="form-control">
+                <span asp-validation-for="Contraseña" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrarse</button>
+        </form>
+    </div>
+    <p>¿Ya tenés cuenta?&nbsp;<a href="/Cuenta_/Login">Iniciá sesión</a></p>
+</div>

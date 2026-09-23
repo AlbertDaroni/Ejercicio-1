@@ -1,3 +1,4 @@
+@using System.Security.Claims
 @model IEnumerable<Inmobiliaria_.Net_Core.Models.Propietario>
 
 @{ ViewData["Title"] = "Propietarios"; }
@@ -33,11 +34,13 @@
                 <td>@propietario.Telefono</td>
                 <td>@propietario.Correo</td>
                 <td>
-                    <a asp-action="Modificar" asp-route-id="@propietario.id">Editar</a>
-                    |
+                    @if (propietario.Correo == User.FindFirst(ClaimTypes.Email)?.Value || User.IsInRole("Administrador")) {
+                        <a asp-action="Modificar" asp-route-id="@propietario.id">Editar</a>
+                        <text> | </text>
+                    }
                     <a asp-action="Detalles" asp-route-id="@propietario.id">Detalles</a>
-                    |
                     @if (User.IsInRole("Administrador")) {
+                        <text> | </text>
                         <a asp-action="Eliminar" asp-route-id="@propietario.id">Eliminar</a>
                     }
                 </td>

@@ -8,14 +8,13 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
     public class Repositorio_PagoMySQL : RepositorioBase, IRepositorio_Pago {
         public Repositorio_PagoMySQL(IConfiguration configuration) : base(configuration) {}
 
-        
+        // CREACIÓN, MODIFICACIÓN y ELIMINACIÓN
         public int Alta(Pago pago) {
             int respuesta = -1;
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    INSERT INTO Pagos
-                    (
+                    INSERT INTO Pagos (
                         concepto,
                         fecha_pago,
                         fecha_anulacion,
@@ -25,8 +24,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                         id_usuario_creador,
                         id_usuario_finalizador
                     )
-                    VALUES
-                    (
+                    VALUES (
                         @concepto,
                         @fecha_pago,
                         @fecha_anulacion,
@@ -81,12 +79,12 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
                     command.Parameters.AddWithValue("@concepto", pago.Concepto);
                     command.Parameters.AddWithValue("@fecha_pago", pago.Fecha_Pago);
-                    //command.Parameters.AddWithValue("@fecha_anulacion", pago.Fecha_Anulacion.HasValue ? pago.Fecha_Anulacion.Value : DBNull.Value);
+                    // command.Parameters.AddWithValue("@fecha_anulacion", pago.Fecha_Anulacion.HasValue ? pago.Fecha_Anulacion.Value : DBNull.Value);
                     command.Parameters.AddWithValue("@importe", pago.Importe);
-                    //command.Parameters.AddWithValue("@estado", pago.Estado);
+                    // command.Parameters.AddWithValue("@estado", pago.Estado);
                     command.Parameters.AddWithValue("@id_reserva", pago.ID_Reserva);
-                   // command.Parameters.AddWithValue("@id_usuario_creador", pago.ID_Usuario_Creador.HasValue ? pago.ID_Usuario_Creador.Value : DBNull.Value);
-                    //command.Parameters.AddWithValue("@id_usuario_finalizador", pago.ID_Usuario_Finalizador.HasValue ? pago.ID_Usuario_Finalizador.Value : DBNull.Value);
+                    // command.Parameters.AddWithValue("@id_usuario_creador", pago.ID_Usuario_Creador.HasValue ? pago.ID_Usuario_Creador.Value : DBNull.Value);
+                    // command.Parameters.AddWithValue("@id_usuario_finalizador", pago.ID_Usuario_Finalizador.HasValue ? pago.ID_Usuario_Finalizador.Value : DBNull.Value);
                     command.Parameters.AddWithValue("@id", pago.id);
 
                     connection.Open();
@@ -117,8 +115,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                         command.Parameters.AddWithValue("@idUsuario", idUsuario);
 
                         connection.Open();
-
                         respuesta = command.ExecuteNonQuery();
+                        connection.Close();
                     }
                 }
 

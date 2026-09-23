@@ -23,7 +23,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Listar
         [HttpGet]
-        public IActionResult Index() {
+        public IActionResult Indice() {
             var pagos = repositorio_Pago.ObtenerTodos();
             return View(pagos);
         }
@@ -36,12 +36,11 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Crear
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Crear(Pago pago) {
             pago.Estado = "1";
             pago.Fecha_Anulacion = null;
-            pago.ID_Usuario_Creador =int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            pago.ID_Usuario_Creador = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             pago.ID_Usuario_Finalizador = null;
 
             ModelState.Remove(nameof(pago.Estado));
@@ -58,7 +57,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation($"Se registró correctamente el Pago con ID: {pago.id}");
             TempData["Mensaje"] = "El pago se registró correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
         // Modificar
@@ -69,15 +68,14 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (pago == null) return NotFound();
             if (pago.Estado == "0") {
                 TempData["Mensaje"] = "No se puede modificar un pago anulado.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Indice));
             }
 
             return View(pago);
         }
 
         // Modificar
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Modificar(Pago pago) {
             ModelState.Remove(nameof(pago.ID_Usuario_Creador));
             ModelState.Remove(nameof(pago.ID_Usuario_Finalizador));
@@ -91,7 +89,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (pagoExistente == null) return NotFound();
             if (pagoExistente.Estado == "0") {
                 TempData["Mensaje"] = "No se puede modificar un pago anulado.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Indice));
             }
 
             pago.ID_Usuario_Creador = pagoExistente.ID_Usuario_Creador;
@@ -104,7 +102,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation($"Se modificó correctamente el Pago con ID: {pago.id}");
             TempData["Mensaje"] = "El pago se modificó correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
 
         // Ver detalles
@@ -116,8 +114,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Eliminar
-        [Authorize(Roles = "Administrador")]
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public IActionResult Eliminar(int id) {
             var pago = repositorio_Pago.ObtenerPorID(id);
             if (pago == null) return NotFound();
@@ -125,19 +122,17 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Eliminar
-        [Authorize(Roles = "Administrador")]
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador")]
         public IActionResult ConfirmarEliminar(int id) {
             var pago = repositorio_Pago.ObtenerPorID(id);
 
             if (pago == null) return NotFound();
             if (pago.Estado == "0") {
                 TempData["Mensaje"] = "El pago ya se encuentra anulado.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Indice));
             }
 
             var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             if (idUsuarioClaim == null) return Unauthorized();
 
             int idUsuario = int.Parse(idUsuarioClaim);
@@ -147,7 +142,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation($"Se anuló correctamente el Pago con el ID: {id}");
             TempData["Mensaje"] = "El pago se anuló correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Indice));
         }
     }
 }

@@ -25,7 +25,6 @@ namespace Inmobiliaria_.Net_Core.Models {
         [Required(ErrorMessage = "Este campo es obligatorio")]
         public string Contraseña { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Este campo es obligatorio")]
         public string Avatar { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es obligatorio")]

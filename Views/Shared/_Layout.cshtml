@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -28,7 +30,7 @@
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Propietario_" asp-action="Indice">Propietarios</a></li>
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Inquilino_" asp-action="Indice">Inquilinos</a></li>
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Reserva_" asp-action="Indice">Reservas</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Pago_" asp-action="Index">Pagos</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Pago_" asp-action="Indice">Pagos</a></li>
                         }
 
                         <li class="nav-item"><a class="nav-link text-dark" asp-controller="Inmueble_" asp-action="Indice">Inmuebles</a></li>
@@ -38,7 +40,12 @@
                         }                      
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated) {
-                            <li class="nav-item"><span class="nav-link text-success">Hola, @User.Identity.Name</span></li>
+                            <li class="nav-item">
+                                <div style="flex-direction: row;">
+                                    <img src="@User.FindFirst(ClaimTypes.Uri)?.Value" width="50">
+                                    <span class="nav-link text-success">Hola, @User.Identity.Name</span>
+                                </div>
+                            </li>
 
                             <li class="nav-item">
                                 <form asp-controller="Cuenta_" asp-action="Logout" method="post" class="d-inline">
@@ -47,6 +54,7 @@
                             </li>
                         } else {
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Cuenta_" asp-action="Login">Iniciar sesión</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Cuenta_" asp-action="SignUp">Registrarse</a></li>
                         }
                     </ul>                    
                 </div>

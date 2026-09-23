@@ -34,8 +34,13 @@
                 <td>@reserva.Fecha_Fin_Efectiva</td>
                 <td>$@reserva.Monto_Dia</td>
                 <td>$@reserva.Multa</td>
-                <td>@(reserva.Estado == "1" ? "Activa" : "Inactiva")</td>
-
+                <td>
+                    @if (reserva.Estado == "1") {
+                        <span class="badge bg-success">Activa</span>
+                    } else {
+                        <span class="badge bg-danger">Inactiva</span>
+                    }
+                </td>
                 <td>
                     <a asp-action="Modificar" asp-route-id="@reserva.id">Editar</a>
                     |

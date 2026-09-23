@@ -28,7 +28,13 @@
                 <td>@usuario.Apellido</td>
                 <td>@usuario.Correo</td>
                 <td>@usuario.Rol</td>
-                <td>@(usuario.Estado == "1" ? "Activo" : "Inactivo")</td>
+                <td>
+                    @if (usuario.Estado == "1") {
+                        <span class="badge bg-success">Activo</span>
+                    } else {
+                        <span class="badge bg-danger">Inactivo</span>
+                    }
+                </td>
                 <td>
                     <a asp-action="Detalles" asp-route-id="@usuario.id" class="btn btn-info btn-sm">Detalles</a>
                     <a asp-action="Modificar" asp-route-id="@usuario.id" class="btn btn-warning btn-sm">Editar</a>

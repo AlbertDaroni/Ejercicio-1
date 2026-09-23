@@ -40,18 +40,10 @@
                 <td>@pago.ID_Reserva</td>
                 <td>
                     @if (pago.Estado == "1") {
-                        <a asp-action="Modificar"
-                        asp-route-id="@pago.id"
-                        class="btn btn-warning">Editar</a>
-
-                        <a asp-action="Eliminar"
-                        asp-route-id="@pago.id"
-                        class="btn btn-danger">Anular</a>
+                        <a asp-action="Modificar" asp-route-id="@pago.id" class="btn btn-warning">Editar</a>
+                        <a asp-action="Eliminar" sp-route-id="@pago.id" class="btn btn-danger">Anular</a>
                     }
-
-                    <a asp-action="Detalles"
-                    asp-route-id="@pago.id"
-                    class="btn btn-info">Detalles</a>
+                    <a asp-action="Detalles" asp-route-id="@pago.id" class="btn btn-info">Detalles</a>
                 </td>
             </tr>
         }
