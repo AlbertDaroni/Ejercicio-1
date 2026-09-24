@@ -34,7 +34,7 @@
                 <td>@inquilino.Correo</td>
                 <td>
                     <a asp-action="Modificar" asp-route-id="@inquilino.id" class="btn btn-warning">Editar</a>
-                    <a asp-action="Detalles" asp-route-id="@inquilino.id" class="btn btn-warning">Detalles</a>
+                    <a asp-action="Detalles" asp-route-id="@inquilino.id" class="btn btn-info btn-sm">Detalles</a>
                     @if (User.IsInRole("Administrador")) {                    
                         <a asp-action="Eliminar" asp-route-id="@inquilino.id" class="btn btn-danger">Eliminar</a>                        
                     }

@@ -29,10 +29,10 @@ namespace Inmobiliaria_.Net_Core.Models {
 
         public string Estado { get; set; } = "1";
 
-        [Required]
+        [Required(ErrorMessage = "Este campo es obligatorio")]
         public int ID_Inquilino { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Este campo es obligatorio")]
         public int ID_Inmueble { get; set; }
 
         [Required]

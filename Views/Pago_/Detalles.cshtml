@@ -17,10 +17,16 @@
     <dd class="col-sm-9">@Model.Importe.ToString("C")</dd>
 
     <dt class="col-sm-3">Estado</dt>
-    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activo" : "Anulado")</dd>
+    <dd class="col-sm-9">
+        @if (Model.Estado == "1") {
+            <span class="badge bg-success">Activo</span>
+        } else {
+            <span class="badge bg-danger">Anulado</span>
+        }
+    </dd>
 
     <dt class="col-sm-3">Reserva</dt>
-    <dd class="col-sm-9"> @Model.ID_Reserva</dd>
+    <dd class="col-sm-9">@Model.ID_Reserva</dd>
 
     @if (User.IsInRole("Administrador")) {
         <dt class="col-sm-3">Usuario creador</dt>

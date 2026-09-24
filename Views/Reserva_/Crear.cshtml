@@ -7,19 +7,19 @@
 <form asp-action="Crear" method="post">
     <div class="mb-3">
         <label asp-for="Fecha_Inicio" class="form-label">Fecha de inicio</label>
-        <input asp-for="Fecha_Inicio" class="form-control" type="date">
+        <input asp-for="Fecha_Inicio" class="form-control" type="datetime-local">
         <span asp-validation-for="Fecha_Inicio" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Fecha_Fin_Original" class="form-label">Fecha fin original</label>
-        <input asp-for="Fecha_Fin_Original" class="form-control" type="date">
+        <input asp-for="Fecha_Fin_Original" class="form-control" type="datetime-local">
         <span asp-validation-for="Fecha_Fin_Original" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Fecha_Fin_Efectiva" class="form-label">Fecha fin efectiva</label>
-        <input asp-for="Fecha_Fin_Efectiva" class="form-control" type="date">
+        <input asp-for="Fecha_Fin_Efectiva" class="form-control" type="datetime-local">
         <span asp-validation-for="Fecha_Fin_Efectiva" class="text-danger"></span>
     </div>
 
@@ -61,7 +61,7 @@
     </div>
 
     <button type="submit" class="btn btn-success">Guardar</button>
-    <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
+    <button type="button" onclick="history.back()" class="btn btn-secondary">Volver</button>
 </form>
 
 @section Scripts { <partial name="_ValidationScriptsPartial"/> }

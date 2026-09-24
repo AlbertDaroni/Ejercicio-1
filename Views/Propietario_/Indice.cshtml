@@ -35,13 +35,13 @@
                 <td>@propietario.Correo</td>
                 <td>
                     @if (propietario.Correo == User.FindFirst(ClaimTypes.Email)?.Value || User.IsInRole("Administrador")) {
-                        <a asp-action="Modificar" asp-route-id="@propietario.id">Editar</a>
+                        <a asp-action="Modificar" asp-route-id="@propietario.id" class="btn btn-warning">Editar</a>
                         <text> | </text>
                     }
-                    <a asp-action="Detalles" asp-route-id="@propietario.id">Detalles</a>
+                    <a asp-action="Detalles" asp-route-id="@propietario.id" class="btn btn-info btn-sm">Detalles</a>
                     @if (User.IsInRole("Administrador")) {
                         <text> | </text>
-                        <a asp-action="Eliminar" asp-route-id="@propietario.id">Eliminar</a>
+                        <a asp-action="Eliminar" asp-route-id="@propietario.id" class="btn btn-danger">Eliminar</a>
                     }
                 </td>
             </tr>

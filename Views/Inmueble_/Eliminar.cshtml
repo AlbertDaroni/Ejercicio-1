@@ -27,13 +27,19 @@
     <dd class="col-sm-9">@Model.Porcentaje_Seña</dd>
 
     <dt class="col-sm-3">Estado</dt>
-    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activo" : "Inactivo")</dd>
+    <dd class="col-sm-9">
+        @if (Model.Estado == "1") {
+            <span class="badge bg-success">Activo</span>
+        } else {
+            <span class="badge bg-danger">Inactivo</span>
+        }
+    </dd>
 
     <dt class="col-sm-3">Tipo de inmueble</dt>
     <dd class="col-sm-9"><b>@Model.Tipo_Inmueble.Nombre</b><p>@Model.Tipo_Inmueble.Descripcion</p></dd>
 
     <dt class="col-sm-3">Propietario</dt>
-    <dd class="col-sm-9">@(Model.Propietario.Apellido + " " + Model.Propietario.Nombre)
+    <dd class="col-sm-9">@(Model.Propietario.ApellidoYNombre)
         <a href="/Propietario_/Detalles/@Model.Propietario.id">Detalles</a>
     </dd>
 </dl>

@@ -20,50 +20,47 @@
     <dd class="col-sm-9">@Model.Fecha_Fin_Original</dd>
 
     <dt class="col-sm-3">Monto</dt>
-    <dd class="col-sm-9">$@Model.Monto_Dia</dd>
+    <dd class="col-sm-9">$ @Model.Monto_Dia</dd>
 
     <dt class="col-sm-3">Multa</dt>
-    <dd class="col-sm-9">$@Model.Multa</dd>
+    <dd class="col-sm-9">$ @Model.Multa</dd>
 
     <dt class="col-sm-3">Estado</dt>
-    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activa" : "Inactiva")</dd>
+    <dd class="col-sm-9">
+        @if (Model.Estado == "1") {
+            <span class="badge bg-success">Activa</span>
+        } else {
+            <span class="badge bg-danger">Inactiva</span>
+        }
+    </dd>
 
     <dt class="col-sm-3">Inquilino</dt>
-    <dd class="col-sm-9">@(Model.Inquilino.Apellido + " " + Model.Inquilino.Nombre)
+    <dd class="col-sm-9">@(Model.Inquilino.ApellidoYNombre)
         <a href="/Inquilino_/Detalles/@Model.Inquilino.id">Detalles</a>
     </dd>
 
     <dt class="col-sm-3">Inmueble</dt>
     <dd class="col-sm-9"><a href="/Inmueble_/Detalles/@Model.Inmueble.id">Detalles</a></dd>
 
-    @if (User.IsInRole("Administrador"))
-{
-    <dt class="col-sm-3">Usuario creador</dt>
-    <dd class="col-sm-9">
-        <p class="col-sm-9">@Model.Usuario_Creador.Avatar</p>
-        <p class="col-sm-9">
-            @(Model.Usuario_Creador.Apellido + " " + Model.Usuario_Creador.Nombre)
-        </p>
-        <p class="col-sm-9">@Model.Usuario_Creador.Correo</p>
-    </dd>
+    @if (User.IsInRole("Administrador")) {
+        <dt class="col-sm-3">Usuario creador</dt>
+        <dd class="col-sm-9">
+            <p class="col-sm-9">@Model.Usuario_Creador.Avatar</p>
+            <p class="col-sm-9">@(Model.Usuario_Creador.ApellidoYNombre)</p>
+            <p class="col-sm-9">@Model.Usuario_Creador.Correo</p>
+        </dd>
 
-    <dt class="col-sm-3">Usuario finalizador</dt>
-    <dd class="col-sm-9">
-        @if (Model.Usuario_Finalizador != null)
-        {
-            <p>@Model.Usuario_Finalizador.Avatar</p>
-            <p>
-                @Model.Usuario_Finalizador.Apellido
-                @Model.Usuario_Finalizador.Nombre
-            </p>
-            <p>@Model.Usuario_Finalizador.Correo</p>
-        }
-        else
-        {
-            <p>No finalizada</p>
-        }
-    </dd>
-}
+        <dt class="col-sm-3">Usuario finalizador</dt>
+        <dd class="col-sm-9">
+            @if (Model.Usuario_Finalizador != null) {
+                <p>@Model.Usuario_Finalizador.Avatar</p>
+                <p>@Model.Usuario_Finalizador.ApellidoYNombre</p>
+                <p>@Model.Usuario_Finalizador.Correo</p>
+            } else {
+                <p>No finalizada</p>
+            }
+        </dd>
+    }
 </dl>
 
 <div>

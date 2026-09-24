@@ -1,3 +1,4 @@
+@using System.Security.Claims
 @model Inmobiliaria_.Net_Core.Models.Propietario
 
 @{ ViewData["Title"] = "Detalles del propietario"; }
@@ -24,8 +25,8 @@
 </dl>
 
 <div>
-    @if (User.Identity != null && User.Identity.IsAuthenticated) {
+    @if (Model.id.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Administrador")) {
         <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
     }
-    <a asp-action="Indice" class="btn btn-secondary">Volver</a>
+    <button type="button" onclick="history.back()" class="btn btn-secondary">Volver</button>
 </div>

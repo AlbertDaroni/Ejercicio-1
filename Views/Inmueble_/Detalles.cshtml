@@ -13,7 +13,7 @@
             <dd class="col-sm-9">@Model.Direccion</dd>
 
             <dt class="col-sm-3">Cupo</dt>
-            <dd class="col-sm-9">@Model.Cupo</dd>
+            <dd class="col-sm-9">@Model.Cupo personas</dd>
 
             <dt class="col-sm-3">Latitud</dt>
             <dd class="col-sm-9">@Model.Latitud</dd>
@@ -22,25 +22,31 @@
             <dd class="col-sm-9">@Model.Longitud</dd>
 
             <dt class="col-sm-3">Precio del día</dt>
-            <dd class="col-sm-9">@Model.Precio_Dia</dd>
+            <dd class="col-sm-9">$ @Model.Precio_Dia</dd>
 
             <dt class="col-sm-3">Porcentaje de la seña</dt>
-            <dd class="col-sm-9">@Model.Porcentaje_Seña</dd>
+            <dd class="col-sm-9">% @Model.Porcentaje_Seña</dd>
 
             <dt class="col-sm-3">Estado</dt>
-            <dd class="col-sm-9">@(Model.Estado == "1" ? "Activo" : "Inactivo")</dd>
+            <dd class="col-sm-9">
+                @if (Model.Estado == "1") {
+                    <span class="badge bg-success">Activo</span>
+                } else {
+                    <span class="badge bg-danger">Inactivo</span>
+                }
+            </dd>
 
             <dt class="col-sm-3">Tipo de inmueble</dt>
             <dd class="col-sm-9"><b>@Model.Tipo_Inmueble.Nombre</b><p>@Model.Tipo_Inmueble.Descripcion</p></dd>
 
             <dt class="col-sm-3">Propietario</dt>
-            <dd class="col-sm-9">@(Model.Propietario.Apellido + " " + Model.Propietario.Nombre)
+            <dd class="col-sm-9">@(Model.Propietario.ApellidoYNombre)
                 <a href="/Propietario_/Detalles/@Model.Propietario.id">Detalles</a>
             </dd>
         </dl>
     </div>
     <div>
         <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
-        <a asp-action="Indice" class="btn btn-secondary">Volver</a>
+        <button type="button" onclick="history.back()" class="btn btn-secondary">Volver</button>
     </div>
 </div>

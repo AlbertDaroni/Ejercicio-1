@@ -30,9 +30,23 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Crear
         [HttpGet]
-        public IActionResult Crear() {
-            ViewBag.Inmuebles = new SelectList(repositorio_Inmueble.ObtenerTodos(), "id", "Direccion");
-            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre");
+        public IActionResult Crear(int? ID_Inmueble) {
+            var inmuebles = repositorio_Inmueble.ObtenerTodos();
+            var inquilinos = repositorio_Inquilino.ObtenerTodos();
+
+            ViewBag.Inmuebles = new SelectList(inmuebles, "id", "Direccion", ID_Inmueble);
+            ViewBag.Inquilinos = new SelectList(inquilinos, "id", "ApellidoYNombre");
+
+            if (ID_Inmueble.HasValue) {
+                var inmuebleSeleccionado = inmuebles.FirstOrDefault(i => i.id == ID_Inmueble.Value);
+                if (inmuebleSeleccionado != null) {
+                    var reservaBase = new Reserva {
+                        ID_Inmueble = ID_Inmueble.Value,
+                        Monto_Dia = inmuebleSeleccionado.Precio_Dia
+                    };
+                    return View(reservaBase);
+                }
+            }
 
             return View();
         }
@@ -124,8 +138,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             var reservaExistente = repositorio_Reserva.ObtenerPorID(id);
 
-            if (reservaExistente == null)
-                return NotFound();
+            if (reservaExistente == null) return NotFound();
 
             reserva.Fecha_Creacion = reservaExistente.Fecha_Creacion;
             reserva.Estado = reservaExistente.Estado;

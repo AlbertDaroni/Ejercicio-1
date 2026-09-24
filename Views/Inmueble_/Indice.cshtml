@@ -33,10 +33,10 @@
                 <td>@inmueble.Cupo</td>
                 <td>@inmueble.Latitud</td>
                 <td>@inmueble.Longitud</td>
-                <td>$@inmueble.Precio_Dia</td>
-                <td>%@inmueble.Porcentaje_Seña</td>
+                <td>$ @inmueble.Precio_Dia</td>
+                <td>% @inmueble.Porcentaje_Seña</td>
                 <td>
-                    if (inmueble.Estado == "1") {
+                    @if (inmueble.Estado == "1") {
                         <span class="badge bg-success">Activo</span>
                     } else {
                         <span class="badge bg-danger">Inactivo</span>
@@ -47,7 +47,7 @@
                 <td>
                     <a asp-action="Detalles" asp-route-id="@inmueble.id" class="btn btn-info btn-sm">Detalles</a>
                     @if (inmueble.Estado == "1") {
-                        <a href="/Reserva_/Crear" class="btn btn-info btn-sm">Reservar</a>
+                        <a href="/Reserva_/Crear?ID_Inmueble=@inmueble.id" class="btn btn-primary">Reservar</a>
                     }
                     @if (inmueble.ID_Propietario.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Administrador")) {
                         <a asp-action="Modificar" asp-route-id="@inmueble.id" class="btn btn-warning btn-sm">Modificar</a>
