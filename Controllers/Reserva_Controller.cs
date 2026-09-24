@@ -111,6 +111,9 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (id != reserva.id) return BadRequest();
 
             ModelState.Remove(nameof(reserva.Fecha_Creacion));
+            ModelState.Remove(nameof(reserva.Estado));
+            ModelState.Remove(nameof(reserva.ID_Usuario_Creador));
+            ModelState.Remove(nameof(reserva.ID_Usuario_Finalizador));
             if (!ModelState.IsValid) {
                 ViewBag.Inmuebles = new SelectList(repositorio_Inmueble.ObtenerTodos(), "id", "Direccion", reserva.ID_Inmueble);
                 ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre", reserva.ID_Inquilino);
@@ -119,6 +122,16 @@ namespace Inmobiliaria_.Net_Core.Controllers {
                 return View(reserva);
             }
 
+            var reservaExistente = repositorio_Reserva.ObtenerPorID(id);
+
+            if (reservaExistente == null)
+                return NotFound();
+
+            reserva.Fecha_Creacion = reservaExistente.Fecha_Creacion;
+            reserva.Estado = reservaExistente.Estado;
+            reserva.ID_Usuario_Creador = reservaExistente.ID_Usuario_Creador;
+            reserva.ID_Usuario_Finalizador = reservaExistente.ID_Usuario_Finalizador;
+            
             repositorio_Reserva.Modificacion(reserva);
 
             logger.LogInformation($"Se modificó correctamente la Reserva con el ID: {id}");
