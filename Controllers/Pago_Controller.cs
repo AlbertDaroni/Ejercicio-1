@@ -81,6 +81,9 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             ModelState.Remove(nameof(pago.ID_Usuario_Finalizador));
             ModelState.Remove(nameof(pago.Fecha_Anulacion));
             ModelState.Remove(nameof(pago.Estado));
+            ModelState.Remove(nameof(pago.Fecha_Pago));
+            ModelState.Remove(nameof(pago.Importe));
+            ModelState.Remove(nameof(pago.ID_Reserva));
 
             if (!ModelState.IsValid) return View(pago);
 
@@ -96,6 +99,9 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             pago.ID_Usuario_Finalizador = pagoExistente.ID_Usuario_Finalizador;
             pago.Fecha_Anulacion = pagoExistente.Fecha_Anulacion;
             pago.Estado = pagoExistente.Estado;
+            pago.Fecha_Pago = pagoExistente.Fecha_Pago;
+            pago.Importe = pagoExistente.Importe;
+            pago.ID_Reserva = pagoExistente.ID_Reserva;
 
             repositorio_Pago.Modificacion(pago);
 
