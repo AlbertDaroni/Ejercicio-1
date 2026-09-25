@@ -11,6 +11,14 @@
     </div>
 }
 
+@if (User.IsInRole("Administrador")) {
+    @if (ViewBag.Todos == true) {
+        <a asp-action="Indice" asp-route-todos="false" class="btn btn-primary">Ver mis pagos</a>
+    } else {
+        <a asp-action="Indice" asp-route-todos="true" class="btn btn-primary">Ver todos los pagos</a>
+    }
+}
+
 <p><a asp-action="Crear" class="btn btn-primary">Nuevo Pago</a></p>
 
 <table class="table">

@@ -7,6 +7,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
        int Baja(int id, int idUsuario);
         
         IList<Pago> ObtenerTodos();
+        IList<Pago> MisPagos(int id);
         Pago? ObtenerPorID(int id);
         IList<Pago> ObtenerPorReserva(int idReserva);
     }

@@ -63,7 +63,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
                 Apellido = signup.Apellido,
                 Contraseña = signup.Contraseña,
                 Correo = signup.Correo,
-                Avatar = "./wwwroot/uploads/profile_picture/image.png",
+                Avatar = "../wwwroot/uploads/profile_picture/image.png",
                 Rol = "Usuario"
             };
             int nuevoID = repositorio_Usuario.Alta(aux);

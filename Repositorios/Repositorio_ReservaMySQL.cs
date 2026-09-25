@@ -159,6 +159,47 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return reservas;
         }
 
+        public IList<Reserva> MisReservas(int id) {
+            var reservas = new List<Reserva>();
+
+            using (var connection = new MySqlConnection(connectionString)) {
+                string sql = @"
+                    SELECT r.*
+                    FROM Reservas r
+                    WHERE id_inquilino = @id
+                ";
+
+                using (var command = new MySqlCommand(sql, connection)) {
+                    command.Parameters.AddWithValue("@id", id);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            Reserva reserva = new Reserva {
+                                id = reader.GetInt32("id"),
+                                Fecha_Creacion = reader.GetDateTime("Fecha_Creacion"),
+                                Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
+                                Fecha_Fin_Original = reader.GetDateTime("Fecha_Fin_Original"),
+                                Fecha_Fin_Efectiva = reader.GetDateTime("Fecha_Fin_Efectiva"),
+                                Monto_Dia = reader.GetDecimal("Monto_Dia"),
+                                Multa = reader.GetDecimal("Multa"),
+                                ID_Inquilino = reader.GetInt32("ID_Inquilino"),
+                                ID_Inmueble = reader.GetInt32("ID_Inmueble"),
+                                ID_Usuario_Creador = reader.GetInt32("ID_Usuario_Creador"),
+                                ID_Usuario_Finalizador = reader.IsDBNull(reader.GetOrdinal("id_usuario_finalizador"))? null
+                                    : reader.GetInt32("id_usuario_finalizador"),
+                            };
+
+                            reservas.Add(reserva);
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+
+            return reservas;
+        }
+
         public Reserva? ObtenerPorID(int id) {
             Reserva? reserva = null;
 

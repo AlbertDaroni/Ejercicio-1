@@ -11,7 +11,13 @@
     </div>
 }
 
-<p><a asp-action="Crear" class="btn btn-primary">Nueva Reserva</a></p>
+@if (User.IsInRole("Administrador")) {
+    @if (ViewBag.Todas == true) {
+        <a asp-action="Indice" asp-route-todos="false" class="btn btn-primary">Ver mis reservas</a>
+    } else {
+        <a asp-action="Indice" asp-route-todos="true" class="btn btn-primary">Ver todas las reservas</a>
+    }
+}
 
 <table class="table">
     <thead>

@@ -12,7 +12,7 @@
     </div>
 }
 
-<p><a asp-action="Crear" class="btn btn-primary">Nuevo propietario</a></p>
+<p><a asp-action="Crear" asp-route-ID_Usuario="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" class="btn btn-primary">Nuevo propietario</a></p>
 
 <table class="table">
     <thead>

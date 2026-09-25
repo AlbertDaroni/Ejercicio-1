@@ -4,7 +4,7 @@ using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
-    [Authorize(Roles = "Administrador")]
+    [Authorize]
     public class Usuario_Controller : Controller {
         private readonly IRepositorio_Usuario repositorio;
         private readonly ILogger<Usuario_Controller> logger;
@@ -18,8 +18,8 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Listar
-        [HttpGet]
-        public IActionResult Indice() {
+        [HttpGet, Authorize(Roles = "Administrador")]
+        public IActionResult Indice(bool todos = false) {
             var usuarios = repositorio.ObtenerTodos();
             return View(usuarios);
         }
@@ -83,7 +83,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation("Se modificó correctamente el usuario con ID {Id}", usuario.id);
             TempData["Mensaje"] = "El usuario fue modificado correctamente.";
 
-            return RedirectToAction(nameof(Indice));
+            return RedirectToAction(nameof(Detalles));
         }
 
 

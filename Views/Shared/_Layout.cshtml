@@ -17,39 +17,36 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <h4>Sistema Inmobiliario</h4>
+                <h4><a class="nav-link text-dark" asp-controller="Home_" asp-action="Index">Sistema Inmobiliario</a></h4>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item"><a class="nav-link text-dark" asp-controller="Home_" asp-action="Index">Inicio </a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-controller="Inmueble_" asp-action="Indice">Inmuebles</a></li>
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated) {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Propietario_" asp-action="Indice">Propietarios</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Inquilino_" asp-action="Indice">Inquilinos</a></li>
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Reserva_" asp-action="Indice">Reservas</a></li>
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Pago_" asp-action="Indice">Pagos</a></li>
                         }
-
-                        <li class="nav-item"><a class="nav-link text-dark" asp-controller="Inmueble_" asp-action="Indice">Inmuebles</a></li>
                         
                         @if (User.IsInRole("Administrador")) {
+                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Propietario_" asp-action="Indice">Propietarios</a></li>
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Tipo_Inmueble_" asp-action="Indice">Tipos de Inmuebles</a></li>
                         }                      
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated) {
                             <li class="nav-item">
-                                <div style="flex-direction: row;">
+                                <a class="nav-link text-dark" asp-controller="Usuario_" asp-action="Detalles" asp-route-id="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value">
                                     <img src="@User.FindFirst(ClaimTypes.Uri)?.Value" width="50">
                                     <span class="nav-link text-success">Hola, @User.Identity.Name</span>
-                                </div>
+                                </a>
                             </li>
 
                             <li class="nav-item">
                                 <form asp-controller="Cuenta_" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-danger">Cerrar sesión </button>
+                                    <button type="submit" class="btn btn-link nav-link text-danger">Cerrar sesión</button>
                                 </form>
                             </li>
                         } else {
@@ -61,16 +58,10 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <div class="container"><main role="main" class="pb-3">@RenderBody()</main></div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Ejercicio 1 - <a asp-area="" asp-controller="Home_" asp-action="Privacy">Privacidad</a>
-        </div>
+        <div class="container">&copy; 2026 - Proyecto Inmobiliario - <a asp-area="" asp-controller="Home_" asp-action="Privacy">Privacidad</a></div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

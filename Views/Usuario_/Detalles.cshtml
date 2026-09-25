@@ -17,14 +17,21 @@
     <dd class="col-sm-9">@Model.Correo</dd>
 
     <dt class="col-sm-3">Avatar</dt>
-    <dd class="col-sm-9">@Model.Avatar</dd>
+    <dd class="col-sm-9"><img src="@Model.Avatar" width="50"></dd>
 
     <dt class="col-sm-3">Rol</dt>
     <dd class="col-sm-9">@Model.Rol</dd>
 
     <dt class="col-sm-3">Estado</dt>
-    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activo" : "Inactivo")</dd>
+    <dd class="col-sm-9">
+        @if (Model.Estado == "1") {
+            <span class="badge bg-success">Activo</span>
+        } else {
+            <span class="badge bg-danger">Inactivo</span>
+        }
+    </dd>
 </dl>
 
 <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
-<a asp-action="Indice" class="btn btn-secondary">Volver</a>
+<a asp-action="Eliminar" asp-route-id="@Model.id" class="btn btn-danger btn-sm">Eliminar</a>
+<button type="button" onclick="history.back()" class="btn btn-secondary">Volver</button>

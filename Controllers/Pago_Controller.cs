@@ -23,8 +23,18 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Listar
         [HttpGet]
-        public IActionResult Indice() {
-            var pagos = repositorio_Pago.ObtenerTodos();
+        public IActionResult Indice(bool todos = false) {
+            int IDUsuarioActual = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            IList<Pago> pagos;
+
+            if (User.IsInRole("Administrador") && todos) {
+                pagos = repositorio_Pago.ObtenerTodos();
+                ViewBag.Todos = true;
+            } else {
+                pagos = repositorio_Pago.MisPagos(IDUsuarioActual);
+                ViewBag.Todos = false;
+            }
+
             return View(pagos);
         }
 

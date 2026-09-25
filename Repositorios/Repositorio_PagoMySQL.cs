@@ -128,21 +128,37 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT
-                        id,
-                        concepto,
-                        fecha_pago,
-                        fecha_anulacion,
-                        importe,
-                        estado,
-                        id_reserva,
-                        id_usuario_creador,
-                        id_usuario_finalizador
+                    SELECT *
                     FROM Pagos
                     ORDER BY fecha_pago DESC;
                 ";
 
                 using (var command = new MySqlCommand(sql, connection)) {
+                    connection.Open();
+                    using (var reader = command.ExecuteReader()) {
+                        while (reader.Read()) { pagos.Add(MapearPago(reader)); }
+                    }
+                    connection.Close();
+                }
+            }
+
+            return pagos;
+        }
+
+        public IList<Pago> MisPagos(int id) {
+            var pagos = new List<Pago>();
+
+            using (var connection = new MySqlConnection(connectionString)) {
+                string sql = @"
+                    SELECT *
+                    FROM Pagos
+                    WHERE id_reserva = (SELECT id FROM Reservas WHERE id_inquilino = @id)
+                    ORDER BY fecha_pago DESC;
+                ";
+
+                using (var command = new MySqlCommand(sql, connection)) {
+                    command.Parameters.AddWithValue("@id", id);
+
                     connection.Open();
                     using (var reader = command.ExecuteReader()) {
                         while (reader.Read()) { pagos.Add(MapearPago(reader)); }

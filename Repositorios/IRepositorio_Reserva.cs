@@ -11,6 +11,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         int Modificacion (Reserva reserva);
 
         IList<Reserva> ObtenerTodos ();
+        IList<Reserva> MisReservas (int id);
         Reserva? ObtenerPorID (int id);
     }
 }
