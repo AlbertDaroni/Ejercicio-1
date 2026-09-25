@@ -150,9 +150,11 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    SELECT *
-                    FROM Pagos
-                    WHERE id_reserva = (SELECT id FROM Reservas WHERE id_inquilino = @id)
+                    SELECT p.*, i.direccion
+                    FROM Pagos p
+                    JOIN Reservas r ON p.id_reserva = r.id
+                    JOIN Inmuebles i ON r.id_inmueble = i.id
+                    WHERE p.id_reserva = (SELECT id FROM Reservas WHERE id_inquilino = @id)
                     ORDER BY fecha_pago DESC;
                 ";
 

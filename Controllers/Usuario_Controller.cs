@@ -45,7 +45,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation("Se creó correctamente el usuario con ID {Id}", id);
             TempData["Mensaje"] = "El usuario fue creado correctamente.";
 
-            return RedirectToAction(nameof(Indice));
+            return RedirectToAction(nameof(Detalles));
         }
 
         // Detalles
@@ -106,7 +106,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             if (idUsuarioActual == id.ToString()) {
                 TempData["Mensaje"] = "No puede dar de baja su propio usuario.";
-                return RedirectToAction(nameof(Indice));
+                return RedirectToAction(nameof(Detalles));
             }
 
             repositorio.Baja(id);
@@ -114,7 +114,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation("Se dio de baja al usuario con ID {Id}", id);
             TempData["Mensaje"] = "El usuario fue dado de baja correctamente.";
 
-            return RedirectToAction(nameof(Indice));
+            return RedirectToAction(nameof(Detalles));
         }
     }
 }

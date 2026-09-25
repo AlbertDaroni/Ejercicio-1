@@ -9,15 +9,18 @@ namespace Inmobiliaria_.Net_Core.Controllers {
     public class Pago_Controller : Controller {
         private readonly IRepositorio_Pago repositorio_Pago;
         private readonly IRepositorio_Reserva repositorio_Reserva;
+        private readonly IRepositorio_Inmueble repositorio_Inmueble;
         private readonly ILogger<Pago_Controller> logger;
 
         public Pago_Controller(
             IRepositorio_Pago repositorio_Pago,
             IRepositorio_Reserva repositorio_Reserva,
+            IRepositorio_Inmueble repositorio_Inmueble,
             ILogger<Pago_Controller> logger)
         {
             this.repositorio_Pago = repositorio_Pago;
             this.repositorio_Reserva = repositorio_Reserva;
+            this.repositorio_Inmueble = repositorio_Inmueble;
             this.logger = logger;
         }
 
@@ -41,29 +44,26 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         // Crear
         [HttpGet]
         public IActionResult Crear() {
-            ViewBag.Reservas = new SelectList(repositorio_Reserva.ObtenerTodos(), "id", "id" );
+            int IDUsuarioActual = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            ViewBag.Reservas = new SelectList(repositorio_Pago.MisPagos(IDUsuarioActual), "id", "Direccion");
             return View();
         }
 
         // Crear
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Crear(Pago pago) {
-            pago.Estado = "1";
-            pago.Fecha_Anulacion = null;
             pago.ID_Usuario_Creador = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            pago.ID_Usuario_Finalizador = null;
 
-            ModelState.Remove(nameof(pago.Estado));
             ModelState.Remove(nameof(pago.ID_Usuario_Creador));
-            ModelState.Remove(nameof(pago.ID_Usuario_Finalizador));
-            ModelState.Remove(nameof(pago.Fecha_Anulacion));
 
             if (!ModelState.IsValid) {
-                ViewBag.Reservas = new SelectList(repositorio_Reserva.ObtenerTodos(), "id", "id");
+                int IDUsuarioActual = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                ViewBag.Reservas = new SelectList(repositorio_Pago.MisPagos(IDUsuarioActual), "id", "Direccion");
                 return View(pago);
             }
 
             repositorio_Pago.Alta(pago);
+
             logger.LogInformation($"Se registró correctamente el Pago con ID: {pago.id}");
             TempData["Mensaje"] = "El pago se registró correctamente.";
 

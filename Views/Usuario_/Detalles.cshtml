@@ -34,4 +34,7 @@
 
 <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
 <a asp-action="Eliminar" asp-route-id="@Model.id" class="btn btn-danger btn-sm">Eliminar</a>
+<form asp-controller="Cuenta_" asp-action="Logout" method="post" class="d-inline">
+    <button type="submit" class="btn btn-danger btn-sm">Cerrar sesión</button>
+</form>
 <button type="button" onclick="history.back()" class="btn btn-secondary">Volver</button>

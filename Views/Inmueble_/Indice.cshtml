@@ -9,7 +9,9 @@
     <div class="alert alert-success">@TempData["Mensaje"]</div>
 }
 
-<p><a asp-action="Crear" class="btn btn-primary">Nuevo Inmueble</a></p>
+@if (User.Identity != null && User.Identity.IsAuthenticated) {
+    <p><a asp-action="Crear" class="btn btn-primary">Nuevo Inmueble</a></p>
+}
 
 <table class="table table-striped">
     <thead>
@@ -48,12 +50,6 @@
                     <a asp-action="Detalles" asp-route-id="@inmueble.id" class="btn btn-info btn-sm">Detalles</a>
                     @if (inmueble.Estado == "1") {
                         <a href="/Reserva_/Crear?ID_Inmueble=@inmueble.id" class="btn btn-primary">Reservar</a>
-                    }
-                    @if (inmueble.ID_Propietario.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Administrador")) {
-                        <a asp-action="Modificar" asp-route-id="@inmueble.id" class="btn btn-warning btn-sm">Modificar</a>
-                    }
-                    @if (User.IsInRole("Administrador")) {
-                        <a asp-action="Eliminar" asp-route-id="@inmueble.id" class="btn btn-danger btn-sm">Eliminar</a>
                     }
                 </td>
             </tr>

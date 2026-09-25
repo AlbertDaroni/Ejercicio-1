@@ -10,6 +10,7 @@
     <div class="col-md-6">
         <form asp-action="Crear" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID_Propietario">
 
             <div class="mb-3">
                 <label class="form-label">Agregar Imágenes</label>
@@ -53,15 +54,6 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="Estado" class="form-label">Estado</label>
-                <select asp-for="Estado" class="form-control">
-                    <option value="1">Activo</option>
-                    <option value="0">Inactivo</option>
-                </select>
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
                 <label asp-for="ID_Tipo" class="form-label">Tipo de inmueble</label>
                 <select asp-for="ID_Tipo" class="form-control" asp-items="(SelectList)ViewBag.Tipo_Inmuebles">
                     <option value="">-- Seleccione un tipo de inmueble --</option>
@@ -70,11 +62,12 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="ID_Propietario" class="form-label">Propietario</label>
-                <select asp-for="ID_Propietario" class="form-control" asp-items="(SelectList)ViewBag.Propietarios">
-                    <option value="">-- Seleccione un Propietario --</option>
+                <label asp-for="Estado" class="form-label">Estado</label>
+                <select asp-for="Estado" class="form-control">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
                 </select>
-                <span asp-validation-for="ID_Propietario" class="text-danger"></span>
+                <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn btn-success">Guardar</button>
