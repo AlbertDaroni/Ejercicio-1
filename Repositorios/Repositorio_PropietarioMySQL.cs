@@ -230,5 +230,62 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return propietario;
         }
+
+        public IList<Propietario> ObtenerLista(int pagina = 1, int tamPagina = 5)
+        {
+            var propietarios = new List<Propietario>();
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
+                    SELECT *
+                    FROM Propietarios
+                    ORDER BY id
+                    LIMIT @tamPagina OFFSET @offset;
+                ";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@tamPagina", tamPagina);
+                    command.Parameters.AddWithValue("@offset", (pagina - 1) * tamPagina);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            propietarios.Add(new Propietario
+                            {
+                                id = reader.GetInt32("id"),
+                                Nombre = reader.GetString("Nombre"),
+                                Apellido = reader.GetString("Apellido"),
+                                DNI = reader.GetString("DNI"),
+                                Telefono = reader.GetString("Telefono"),
+                                Correo = reader.GetString("Correo")
+                            });
+                        }
+                    }
+                }
+            }
+
+            return propietarios;
+        }
+
+
+        public int ObtenerCantidad()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "SELECT COUNT(*) FROM Propietarios;";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    return Convert.ToInt32(command.ExecuteScalar());
+                }
+            }
+        }
+
     }
 }

@@ -48,3 +48,50 @@
         }
     </tbody>
 </table>
+
+@{
+    int paginaActual = ViewBag.Pagina;
+    int totalPaginas = ViewBag.TotalPaginas;
+}
+
+@if (totalPaginas > 1)
+{
+    <nav aria-label="Paginación">
+        <ul class="pagination">
+
+            @if (paginaActual > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Indice"
+                       asp-route-pagina="@(paginaActual - 1)">
+                        Anterior
+                    </a>
+                </li>
+            }
+
+            @for (int p = 1; p <= totalPaginas; p++)
+            {
+                <li class="page-item @(p == paginaActual ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Indice"
+                       asp-route-pagina="@p">
+                        @p
+                    </a>
+                </li>
+            }
+
+            @if (paginaActual < totalPaginas)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Indice"
+                       asp-route-pagina="@(paginaActual + 1)">
+                        Siguiente
+                    </a>
+                </li>
+            }
+
+        </ul>
+    </nav>
+}

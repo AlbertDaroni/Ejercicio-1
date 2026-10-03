@@ -15,5 +15,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
         Propietario? ObtenerPorEmail(string email);
         IList<Propietario> BuscarPorNombre(string nombre);
+
+        IList<Propietario> ObtenerLista(int pagina = 1, int tamPagina = 5);
+        int ObtenerCantidad();
     }
 }
