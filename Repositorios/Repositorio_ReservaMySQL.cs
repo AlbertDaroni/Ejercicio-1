@@ -200,6 +200,43 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return reservas;
         }
 
+        public bool ExisteSuperposicion(
+            int idInmueble,
+            DateTime fechaInicio,
+            DateTime fechaFin,
+            int? idReservaExcluir = null)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
+                    SELECT COUNT(*)
+                    FROM Reservas
+                    WHERE id_inmueble = @idInmueble
+                    AND estado = 1
+                    AND fecha_inicio < @fechaFin
+                    AND fecha_fin_efectiva > @fechaInicio
+                    AND (@idReservaExcluir IS NULL OR id <> @idReservaExcluir);
+                ";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@idInmueble", idInmueble);
+                    command.Parameters.AddWithValue("@fechaInicio", fechaInicio);
+                    command.Parameters.AddWithValue("@fechaFin", fechaFin);
+                    command.Parameters.AddWithValue(
+                        "@idReservaExcluir",
+                        idReservaExcluir.HasValue ? idReservaExcluir.Value : DBNull.Value
+                    );
+
+                    connection.Open();
+
+                    int cantidad = Convert.ToInt32(command.ExecuteScalar());
+
+                    return cantidad > 0;
+                }
+            }
+        }
+
         public Reserva? ObtenerPorID(int id) {
             Reserva? reserva = null;
 

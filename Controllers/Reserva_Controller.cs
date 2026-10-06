@@ -45,12 +45,36 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             ModelState.Remove(nameof(reserva.ID_Inquilino));
             ModelState.Remove(nameof(reserva.ID_Usuario_Creador));
             ModelState.Remove(nameof(reserva.ID_Usuario_Finalizador));
-
+/*
             if (!ModelState.IsValid) retornar();
             if (reserva.Fecha_Inicio < DateTime.Now) retornar();
             if (reserva.Fecha_Inicio >= reserva.Fecha_Fin_Original) retornar();
             if (reserva.Fecha_Inicio <= reserva.Fecha_Fin_Efectiva) retornar();
             if (reserva.Fecha_Fin_Original > reserva.Fecha_Fin_Efectiva) retornar();
+*/
+
+            if (!ModelState.IsValid)
+                return retornar();
+
+            if (reserva.Fecha_Inicio < DateTime.Now)
+            {
+                ModelState.AddModelError(
+                    nameof(reserva.Fecha_Inicio),
+                    "La fecha de inicio no puede ser anterior a la fecha actual."
+                );
+                return retornar();
+            }
+
+            if (reserva.Fecha_Inicio >= reserva.Fecha_Fin_Original)
+            {
+                ModelState.AddModelError(
+                    nameof(reserva.Fecha_Fin_Original),
+                    "La fecha de finalización debe ser posterior a la fecha de inicio."
+                );
+                return retornar();
+            }
+
+            reserva.Fecha_Fin_Efectiva = reserva.Fecha_Fin_Original;
 
             int IDUsuarioActual = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             reserva.ID_Usuario_Creador = IDUsuarioActual;
@@ -60,6 +84,22 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (inmueble == null) return NotFound();
 
             reserva.Monto_Dia = inmueble.Precio_Dia;
+
+            bool existeSuperposicion = repositorio_Reserva.ExisteSuperposicion(
+                reserva.ID_Inmueble,
+                reserva.Fecha_Inicio,
+                reserva.Fecha_Fin_Efectiva
+            );
+
+            if (existeSuperposicion)
+            {
+                ModelState.AddModelError(
+                    "",
+                    "El inmueble ya posee una reserva que se superpone con las fechas seleccionadas."
+                );
+
+                return View(reserva);
+            }
 
             repositorio_Reserva.Alta(reserva);
 

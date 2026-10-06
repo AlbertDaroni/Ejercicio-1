@@ -13,5 +13,12 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         IList<Reserva> ObtenerTodos ();
         IList<Reserva> MisReservas (int id);
         Reserva? ObtenerPorID (int id);
+
+        bool ExisteSuperposicion(
+            int idInmueble,
+            DateTime fechaInicio,
+            DateTime fechaFin,
+            int? idReservaExcluir = null
+        );
     }
 }

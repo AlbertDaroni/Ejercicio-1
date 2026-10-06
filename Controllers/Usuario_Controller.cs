@@ -4,7 +4,7 @@ using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     public class Usuario_Controller : Controller {
         private readonly IRepositorio_Usuario repositorio;
         private readonly ILogger<Usuario_Controller> logger;
@@ -18,7 +18,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Listar
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet]
         public IActionResult Indice(bool todos = false) {
             var usuarios = repositorio.ObtenerTodos();
             return View(usuarios);
