@@ -186,24 +186,19 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             var reservaExistente = repositorio_Reserva.ObtenerPorID(id);
             if (reservaExistente == null) return NotFound();
+
             bool existeSuperposicion = repositorio_Reserva.ExisteSuperposicion(
-                    reserva.ID_Inmueble,
-                    reserva.Fecha_Inicio,
-                    reserva.Fecha_Fin_Efectiva,
-                    reserva.id
-                );
+                reserva.ID_Inmueble,
+                reserva.Fecha_Inicio,
+                reserva.Fecha_Fin_Efectiva,
+                reserva.id
+            );
 
-                if (existeSuperposicion)
-                {
-                    ModelState.AddModelError(
-                        "",
-                        "El inmueble ya posee una reserva que se superpone con las fechas seleccionadas."
-                    );
-
-                    reserva.Inmueble = repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
-
-                    return View(reserva);
-                }
+            if (existeSuperposicion) {
+                ModelState.AddModelError("", "El inmueble ya posee una reserva que se superpone con las fechas seleccionadas.");
+                reserva.Inmueble = repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
+                return View(reserva);
+            }
 
             reserva.Fecha_Creacion = reservaExistente.Fecha_Creacion;
             reserva.ID_Inquilino = reservaExistente.ID_Inquilino;

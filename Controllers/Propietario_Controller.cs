@@ -25,22 +25,17 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             var propietarios = repositorio_Propietario.ObtenerTodos();
             return View(propietarios);
         }*/
-        public IActionResult Indice(int pagina = 1)
-        {
+        public IActionResult Indice(int pagina = 1) {
             int tamaño = 5;
 
             pagina = Math.Max(pagina, 1);
 
             var propietarios = repositorio_Propietario.ObtenerLista(pagina, tamaño);
-
             int total = repositorio_Propietario.ObtenerCantidad();
 
             ViewBag.Pagina = pagina;
             ViewBag.Tamaño = tamaño;
-            ViewBag.TotalPaginas =
-                total % tamaño == 0
-                    ? total / tamaño
-                    : total / tamaño + 1;
+            ViewBag.TotalPaginas = total % tamaño == 0 ? total / tamaño : total / tamaño + 1;
 
             return View(propietarios);
         }

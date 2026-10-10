@@ -231,12 +231,10 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return propietario;
         }
 
-        public IList<Propietario> ObtenerLista(int pagina = 1, int tamPagina = 5)
-        {
+        public IList<Propietario> ObtenerLista(int pagina = 1, int tamPagina = 5) {
             var propietarios = new List<Propietario>();
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
                     FROM Propietarios
@@ -244,19 +242,14 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     LIMIT @tamPagina OFFSET @offset;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.Parameters.AddWithValue("@tamPagina", tamPagina);
                     command.Parameters.AddWithValue("@offset", (pagina - 1) * tamPagina);
 
                     connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            propietarios.Add(new Propietario
-                            {
+                    using (var reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            propietarios.Add(new Propietario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -266,6 +259,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                             });
                         }
                     }
+                    connection.Close();
                 }
             }
 
@@ -273,19 +267,16 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         }
 
 
-        public int ObtenerCantidad()
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            {
+        public int ObtenerCantidad() {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = "SELECT COUNT(*) FROM Propietarios;";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     connection.Open();
                     return Convert.ToInt32(command.ExecuteScalar());
+                    connection.Close();
                 }
             }
         }
-
     }
 }

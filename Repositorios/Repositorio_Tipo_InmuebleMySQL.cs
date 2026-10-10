@@ -99,7 +99,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
                 using (var command = new MySqlCommand(sql, connection)) {
                     connection.Open();
-
                     using (var reader = command.ExecuteReader()) {
                         while (reader.Read()) {
                             var tipo = new Tipo_Inmueble {
@@ -111,6 +110,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                             tipos.Add(tipo);
                         }
                     }
+                    connection.Close();
                 }
             }
 

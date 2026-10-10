@@ -200,14 +200,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return reservas;
         }
 
-        public bool ExisteSuperposicion(
-            int idInmueble,
-            DateTime fechaInicio,
-            DateTime fechaFin,
-            int? idReservaExcluir = null)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            {
+        public bool ExisteSuperposicion(int idInmueble, DateTime fechaInicio, DateTime fechaFin, int? idReservaExcluir = null) {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT COUNT(*)
                     FROM Reservas
@@ -218,8 +212,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     AND (@idReservaExcluir IS NULL OR id <> @idReservaExcluir);
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
+                using (var command = new MySqlCommand(sql, connection)) {
                     command.Parameters.AddWithValue("@idInmueble", idInmueble);
                     command.Parameters.AddWithValue("@fechaInicio", fechaInicio);
                     command.Parameters.AddWithValue("@fechaFin", fechaFin);
@@ -229,8 +222,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     );
 
                     connection.Open();
-
                     int cantidad = Convert.ToInt32(command.ExecuteScalar());
+                    connection.Close();
 
                     return cantidad > 0;
                 }
