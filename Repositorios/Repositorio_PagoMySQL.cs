@@ -154,8 +154,12 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     FROM Pagos p
                     JOIN Reservas r ON p.id_reserva = r.id
                     JOIN Inmuebles i ON r.id_inmueble = i.id
-                    WHERE p.id_reserva = (SELECT id FROM Reservas WHERE id_inquilino = @id)
-                    ORDER BY fecha_pago DESC;
+                    WHERE p.id_reserva IN (
+                        SELECT id
+                        FROM Reservas
+                        WHERE id_inquilino = @id
+                    )
+                    ORDER BY p.fecha_pago DESC;
                 ";
 
                 using (var command = new MySqlCommand(sql, connection)) {
