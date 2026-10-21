@@ -35,32 +35,71 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Crear
         [HttpGet]
-        public IActionResult Crear() {
-            ViewBag.Tipo_Inmuebles = new SelectList(repositorio_Tipo_Inmueble.ObtenerTodos(), "id", "Nombre");
-            ViewBag.Propietario = repositorio_Propietario.ObtenerPorID(int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value));
+        public IActionResult Crear()
+        {
+            ViewBag.Tipo_Inmuebles = new SelectList(
+                repositorio_Tipo_Inmueble.ObtenerTodos(),
+                "id",
+                "Nombre"
+            );
 
-            return View();
+            ViewBag.Propietarios = new SelectList(
+                repositorio_Propietario.ObtenerTodos(),
+                "id",
+                "Nombre"
+            );
+
+            return View(new Inmueble());
         }
 
         [HttpPost]
         public async Task<IActionResult> Crear(Inmueble inmueble, List<IFormFile> ArchivosImagenes) {
-            var IDUsuarioActual = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            //var IDUsuarioActual = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 
-            if (!ModelState.IsValid) {
-                ViewBag.Tipo_Inmuebles = new SelectList(repositorio_Tipo_Inmueble.ObtenerTodos(), "id", "Nombre");
-                ViewBag.Propietario = repositorio_Propietario.ObtenerPorID(IDUsuarioActual);
+            if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState)
+                {
+                    foreach (var mensaje in error.Value.Errors)
+                    {
+                        logger.LogWarning(
+                            "Error de validación en {Campo}: {Mensaje}",
+                            error.Key,
+                            mensaje.ErrorMessage
+                        );
+                    }
+                }
+
+                ViewBag.Tipo_Inmuebles = new SelectList(
+                    repositorio_Tipo_Inmueble.ObtenerTodos(),
+                    "id",
+                    "Nombre"
+                );
+
+                ViewBag.Propietarios = new SelectList(
+                    repositorio_Propietario.ObtenerTodos(),
+                    "id",
+                    "Nombre",
+                    inmueble.ID_Propietario
+                );
 
                 return View(inmueble);
             }
 
-            var usuario = repositorio_Usuario.ObtenerPorID(IDUsuarioActual);
-            usuario.Rol = "Propietario";
+            //var usuario = repositorio_Usuario.ObtenerPorID(IDUsuarioActual);
+            //usuario.Rol = "Propietario";
 
             repositorio_Inmueble.Alta(inmueble);
 
             if (ArchivosImagenes != null && ArchivosImagenes.Count > 0) {
-                string carpetaUploads = Path.Combine(environment.WebRootPath, "uploads", "inmuebles");
-                if (!Directory.Exists(carpetaUploads)) Directory.CreateDirectory(carpetaUploads);
+                string carpetaUploads = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "uploads",
+                    "inmuebles"
+                );
+
+                Directory.CreateDirectory(carpetaUploads);
 
                 foreach (var archivo in ArchivosImagenes) {
                     if (archivo.Length > 0) {

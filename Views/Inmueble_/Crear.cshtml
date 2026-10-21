@@ -10,7 +10,20 @@
     <div class="col-md-6">
         <form asp-action="Crear" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID_Propietario">
+            <div class="mb-3">
+                <label asp-for="ID_Propietario" class="form-label">
+                    Propietario
+                </label>
+
+                <select asp-for="ID_Propietario"
+                        asp-items="ViewBag.Propietarios"
+                        class="form-select">
+                    <option value="">Seleccione un propietario</option>
+                </select>
+
+                <span asp-validation-for="ID_Propietario"
+                    class="text-danger"></span>
+            </div>
 
             <div class="mb-3">
                 <label class="form-label">Agregar Imágenes</label>
