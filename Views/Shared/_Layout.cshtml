@@ -32,8 +32,29 @@
                         }
                         
                         @if (User.IsInRole("Administrador")) {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Propietario_" asp-action="Indice">Propietarios</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Tipo_Inmueble_" asp-action="Indice">Tipos de Inmuebles</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                asp-controller="Propietario_"
+                                asp-action="Indice">Propietarios</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                asp-controller="Inquilino_"
+                                asp-action="Indice">Inquilinos</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                asp-controller="Tipo_Inmueble_"
+                                asp-action="Indice">Tipos de Inmuebles</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                asp-controller="Usuario_"
+                                asp-action="Indice">Administrar usuarios</a>
+                            </li>
                         }                      
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated) {
