@@ -267,18 +267,13 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         }
 
 
-        public IList<Propietario> BuscarPaginados(
-            string busqueda,
-            int pagina = 1,
-            int tamPagina = 5)
-        {
+        public IList<Propietario> BuscarPaginados(string busqueda, int pagina = 1, int tamPagina = 5) {
             var propietarios = new List<Propietario>();
 
             pagina = Math.Max(1, pagina);
             tamPagina = Math.Clamp(tamPagina, 1, 50);
 
-            using (var connection = new MySqlConnection(connectionString))
-            {
+            using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     SELECT *
                     FROM Propietarios
@@ -289,25 +284,15 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     LIMIT @tamPagina OFFSET @offset;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue(
-                        "@busqueda", "%" + (busqueda ?? "").Trim() + "%"
-                    );
-
+                using (var command = new MySqlCommand(sql, connection)) {
+                    command.Parameters.AddWithValue("@busqueda", "%" + (busqueda ?? "").Trim() + "%");
                     command.Parameters.AddWithValue("@tamPagina", tamPagina);
-                    command.Parameters.AddWithValue(
-                        "@offset", (pagina - 1) * tamPagina
-                    );
+                    command.Parameters.AddWithValue("@offset", (pagina - 1) * tamPagina);
 
                     connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            propietarios.Add(new Propietario
-                            {
+                    using (var reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            propietarios.Add(new Propietario {
                                 id = reader.GetInt32("id"),
                                 Nombre = reader.GetString("Nombre"),
                                 Apellido = reader.GetString("Apellido"),
@@ -317,6 +302,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                             });
                         }
                     }
+                    connection.Close();
                 }
             }
 

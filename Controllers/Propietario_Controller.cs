@@ -25,6 +25,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             var propietarios = repositorio_Propietario.ObtenerTodos();
             return View(propietarios);
         }*/
+        [Authorize(Roles = "Administrador")]
         public IActionResult Indice(int pagina = 1) {
             int tamaño = 5;
 
@@ -59,6 +60,16 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             repositorio_Propietario.Alta(propietario);
 
+            if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Usuario") {
+                var ID = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+                var usuario = repositorio_Usuario.ObtenerPorID(ID);
+
+                usuario.Rol = "Propietario";
+                repositorio_Usuario.Modificacion(usuario);
+
+                return RedirectToAction("Login", "Cuenta_");
+            }
+
             logger.LogInformation("Se registró correctamente el propietario con ID: {Id}", propietario.id);
             TempData["Mensaje"] = "El propietario fue registrado correctamente.";
 
@@ -66,7 +77,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Modificar
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrador, Propietario")]
         public IActionResult Modificar(int id) {
             var propietario = repositorio_Propietario.ObtenerPorID(id);
             if (propietario == null) return NotFound();
@@ -74,7 +85,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Modificar
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador, Propietario")]
         public IActionResult Modificar(int id, Propietario propietario) {
             if (id != propietario.id) return BadRequest();
             if (!ModelState.IsValid) return View(propietario);

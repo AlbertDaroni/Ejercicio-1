@@ -36,6 +36,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         // Crear
         [HttpGet]
         public IActionResult Crear() {
+            if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Usuario") return RedirectToAction("Crear", "Propietario_");
             ViewBag.Tipo_Inmuebles = new SelectList(repositorio_Tipo_Inmueble.ObtenerTodos(), "id", "Nombre");
             ViewBag.Propietarios = new SelectList(repositorio_Propietario.ObtenerTodos(), "id", "Nombre");
 
@@ -181,8 +182,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         [HttpGet]
-        public IActionResult BuscarPropietarios(string busqueda = "",int pagina = 1)
-        {
+        public IActionResult BuscarPropietarios(string busqueda = "",int pagina = 1) {
             const int tamPagina = 5;
 
             pagina = Math.Max(1, pagina);
@@ -193,17 +193,12 @@ namespace Inmobiliaria_.Net_Core.Controllers {
                 tamPagina
             );
 
-            var resultado = propietarios.Select(p => new
-            {
+            var resultado = propietarios.Select(p => new {
                 id = p.id,
                 texto = $"{p.Nombre} {p.Apellido} - DNI: {p.DNI}"
             });
 
-            return Json(new
-            {
-                resultados = resultado,
-                hayMas = propietarios.Count == tamPagina
-            });
+            return Json(new { resultados = resultado, hayMas = propietarios.Count == tamPagina });
         }
 
         // Obtener todos
