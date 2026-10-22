@@ -39,7 +39,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
                 Inmueble = inmueble
             };
 
-            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id"," ApellidoYNombre");
+            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre");
 
             return View(reserva);
         }

@@ -165,8 +165,6 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
                         var nuevaImagen = new Imagen_Inmueble {
                             ID_Inmueble = id,
-                            EsPortada = 0,
-                            Orden = 0,
                             URL = "/uploads/inmuebles/" + nombreArchivoUnico
                         };
 
@@ -191,10 +189,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         public IActionResult Detalles(int id)  {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();
-
-            inmueble.Imagenes =
-                repositorio_Imagen_Inmueble.ObtenerTodos(id).ToList();
-
+            inmueble.Imagenes = repositorio_Imagen_Inmueble.ObtenerTodos(id).ToList();
             return View(inmueble);
         }
 

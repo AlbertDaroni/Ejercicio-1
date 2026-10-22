@@ -17,8 +17,7 @@ namespace Inmobiliaria_.Net_Core.Models {
         public int Cupo { get; set; }
 
         [Required]
-        [Range(typeof(decimal), "-90", "90",
-            ErrorMessage = "La latitud debe estar entre -90 y 90.")]
+        [Range(typeof(decimal), "-90", "90", ErrorMessage = "La latitud debe estar entre -90 y 90.")]
         public decimal Latitud { get; set; }
 
         [Required]

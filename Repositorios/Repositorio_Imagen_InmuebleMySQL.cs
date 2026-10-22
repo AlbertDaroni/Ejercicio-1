@@ -17,9 +17,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    INSERT INTO Imagen_Inmuebles
-                    (url, esPortada, orden, id_inmueble)
-                    VALUES (@url, @esPortada, @orden, @id_inmueble);
+                    INSERT INTO Imagen_Inmuebles (url, id_inmueble)
+                    VALUES (@url, @id_inmueble);
 
                     SELECT LAST_INSERT_ID();
                 ";
@@ -28,8 +27,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@url", i.URL);
-                    command.Parameters.AddWithValue("@esPortada", i.EsPortada);
-                    command.Parameters.AddWithValue("@orden", i.Orden);
                     command.Parameters.AddWithValue("@id_inmueble", i.ID_Inmueble);
 
                     connection.Open();
@@ -48,10 +45,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
                     UPDATE Imagen_Inmuebles
-                    SET url = @url,
-                        esPortada = @esPortada,
-                        orden = @orden,
-                        id_inmueble = @id_inmueble
+                    SET url = @url, id_inmueble = @id_inmueble
                     WHERE id = @id;
                 ";
 
@@ -59,8 +53,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@url", i.URL);
-                    command.Parameters.AddWithValue("@esPortada", i.EsPortada);
-                    command.Parameters.AddWithValue("@orden", i.Orden);
                     command.Parameters.AddWithValue("@id_inmueble", i.ID_Inmueble);
 
                     connection.Open();
@@ -117,8 +109,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                             Imagen_Inmueble imagen_inmueble = new Imagen_Inmueble {
                                 id = reader.GetInt32("id"),
                                 URL = reader.GetString("URL"),
-                                EsPortada = reader.GetInt32("EsPortada"),
-                                Orden = reader.GetInt32("Orden"),
                                 ID_Inmueble = reader.GetInt32("ID_Inmueble")
                             };
                             imagenes_inmuebles.Add(imagen_inmueble);
@@ -151,8 +141,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                             imagen_inmueble = new Imagen_Inmueble {
                                 id = reader.GetInt32("id"),
                                 URL = reader.GetString("URL"),
-                                EsPortada = reader.GetInt32("EsPortada"),
-                                Orden = reader.GetInt32("Orden"),
                                 ID_Inmueble = reader.GetInt32("ID_Inmueble")
                             };
                         }
