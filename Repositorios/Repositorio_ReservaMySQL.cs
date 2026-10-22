@@ -10,11 +10,11 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
         public int Alta(Reserva r) {
             int respuesta = -1;
+             r.Fecha_Creacion = DateTime.Now;
 
             using (var connection = new MySqlConnection(connectionString)) {
                 string sql = @"
-                    UPDATE Inmuebles SET estado = 0 WHERE id = @id_inmueble;
-
+                    
                     INSERT INTO Reservas (
                         fecha_creacion, fecha_inicio, fecha_fin_original,
                         fecha_fin_efectiva, monto_dia, multa,
@@ -136,6 +136,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                         while (reader.Read()) {
                             Reserva reserva = new Reserva {
                                 id = reader.GetInt32("id"),
+                                Estado = reader.GetString("estado"),
                                 Fecha_Creacion = reader.GetDateTime("Fecha_Creacion"),
                                 Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
                                 Fecha_Fin_Original = reader.GetDateTime("Fecha_Fin_Original"),
@@ -177,6 +178,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                         while (reader.Read()) {
                             Reserva reserva = new Reserva {
                                 id = reader.GetInt32("id"),
+                                Estado = reader.GetString("estado"),
                                 Fecha_Creacion = reader.GetDateTime("Fecha_Creacion"),
                                 Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
                                 Fecha_Fin_Original = reader.GetDateTime("Fecha_Fin_Original"),

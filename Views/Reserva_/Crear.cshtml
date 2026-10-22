@@ -37,6 +37,21 @@
         <span asp-validation-for="Fecha_Fin_Efectiva" class="text-danger"></span>
     </div>
 
+    <div class="mb-3">
+    <label asp-for="ID_Inquilino" class="form-label">
+        Inquilino
+    </label>
+
+    <select asp-for="ID_Inquilino"
+            asp-items="ViewBag.Inquilinos"
+            class="form-select">
+        <option value="">-- Seleccione un inquilino --</option>
+    </select>
+
+    <span asp-validation-for="ID_Inquilino"
+          class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-success">Guardar</button>
     <button type="button" onclick="history.back()" class="btn btn-secondary">Volver</button>
 </form>
