@@ -180,6 +180,32 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return RedirectToAction(nameof(Indice));
         }
 
+        [HttpGet]
+        public IActionResult BuscarPropietarios(string busqueda = "",int pagina = 1)
+        {
+            const int tamPagina = 5;
+
+            pagina = Math.Max(1, pagina);
+
+            var propietarios = repositorio_Propietario.BuscarPaginados(
+                busqueda,
+                pagina,
+                tamPagina
+            );
+
+            var resultado = propietarios.Select(p => new
+            {
+                id = p.id,
+                texto = $"{p.Nombre} {p.Apellido} - DNI: {p.DNI}"
+            });
+
+            return Json(new
+            {
+                resultados = resultado,
+                hayMas = propietarios.Count == tamPagina
+            });
+        }
+
         // Obtener todos
         [AllowAnonymous]
         public IActionResult Indice() { return View(repositorio_Inmueble.ObtenerTodos()); }

@@ -18,5 +18,11 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
         IList<Propietario> ObtenerLista(int pagina = 1, int tamPagina = 5);
         int ObtenerCantidad();
+
+        IList<Propietario> BuscarPaginados(
+            string busqueda,
+            int pagina = 1,
+            int tamPagina = 5
+        );
     }
 }
