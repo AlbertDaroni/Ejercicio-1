@@ -1,8 +1,6 @@
 @model Inmobiliaria_.Net_Core.Models.RenovarReservaViewModel
 
-@{
-    ViewData["Title"] = "Renovar reserva";
-}
+@{ ViewData["Title"] = "Renovar reserva"; }
 
 <h1>Renovar reserva</h1>
 
@@ -14,50 +12,28 @@
 <form asp-action="Renovar" method="post">
     <input type="hidden" asp-for="ID_ReservaOriginal" />
 
-    <div asp-validation-summary="ModelOnly"
-         class="text-danger"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3">
         <label asp-for="Fecha_Inicio" class="form-label"></label>
-        <input asp-for="Fecha_Inicio"
-               type="datetime-local"
-               asp-format="{0:yyyy-MM-ddTHH:mm}"
-               class="form-control" />
-        <span asp-validation-for="Fecha_Inicio"
-              class="text-danger"></span>
+        <input asp-for="Fecha_Inicio" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" />
+        <span asp-validation-for="Fecha_Inicio" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Fecha_Fin" class="form-label"></label>
-        <input asp-for="Fecha_Fin"
-               type="datetime-local"
-               asp-format="{0:yyyy-MM-ddTHH:mm}"
-               class="form-control" />
-        <span asp-validation-for="Fecha_Fin"
-              class="text-danger"></span>
+        <input asp-for="Fecha_Fin" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" />
+        <span asp-validation-for="Fecha_Fin" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Monto_Dia" class="form-label"></label>
-        <input asp-for="Monto_Dia"
-               type="text"
-               inputmode="decimal"
-               class="form-control" />
-        <span asp-validation-for="Monto_Dia"
-              class="text-danger"></span>
+        <input asp-for="Monto_Dia" type="text" inputmode="decimal" class="form-control" />
+        <span asp-validation-for="Monto_Dia" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-success">
-        Crear renovación
-    </button>
-
-    <a asp-action="Detalles"
-       asp-route-id="@Model.ID_ReservaOriginal"
-       class="btn btn-secondary">
-        Cancelar
-    </a>
+    <button type="submit" class="btn btn-success">Crear renovación</button>
+    <a asp-action="Detalles" asp-route-id="@Model.ID_ReservaOriginal" class="btn btn-secondary">Cancelar</a>
 </form>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

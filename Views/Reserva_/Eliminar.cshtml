@@ -1,8 +1,6 @@
 @model Inmobiliaria_.Net_Core.Models.FinalizarReservaViewModel
 
-@{
-    ViewData["Title"] = "Finalizar reserva";
-}
+@{ ViewData["Title"] = "Finalizar reserva"; }
 
 <h1>Finalizar reserva</h1>
 
@@ -12,90 +10,52 @@
         <dd class="col-sm-8">#@Model.ID_Reserva</dd>
 
         <dt class="col-sm-4">Inicio</dt>
-        <dd class="col-sm-8">
-            @Model.Reserva.Fecha_Inicio.ToString("dd/MM/yyyy HH:mm")
-        </dd>
+        <dd class="col-sm-8">@Model.Reserva.Fecha_Inicio.ToString("dd/MM/yyyy HH:mm")</dd>
 
         <dt class="col-sm-4">Fin original</dt>
-        <dd class="col-sm-8">
-            @Model.Reserva.Fecha_Fin_Original.ToString("dd/MM/yyyy HH:mm")
-        </dd>
+        <dd class="col-sm-8">@Model.Reserva.Fecha_Fin_Original.ToString("dd/MM/yyyy HH:mm")</dd>
 
         <dt class="col-sm-4">Monto diario</dt>
-        <dd class="col-sm-8">
-            @Model.Reserva.Monto_Dia.ToString("C")
-        </dd>
+        <dd class="col-sm-8">@Model.Reserva.Monto_Dia.ToString("C")</dd>
     </dl>
 }
 
 <form asp-action="CalcularFinalizacion" method="post">
     <input type="hidden" asp-for="ID_Reserva" />
 
-    <div asp-validation-summary="ModelOnly"
-         class="text-danger"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3">
-        <label asp-for="Fecha_Fin_Efectiva"
-               class="form-label"></label>
-
-        <input asp-for="Fecha_Fin_Efectiva"
-               type="datetime-local"
-               step="1"
-               asp-format="{0:yyyy-MM-ddTHH:mm:ss}"
-               class="form-control" />
-
-        <span asp-validation-for="Fecha_Fin_Efectiva"
-              class="text-danger"></span>
+        <label asp-for="Fecha_Fin_Efectiva" class="form-label"></label>
+        <input asp-for="Fecha_Fin_Efectiva" type="datetime-local" step="1" asp-format="{0:yyyy-MM-ddTHH:mm:ss}" class="form-control" />
+        <span asp-validation-for="Fecha_Fin_Efectiva" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">
-        Calcular multa
-    </button>
-
-    <a asp-action="Indice" class="btn btn-secondary">
-        Volver
-    </a>
+    <button type="submit" class="btn btn-primary">Calcular multa</button>
+    <a asp-action="Indice" class="btn btn-secondary">Volver</a>
 </form>
 
 @if (Model.CalculoRealizado) {
     <div class="alert alert-info mt-3">
-        <p>
-            Finalización consultada:
-            <strong>
-                @(Model.Fecha_Fin_Efectiva?.ToString("dd/MM/yyyy HH:mm:ss"))
-            </strong>
-        </p>
-        <p>
-            Multa:
-            <strong>@Model.MultaCalculada.ToString("C")</strong>
-        </p>
+        <p>Finalización consultada:<strong>@(Model.Fecha_Fin_Efectiva?.ToString("dd/MM/yyyy HH:mm:ss"))</strong></p>
+        <p>Multa:<strong>@Model.MultaCalculada.ToString("C")</strong></p>
+
         <form asp-action="ConfirmarEliminar" method="post">
             <input type="hidden" asp-for="ID_Reserva" />
 
-            <input type="hidden"
-                name="Fecha_Fin_Efectiva"
-                value="@(Model.Fecha_Fin_Efectiva?.ToString("yyyy-MM-ddTHH:mm:ss"))" />
+            <input type="hidden" name="Fecha_Fin_Efectiva" value="@(Model.Fecha_Fin_Efectiva?.ToString("yyyy-MM-ddTHH:mm:ss"))" />
 
             @if (Model.MultaCalculada > 0m) {
                 <div class="form-check mb-3">
-                    <input asp-for="ConfirmarPagoMulta"
-                        class="form-check-input" />
-
-                    <label asp-for="ConfirmarPagoMulta"
-                        class="form-check-label"></label>
+                    <input asp-for="ConfirmarPagoMulta" class="form-check-input" />
+                    <label asp-for="ConfirmarPagoMulta" class="form-check-label"></label>
                 </div>
-
-                <span asp-validation-for="ConfirmarPagoMulta"
-                    class="text-danger"></span>
+                <span asp-validation-for="ConfirmarPagoMulta" class="text-danger"></span>
             }
 
-            <button type="submit" class="btn btn-danger">
-                Confirmar finalización
-            </button>
+            <button type="submit" class="btn btn-danger">Confirmar finalización</button>
         </form>
     </div>
 }
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

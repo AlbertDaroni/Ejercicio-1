@@ -60,20 +60,14 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Modificar
         [HttpGet]
-        public IActionResult Modificar(int id)
-        {
+        public IActionResult Modificar(int id) {
             var idUsuarioActual = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!int.TryParse(idUsuarioActual, out int idActual))
-                return Unauthorized();
-
-            if (!User.IsInRole("Administrador") && idActual != id)
-                return Forbid();
+            if (!int.TryParse(idUsuarioActual, out int idActual)) return Unauthorized();
+            if (!User.IsInRole("Administrador") && idActual != id) return Forbid();
 
             var usuario = repositorio.ObtenerPorID(id);
-
-            if (usuario == null)
-                return NotFound();
+            if (usuario == null) return NotFound();
 
             return View(usuario);
         }
@@ -85,17 +79,11 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (id != usuario.id) return BadRequest();
             var idUsuarioActual = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!int.TryParse(idUsuarioActual, out int idActual))
-            {
-                return Unauthorized();
-            }
+            if (!int.TryParse(idUsuarioActual, out int idActual)) return Unauthorized();
 
             bool esAdministrador = User.IsInRole("Administrador");
 
-            if (!esAdministrador && idActual != id)
-            {
-                return Forbid();
-            }
+            if (!esAdministrador && idActual != id) return Forbid();
             if (!ModelState.IsValid) return View(usuario);
 
             var usuarioConMismoCorreo = repositorio.ObtenerPorCorreo(usuario.Correo);
@@ -115,8 +103,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
 
         // Eliminar
-       [HttpGet]
-       [Authorize(Roles = "Administrador")]
+       [HttpGet, Authorize(Roles = "Administrador")]
        public IActionResult Eliminar(int id) {
             var usuario = repositorio.ObtenerPorID(id);
             if (usuario == null) return NotFound();
@@ -125,10 +112,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
 
         // Eliminar
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
-        [ActionName("Eliminar")]
+        [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar"), Authorize(Roles = "Administrador")]
         public IActionResult ConfirmarEliminar(int id) {
             var usuario = repositorio.ObtenerPorID(id);
             if (usuario == null) return NotFound();

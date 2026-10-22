@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Inmobiliaria_.Net_Core.Models;
 
-namespace Inmobiliaria_.Net_Core.Repositorios
-{
-    public interface IRepositorio_Reserva
-    {
+namespace Inmobiliaria_.Net_Core.Repositorios {
+    public interface IRepositorio_Reserva {
         int Alta(Reserva reserva);
         int Baja(int id, int idUsuario);
         int FinalizarConPago(int idReserva, DateTime fechaEfectiva, int idUsuario, bool confirmarPagoMulta);
@@ -17,11 +15,6 @@ namespace Inmobiliaria_.Net_Core.Repositorios
         IList<Reserva> MisReservas(int id);
         Reserva? ObtenerPorID(int id);
 
-        bool ExisteSuperposicion(
-            int idInmueble,
-            DateTime fechaInicio,
-            DateTime fechaFin,
-            int? idReservaExcluir = null
-        );
+        bool ExisteSuperposicion(int idInmueble, DateTime fechaInicio, DateTime fechaFin, int? idReservaExcluir = null);
     }
 }

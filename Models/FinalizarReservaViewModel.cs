@@ -12,7 +12,6 @@ namespace Inmobiliaria_.Net_Core.Models {
         [Display(Name = "Confirmo que recibí el pago de la multa")]
         public bool ConfirmarPagoMulta { get; set; }
 
-        // Información para mostrar en pantalla.
         public Reserva? Reserva { get; set; }
 
         public decimal MultaCalculada { get; set; }
