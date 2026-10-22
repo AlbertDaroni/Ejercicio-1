@@ -5,11 +5,9 @@ using System.Security.Claims; // Para la autentucación.
 using Microsoft.AspNetCore.Mvc.Rendering; // Para usar SelectList.
 using Microsoft.AspNetCore.Authorization; // Para usar autorización.
 
-namespace Inmobiliaria_.Net_Core.Controllers
-{
+namespace Inmobiliaria_.Net_Core.Controllers {
     [Authorize]
-    public class Reserva_Controller : Controller
-    {
+    public class Reserva_Controller : Controller {
         private readonly IRepositorio_Reserva repositorio_Reserva;
         private readonly IRepositorio_Inmueble repositorio_Inmueble;
         private readonly IRepositorio_Inquilino repositorio_Inquilino;
@@ -20,8 +18,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             IRepositorio_Inmueble repositorio_Inmueble,
             IRepositorio_Inquilino repositorio_Inquilino,
             ILogger<Reserva_Controller> logger
-        )
-        {
+        ) {
             this.repositorio_Reserva = repositorio_Reserva;
             this.repositorio_Inmueble = repositorio_Inmueble;
             this.repositorio_Inquilino = repositorio_Inquilino;
@@ -30,32 +27,25 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         // Crear
         [HttpGet]
-        public IActionResult Crear(int? ID_Inmueble)
-        {
+        public IActionResult Crear(int? ID_Inmueble) {
             if (ID_Inmueble == null) return RedirectToAction("Indice", "Inmueble_");
 
             var inmueble = repositorio_Inmueble.ObtenerPorID(ID_Inmueble.Value);
             if (inmueble == null) return NotFound();
 
-            var reserva = new Reserva
-            {
+            var reserva = new Reserva {
                 ID_Inmueble = inmueble.id,
                 Monto_Dia = inmueble.Precio_Dia,
                 Inmueble = inmueble
             };
 
-            ViewBag.Inquilinos = new SelectList(
-                repositorio_Inquilino.ObtenerTodos(),
-                "id",
-                "ApellidoYNombre"
-            );
+            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id"," ApellidoYNombre");
 
             return View(reserva);
         }
 
         [HttpPost]
-        public IActionResult Crear(Reserva reserva)
-        {
+        public IActionResult Crear(Reserva reserva) {
             ModelState.Remove(nameof(reserva.Estado));            
             ModelState.Remove(nameof(reserva.ID_Usuario_Creador));
             ModelState.Remove(nameof(reserva.ID_Usuario_Finalizador));
@@ -67,32 +57,19 @@ namespace Inmobiliaria_.Net_Core.Controllers
                         if (reserva.Fecha_Fin_Original > reserva.Fecha_Fin_Efectiva) retornar();
             */
 
-            if (reserva.ID_Inquilino <= 0 ||
-                repositorio_Inquilino.ObtenerPorID(reserva.ID_Inquilino) == null) {
-                ModelState.AddModelError(
-                    nameof(reserva.ID_Inquilino),
-                    "Seleccioná un inquilino válido."
-                );
+            if (reserva.ID_Inquilino <= 0 || repositorio_Inquilino.ObtenerPorID(reserva.ID_Inquilino) == null) {
+                ModelState.AddModelError(nameof(reserva.ID_Inquilino), "Seleccioná un inquilino válido.");
             }
 
-            if (!ModelState.IsValid)
-                return retornar();
+            if (!ModelState.IsValid) return retornar();
 
-            if (reserva.Fecha_Inicio < DateTime.Now)
-            {
-                ModelState.AddModelError(
-                    nameof(reserva.Fecha_Inicio),
-                    "La fecha de inicio no puede ser anterior a la fecha actual."
-                );
+            if (reserva.Fecha_Inicio < DateTime.Now) {
+                ModelState.AddModelError(nameof(reserva.Fecha_Inicio), "La fecha de inicio no puede ser anterior a la fecha actual.");
                 return retornar();
             }
 
-            if (reserva.Fecha_Inicio >= reserva.Fecha_Fin_Original)
-            {
-                ModelState.AddModelError(
-                    nameof(reserva.Fecha_Fin_Original),
-                    "La fecha de finalización debe ser posterior a la fecha de inicio."
-                );
+            if (reserva.Fecha_Inicio >= reserva.Fecha_Fin_Original) {
+                ModelState.AddModelError(nameof(reserva.Fecha_Fin_Original), "La fecha de finalización debe ser posterior a la fecha de inicio.");
                 return retornar();
             }
 
@@ -112,13 +89,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 reserva.Fecha_Fin_Efectiva
             );
 
-            if (existeSuperposicion)
-            {
-                ModelState.AddModelError(
-                    "",
-                    "El inmueble ya posee una reserva que se superpone con las fechas seleccionadas."
-                );
-
+            if (existeSuperposicion) {
+                ModelState.AddModelError("", "El inmueble ya posee una reserva que se superpone con las fechas seleccionadas.");
                 return retornar();
             }
 
@@ -130,33 +102,24 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             return RedirectToAction(nameof(Indice));
 
-            IActionResult retornar(){
-                reserva.Inmueble =
-                    repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
+            IActionResult retornar() {
+                reserva.Inmueble = repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
+                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre", reserva.ID_Inquilino);
 
-                ViewBag.Inquilinos = new SelectList(
-                    repositorio_Inquilino.ObtenerTodos(),
-                    "id",
-                    "ApellidoYNombre",
-                    reserva.ID_Inquilino
-                );
-
-                 return View(reserva);
+                return View(reserva);
             }
         }
 
         // Eliminar
         [HttpGet, Authorize(Roles = "Administrador")]
-        public IActionResult Eliminar(int id)
-        {
+        public IActionResult Eliminar(int id) {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
             if (reserva == null) return NotFound();
             return View(reserva);
         }
 
         [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador")]
-        public IActionResult ConfirmarEliminar(int id)
-        {
+        public IActionResult ConfirmarEliminar(int id) {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
             if (reserva == null) return NotFound();
 
@@ -175,16 +138,13 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         // Modificar
         [HttpGet]
-        public IActionResult Modificar(int id)
-        {
+        public IActionResult Modificar(int id) {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
             var inmueble = repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
 
             if (reserva == null || inmueble == null) return NotFound();
-            if (inmueble != null)
-            {
-                var nuevaReserva = new Reserva
-                {
+            if (inmueble != null) {
+                var nuevaReserva = new Reserva {
                     id = reserva.id,
                     Fecha_Creacion = reserva.Fecha_Creacion,
                     Fecha_Inicio = reserva.Fecha_Inicio,
@@ -207,8 +167,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
         }
 
         [HttpPost]
-        public IActionResult Modificar(int id, Reserva reserva)
-        {
+        public IActionResult Modificar(int id, Reserva reserva) {
             if (id != reserva.id) return BadRequest();
 
             ModelState.Remove(nameof(reserva.Fecha_Creacion));
@@ -216,8 +175,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             ModelState.Remove(nameof(reserva.ID_Usuario_Creador));
             ModelState.Remove(nameof(reserva.ID_Usuario_Finalizador));
 
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 reserva.Inmueble = repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
                 return View(reserva);
             }
@@ -232,8 +190,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 reserva.id
             );
 
-            if (existeSuperposicion)
-            {
+            if (existeSuperposicion) {
                 ModelState.AddModelError("", "El inmueble ya posee una reserva que se superpone con las fechas seleccionadas.");
                 reserva.Inmueble = repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
                 return View(reserva);
@@ -253,18 +210,14 @@ namespace Inmobiliaria_.Net_Core.Controllers
         }
 
         // Obtener todos
-        public IActionResult Indice(bool todos = false)
-        {
+        public IActionResult Indice(bool todos = false) {
             int IDUsuarioActual = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
             IList<Reserva> reservas;
 
-            if (User.IsInRole("Administrador") && todos)
-            {
+            if (User.IsInRole("Administrador") && todos)  {
                 reservas = repositorio_Reserva.ObtenerTodos();
                 ViewBag.Todas = true;
-            }
-            else
-            {
+            } else {
                 reservas = repositorio_Reserva.MisReservas(IDUsuarioActual);
                 ViewBag.Todas = false;
             }
@@ -273,8 +226,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
         }
 
         // Obtener por ID
-        public IActionResult Detalles(int id)
-        {
+        public IActionResult Detalles(int id) {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
             if (reserva == null) return NotFound();
             return View(reserva);

@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Inmobiliaria_.Net_Core.Models
-{
-    public class Inmueble
-    {
+namespace Inmobiliaria_.Net_Core.Models {
+    public class Inmueble {
         [Key]
         public int id { get; set; }
 
@@ -24,8 +22,7 @@ namespace Inmobiliaria_.Net_Core.Models
         public decimal Latitud { get; set; }
 
         [Required]
-        [Range(typeof(decimal), "-180", "180",
-            ErrorMessage = "La longitud debe estar entre -180 y 180.")]
+        [Range(typeof(decimal), "-180", "180", ErrorMessage = "La longitud debe estar entre -180 y 180.")]
         public decimal Longitud { get; set; }
 
         [Required]
@@ -49,8 +46,7 @@ namespace Inmobiliaria_.Net_Core.Models
 
         public List<Imagen_Inmueble>? Imagenes { get; set; }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return @$"
                 Dirección: {Direccion}
                 Cupo: {Cupo}
