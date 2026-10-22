@@ -203,7 +203,20 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Obtener todos
         [AllowAnonymous]
-        public IActionResult Indice() { return View(repositorio_Inmueble.ObtenerTodos()); }
+        public IActionResult Indice(bool todos = true) {
+            int IDUsuarioActual = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            IList<Inmueble> inmuebles;
+
+            if (User.IsInRole("Administrador") || User.IsInRole("Propietario") && todos) {
+                inmuebles = repositorio_Inmueble.ObtenerTodos();
+                ViewBag.Todos = true;
+            } else {
+                inmuebles = repositorio_Inmueble.MisInmuebles(IDUsuarioActual);
+                ViewBag.Todos = false;
+            }
+
+            return View(inmuebles);
+        }
 
         // Obtener por ID
         [AllowAnonymous]

@@ -15,9 +15,9 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Listar
-        public IActionResult Indice() {
-            var inquilinos = repositorio.ObtenerTodos();
-            return View(inquilinos);
+        public IActionResult Indice(int? id) {
+            if (id != null) return View(repositorio.ObtenerTodos(id));
+            return View(repositorio.ObtenerTodos(null));
         }
 
         // Crear

@@ -51,7 +51,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Crear
         [HttpGet]
-        public IActionResult Crear() { return View(new Propietario()); }
+        public IActionResult Crear() { return View(); }
 
         // Crear
         [HttpPost, ValidateAntiForgeryToken]

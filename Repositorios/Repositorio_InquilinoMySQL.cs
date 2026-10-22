@@ -98,18 +98,29 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         }
 
         // OBTENER TODOS
-        public IList<Inquilino> ObtenerTodos() {
+        public IList<Inquilino> ObtenerTodos(int? id) {
             var inquilinos = new List<Inquilino>();
 
             using (var connection = new MySqlConnection(connectionString)) {
-                string sql = @"
-                    SELECT *
-                    FROM Inquilinos
-                ";
+                string sql;
+                if (id == null) {
+                    sql = @"
+                        SELECT *
+                        FROM Inquilinos
+                    ";
+                } else {
+                    sql = @"
+                        SELECT i.*
+                        FROM Inquilinos AS i
+                        JOIN Reservas r ON r.id_inquilino = i.id
+                        WHERE r.id_inmueble = @id AND r.estado = 1
+                    ";
+                }
 
                 using (var command = new MySqlCommand(sql, connection)) {
-                    connection.Open();
+                    if (id != null) command.Parameters.AddWithValue("@id", id);
 
+                    connection.Open();
                     using (var reader = command.ExecuteReader()) {
                         while (reader.Read()) {
                             Inquilino inquilino = new Inquilino {

@@ -51,9 +51,12 @@
             <dd class="col-sm-9"><b>@Model.Tipo_Inmueble.Nombre</b><p>@Model.Tipo_Inmueble.Descripcion</p></dd>
 
             <dt class="col-sm-3">Propietario</dt>
-            <dd class="col-sm-9">@(Model.Propietario.ApellidoYNombre)
-                <a href="/Propietario_/Detalles/@Model.Propietario.id">Detalles</a>
-            </dd>
+            <dd class="col-sm-9">@(Model.Propietario.ApellidoYNombre)<a asp-action="Detalles" asp-route-id="@Model.id">Detalles</a></dd>
+
+            @if (Model.ID_Propietario.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Administrador")) {
+                <dt class="col-sm-3">Inquilinos</dt>
+                <dd class="col-sm-3"><a asp-action="Indice" asp-controller="Inquilino_" asp-route-id="@Model.id">Ver</a></dd>
+            }
         </dl>
     </div>
     <div>

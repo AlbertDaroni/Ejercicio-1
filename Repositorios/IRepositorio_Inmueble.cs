@@ -11,6 +11,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         int Modificacion (Inmueble inmueble);
 
         IList<Inmueble> ObtenerTodos ();
+        IList<Inmueble> MisInmuebles (int id);
         Inmueble? ObtenerPorID (int id);
         IList<Inmueble> ObtenerPorDireccion (string direccion);
     }

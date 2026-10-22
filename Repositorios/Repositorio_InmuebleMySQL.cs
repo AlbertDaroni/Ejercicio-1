@@ -160,6 +160,62 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return inmuebles;
         }
 
+        // OBTENER LOS MÍOS
+        public IList<Inmueble> MisInmuebles(int id) {
+            var inmuebles = new List<Inmueble>();
+
+            string sql = @"
+                SELECT 
+                    i.id AS InmuebleID, i.Direccion, i.Cupo, i.Latitud, i.Longitud, 
+                    i.Precio_Dia, i.Porcentaje_Seña, i.Estado, i.id_propietario, i.id_tipo, 
+                    p.id AS PropietarioID, p.Nombre AS PropietarioNombre, p.Apellido, 
+                    ti.id AS TipoID, ti.Nombre AS TipoNombre, ti.Descripcion AS TipoDescripcion 
+                FROM Inmuebles i 
+                JOIN Propietarios p ON i.id_propietario = p.id 
+                JOIN Tipo_Inmuebles ti ON i.id_tipo = ti.id 
+                WHERE i.id_propietario = @id 
+                ORDER BY i.Direccion ASC;
+            ";
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(sql, connection)) {
+                command.Parameters.AddWithValue("@id", id);
+
+                connection.Open();
+                using (var reader = command.ExecuteReader()) {
+                    while (reader.Read()) {
+                        var inmueble = new Inmueble {
+                            id = reader.GetInt32("InmuebleID"),
+                            Direccion = reader.GetString("Direccion"),
+                            Cupo = reader.GetInt32("Cupo"),
+                            Latitud = reader.GetDecimal("Latitud"),
+                            Longitud = reader.GetDecimal("Longitud"),
+                            Precio_Dia = reader.GetDecimal("Precio_Dia"),
+                            Porcentaje_Seña = reader.GetDecimal("Porcentaje_Seña"),
+                            Estado = reader.GetString("Estado"),
+                            ID_Propietario = reader.GetInt32("id_propietario"),
+                            ID_Tipo = reader.GetInt32("id_tipo"),
+
+                            Propietario = new Propietario {
+                                id = reader.GetInt32("PropietarioID"),
+                                Nombre = reader.GetString("PropietarioNombre"),
+                                Apellido = reader.GetString("Apellido")
+                            },
+                            Tipo_Inmueble = new Tipo_Inmueble {
+                                id = reader.GetInt32("TipoID"),
+                                Nombre = reader.GetString("TipoNombre"),
+                                Descripcion = reader.GetString("TipoDescripcion")
+                            }
+                        };
+                        inmuebles.Add(inmueble);
+                    }
+                }
+                connection.Close();
+            }
+
+            return inmuebles;
+        }
+
         // OBTENER POR ATRIBUTO (Dirección, ID)
         public IList<Inmueble> ObtenerPorDireccion(string direccion) {
             var inmuebles = new List<Inmueble>();

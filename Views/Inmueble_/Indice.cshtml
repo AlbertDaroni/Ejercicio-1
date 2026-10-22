@@ -1,4 +1,3 @@
-@using System.Security.Claims
 @model IEnumerable<Inmobiliaria_.Net_Core.Models.Inmueble>
 
 @{ ViewData["Title"] = "Inmuebles"; }
@@ -6,7 +5,18 @@
 <h1>Inmuebles</h1>
 
 @if (TempData["Mensaje"] != null) {
-    <div class="alert alert-success">@TempData["Mensaje"]</div>
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+@if (User.IsInRole("Administrador") || User.IsInRole("Propietario")) {
+    @if (ViewBag.Todos == true) {
+        <a asp-action="Indice" asp-route-todos="false" class="btn btn-primary">Mis inmuebles</a>
+    } else {
+        <a asp-action="Indice" asp-route-todos="true" class="btn btn-primary">Todos los inmuebles</a>
+    }
 }
 
 @if (User.Identity != null && User.Identity.IsAuthenticated) {

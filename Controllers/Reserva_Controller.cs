@@ -39,7 +39,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
                 Inmueble = inmueble
             };
 
-            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre");
+            ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(null), "id", "ApellidoYNombre");
 
             return View(reserva);
         }
@@ -108,7 +108,7 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             IActionResult retornar() {
                 reserva.Inmueble = repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
-                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(), "id", "ApellidoYNombre", reserva.ID_Inquilino);
+                ViewBag.Inquilinos = new SelectList(repositorio_Inquilino.ObtenerTodos(null), "id", "ApellidoYNombre", reserva.ID_Inquilino);
 
                 return View(reserva);
             }

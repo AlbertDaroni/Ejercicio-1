@@ -10,7 +10,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         int Baja(int id);
         int Modificacion(Inquilino inquilino);
 
-        IList<Inquilino> ObtenerTodos();
+        IList<Inquilino> ObtenerTodos(int? id);
         Inquilino? ObtenerPorID(int id);
 
         Inquilino? ObtenerPorEmail(string email);
