@@ -56,7 +56,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
         [HttpPost]
         public IActionResult Crear(Reserva reserva)
         {
-            ModelState.Remove(nameof(reserva.Estado));            
+            ModelState.Remove(nameof(reserva.Estado));
             ModelState.Remove(nameof(reserva.ID_Usuario_Creador));
             ModelState.Remove(nameof(reserva.ID_Usuario_Finalizador));
             /*
@@ -68,7 +68,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
             */
 
             if (reserva.ID_Inquilino <= 0 ||
-                repositorio_Inquilino.ObtenerPorID(reserva.ID_Inquilino) == null) {
+                repositorio_Inquilino.ObtenerPorID(reserva.ID_Inquilino) == null)
+            {
                 ModelState.AddModelError(
                     nameof(reserva.ID_Inquilino),
                     "Seleccioná un inquilino válido."
@@ -100,7 +101,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             int IDUsuarioActual = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             reserva.ID_Usuario_Creador = IDUsuarioActual;
-            
+
             var inmueble = repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
             if (inmueble == null) return NotFound();
 
@@ -130,7 +131,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             return RedirectToAction(nameof(Indice));
 
-            IActionResult retornar(){
+            IActionResult retornar()
+            {
                 reserva.Inmueble =
                     repositorio_Inmueble.ObtenerPorID(reserva.ID_Inmueble);
 
@@ -141,36 +143,202 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     reserva.ID_Inquilino
                 );
 
-                 return View(reserva);
+                return View(reserva);
             }
+        }
+
+        private decimal CalcularMulta(
+            Reserva reserva,
+            DateTime fechaEfectiva
+            )
+        {
+            if (fechaEfectiva < reserva.Fecha_Inicio ||
+                fechaEfectiva > reserva.Fecha_Fin_Original)
+            {
+                throw new ArgumentException(
+                    "La fecha efectiva debe estar entre el inicio y el fin original."
+                );
+            }
+
+            if (fechaEfectiva == reserva.Fecha_Fin_Original)
+            {
+                return 0m;
+            }
+
+            decimal duracionOriginal = (decimal)(
+                reserva.Fecha_Fin_Original - reserva.Fecha_Inicio
+            ).TotalDays;
+
+            if (duracionOriginal <= 0m)
+            {
+                throw new ArgumentException(
+                    "La reserva debe tener una duración mayor que cero."
+                );
+            }
+
+            decimal tiempoCumplido = (decimal)(
+                fechaEfectiva - reserva.Fecha_Inicio
+            ).TotalDays;
+
+            decimal diasRestantes = (decimal)(
+                reserva.Fecha_Fin_Original - fechaEfectiva
+            ).TotalDays;
+
+            decimal porcentaje = tiempoCumplido < duracionOriginal / 2m
+                ? 0.50m
+                : 0.25m;
+
+            decimal importeRestante = diasRestantes * reserva.Monto_Dia;
+
+            return Math.Round(
+                importeRestante * porcentaje,
+                2,
+                MidpointRounding.AwayFromZero
+            );
         }
 
         // Eliminar
         [HttpGet, Authorize(Roles = "Administrador")]
-        public IActionResult Eliminar(int id)
-        {
+        public IActionResult Eliminar(int id) {
             var reserva = repositorio_Reserva.ObtenerPorID(id);
             if (reserva == null) return NotFound();
-            return View(reserva);
+
+            if (reserva.Estado != "1") {
+                TempData["Mensaje"] = "La reserva ya está finalizada.";
+                return RedirectToAction(nameof(Indice));
+            }
+
+            var fecha = DateTime.Now;
+
+            if (fecha < reserva.Fecha_Inicio)
+                fecha = reserva.Fecha_Inicio;
+
+            if (fecha > reserva.Fecha_Fin_Original)
+                fecha = reserva.Fecha_Fin_Original;
+
+            return View(new FinalizarReservaViewModel {
+                ID_Reserva = reserva.id,
+                Fecha_Fin_Efectiva = fecha,
+                Reserva = reserva
+            });
         }
 
-        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador")]
-        public IActionResult ConfirmarEliminar(int id)
-        {
-            var reserva = repositorio_Reserva.ObtenerPorID(id);
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult CalcularFinalizacion(
+            FinalizarReservaViewModel modelo
+        ) {
+            var reserva = repositorio_Reserva.ObtenerPorID(modelo.ID_Reserva);
             if (reserva == null) return NotFound();
 
-            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (idUsuarioClaim == null) return Unauthorized();
+            // Estos valores siempre se obtienen o calculan en el servidor.
+            ModelState.Remove(nameof(modelo.Reserva));
+            ModelState.Remove(nameof(modelo.MultaCalculada));
+            ModelState.Remove(nameof(modelo.CalculoRealizado));
+            ModelState.Remove(nameof(modelo.ConfirmarPagoMulta));
 
-            int idUsuario = int.Parse(idUsuarioClaim);
+            modelo.Reserva = reserva;
+            modelo.CalculoRealizado = false;
+            modelo.MultaCalculada = 0m;
+            modelo.ConfirmarPagoMulta = false;
 
-            repositorio_Reserva.Baja(id, idUsuario);
+            if (reserva.Estado != "1") {
+                ModelState.AddModelError("", "La reserva ya está finalizada.");
+            }
 
-            logger.LogInformation($"Se finalizó correctamente la Reserva con el ID: {id}");
-            TempData["Mensaje"] = "La reserva se finalizó correctamente.";
+            if (ModelState.IsValid && modelo.Fecha_Fin_Efectiva.HasValue) {
+                try {
+                    modelo.MultaCalculada = CalcularMulta(
+                        reserva,
+                        modelo.Fecha_Fin_Efectiva.Value
+                    );
 
-            return RedirectToAction(nameof(Indice));
+                    modelo.CalculoRealizado = true;
+                }
+                catch (ArgumentException error) {
+                    ModelState.AddModelError(
+                        nameof(modelo.Fecha_Fin_Efectiva),
+                        error.Message
+                    );
+                }
+            }
+
+            return View("Eliminar", modelo);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult ConfirmarEliminar(
+            FinalizarReservaViewModel modelo
+        ) {
+            if (!int.TryParse(
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                out int idUsuario
+            )) {
+                return Unauthorized();
+            }
+
+            var reserva = repositorio_Reserva.ObtenerPorID(modelo.ID_Reserva);
+            if (reserva == null) return NotFound();
+
+            ModelState.Remove(nameof(modelo.Reserva));
+            ModelState.Remove(nameof(modelo.MultaCalculada));
+            ModelState.Remove(nameof(modelo.CalculoRealizado));
+
+            modelo.Reserva = reserva;
+            modelo.CalculoRealizado = false;
+            modelo.MultaCalculada = 0m;
+
+            if (reserva.Estado != "1") {
+                ModelState.AddModelError(
+                    "", "La reserva ya está finalizada."
+                );
+            }
+
+            if (ModelState.IsValid && modelo.Fecha_Fin_Efectiva.HasValue) {
+                try {
+                    modelo.MultaCalculada = CalcularMulta(
+                        reserva,
+                        modelo.Fecha_Fin_Efectiva.Value
+                    );
+
+                    modelo.CalculoRealizado = true;
+
+                    if (modelo.MultaCalculada > 0m &&
+                        !modelo.ConfirmarPagoMulta) {
+                        ModelState.AddModelError(
+                            nameof(modelo.ConfirmarPagoMulta),
+                            "Confirmá que recibiste el pago de la multa."
+                        );
+                    }
+
+                    if (ModelState.IsValid) {
+                        repositorio_Reserva.FinalizarConPago(
+                            reserva.id,
+                            modelo.Fecha_Fin_Efectiva.Value,
+                            idUsuario,
+                            modelo.ConfirmarPagoMulta
+                        );
+
+                        TempData["Mensaje"] =
+                            "La reserva se finalizó correctamente.";
+
+                        return RedirectToAction(nameof(Indice));
+                    }
+                }
+                catch (ArgumentException error) {
+                    ModelState.AddModelError(
+                        nameof(modelo.Fecha_Fin_Efectiva),
+                        error.Message
+                    );
+                }
+                catch (InvalidOperationException error) {
+                    modelo.CalculoRealizado = false;
+                    ModelState.AddModelError("", error.Message);
+                }
+            }
+
+            return View("Eliminar", modelo);
         }
 
         // Modificar
@@ -278,6 +446,132 @@ namespace Inmobiliaria_.Net_Core.Controllers
             var reserva = repositorio_Reserva.ObtenerPorID(id);
             if (reserva == null) return NotFound();
             return View(reserva);
+        }
+
+        [HttpGet]
+        public IActionResult Renovar(int id) {
+            var original = repositorio_Reserva.ObtenerPorID(id);
+            if (original == null) return NotFound();
+
+            var inmueble = repositorio_Inmueble.ObtenerPorID(
+                original.ID_Inmueble
+            );
+
+            if (inmueble == null) return NotFound();
+
+            if (inmueble.Estado != "1") {
+                TempData["Mensaje"] =
+                    "El inmueble está suspendido y no admite nuevas reservas.";
+
+                return RedirectToAction(nameof(Indice));
+            }
+
+            var inicio = original.Fecha_Fin_Efectiva;
+
+            if (inicio < DateTime.Now)
+                inicio = DateTime.Now.AddHours(1);
+
+            return View(new RenovarReservaViewModel {
+                ID_ReservaOriginal = original.id,
+                Fecha_Inicio = inicio,
+                Fecha_Fin = inicio.AddDays(1),
+                Monto_Dia = inmueble.Precio_Dia,
+                ReservaOriginal = original
+            });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Renovar(RenovarReservaViewModel modelo) {
+            var original = repositorio_Reserva.ObtenerPorID(
+                modelo.ID_ReservaOriginal
+            );
+
+            if (original == null) return NotFound();
+
+            var inmueble = repositorio_Inmueble.ObtenerPorID(
+                original.ID_Inmueble
+            );
+
+            if (inmueble == null) return NotFound();
+
+            ModelState.Remove(nameof(modelo.ReservaOriginal));
+            modelo.ReservaOriginal = original;
+
+            if (inmueble.Estado != "1") {
+                ModelState.AddModelError(
+                    "", "El inmueble está suspendido y no admite nuevas reservas."
+                );
+            }
+
+            if (modelo.Fecha_Inicio.HasValue) {
+                if (modelo.Fecha_Inicio.Value < DateTime.Now) {
+                    ModelState.AddModelError(
+                        nameof(modelo.Fecha_Inicio),
+                        "El inicio no puede ser anterior al momento actual."
+                    );
+                }
+
+                if (modelo.Fecha_Inicio.Value < original.Fecha_Fin_Efectiva) {
+                    ModelState.AddModelError(
+                        nameof(modelo.Fecha_Inicio),
+                        "La renovación debe comenzar desde el fin efectivo de la reserva original."
+                    );
+                }
+            }
+
+            if (modelo.Fecha_Inicio.HasValue &&
+                modelo.Fecha_Fin.HasValue &&
+                modelo.Fecha_Fin.Value <= modelo.Fecha_Inicio.Value) {
+                ModelState.AddModelError(
+                    nameof(modelo.Fecha_Fin),
+                    "El fin debe ser posterior al inicio."
+                );
+            }
+
+            if (!ModelState.IsValid)
+                return View(modelo);
+
+            bool superpuesta = repositorio_Reserva.ExisteSuperposicion(
+                original.ID_Inmueble,
+                modelo.Fecha_Inicio!.Value,
+                modelo.Fecha_Fin!.Value
+            );
+
+            if (superpuesta) {
+                ModelState.AddModelError(
+                    "", "El inmueble ya está reservado en esas fechas."
+                );
+
+                return View(modelo);
+            }
+
+            if (!int.TryParse(
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                out int idUsuario
+            )) {
+                return Unauthorized();
+            }
+
+            var nueva = new Reserva {
+                Fecha_Creacion = DateTime.Now,
+                Fecha_Inicio = modelo.Fecha_Inicio.Value,
+                Fecha_Fin_Original = modelo.Fecha_Fin.Value,
+                Fecha_Fin_Efectiva = modelo.Fecha_Fin.Value,
+                Monto_Dia = modelo.Monto_Dia!.Value,
+                Multa = 0m,
+                Estado = "1",
+                ID_Inquilino = original.ID_Inquilino,
+                ID_Inmueble = original.ID_Inmueble,
+                ID_Usuario_Creador = idUsuario,
+                ID_Usuario_Finalizador = null
+            };
+
+            repositorio_Reserva.Alta(nueva);
+
+            TempData["Mensaje"] =
+                $"Se creó la reserva #{nueva.id} como renovación de la #{original.id}.";
+
+            return RedirectToAction(nameof(Detalles), new { id = nueva.id });
         }
     }
 }
