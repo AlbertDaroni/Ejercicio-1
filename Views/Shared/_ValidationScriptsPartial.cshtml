@@ -1,2 +1,39 @@
 ﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $.extend($.validator.messages, {
+        required: "Este campo es obligatorio.",
+        email: "Ingresá un correo válido.",
+        number: "Ingresá un número válido.",
+        min: $.validator.format("Ingresá un valor mayor o igual a {0}."),
+        max: $.validator.format("Ingresá un valor menor o igual a {0}."),
+        range: $.validator.format("Ingresá un valor entre {0} y {1}.")
+    });
+
+    function convertirDecimal(valor) {
+        return Number(valor.trim().replace(",", "."));
+    }
+
+    $.validator.methods.number = function (value, element) {
+        return this.optional(element) ||
+            /^[+-]?(?:\d+(?:[.,]\d+)?|[.,]\d+)$/.test(value.trim());
+    };
+
+    $.validator.methods.min = function (value, element, param) {
+        return this.optional(element) ||
+            convertirDecimal(value) >= Number(param);
+    };
+
+    $.validator.methods.max = function (value, element, param) {
+        return this.optional(element) ||
+            convertirDecimal(value) <= Number(param);
+    };
+
+    $.validator.methods.range = function (value, element, param) {
+        const numero = convertirDecimal(value);
+
+        return this.optional(element) ||
+            (numero >= Number(param[0]) && numero <= Number(param[1]));
+    };
+</script>

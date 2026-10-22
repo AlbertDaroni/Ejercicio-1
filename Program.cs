@@ -2,6 +2,8 @@ using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,13 @@ builder.Services.AddScoped<IRepositorio_Usuario, Repositorio_UsuarioMySQL>();
 builder.Services.AddScoped<IRepositorio_Pago, Repositorio_PagoMySQL>();
 
 var app = builder.Build();
+var culturas = new[] { new CultureInfo("es-AR") };
+
+app.UseRequestLocalization(new RequestLocalizationOptions {
+    DefaultRequestCulture = new RequestCulture("es-AR"),
+    SupportedCultures = culturas,
+    SupportedUICultures = culturas
+});
 
 // Configuración del pipeline HTTP
 if (!app.Environment.IsDevelopment()) {

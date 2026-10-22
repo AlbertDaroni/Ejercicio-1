@@ -142,6 +142,8 @@ VALUES  ('Av. de la Constitución 12', 4, 40.41677500, -3.70379000, 85.00, 20.00
 CREATE TABLE Imagen_Inmuebles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     url VARCHAR(255) NOT NULL,
+    esPortada INT NOT NULL DEFAULT 0,
+    orden INT NOT NULL DEFAULT 0,
     id_inmueble INT,
 
     CONSTRAINT fk_imagen_inmuebles_inmueble

@@ -4,9 +4,11 @@ using Inmobiliaria_.Net_Core.Repositorios;
 using Microsoft.AspNetCore.Mvc.Rendering; // Para usar SelectList.
 using Microsoft.AspNetCore.Authorization; // Para usar autorización.
 
-namespace Inmobiliaria_.Net_Core.Controllers {
+namespace Inmobiliaria_.Net_Core.Controllers
+{
     [Authorize]
-    public class Inmueble_Controller : Controller {
+    public class Inmueble_Controller : Controller
+    {
         private readonly IWebHostEnvironment environment;
         private readonly IRepositorio_Inmueble repositorio_Inmueble;
         private readonly IRepositorio_Imagen_Inmueble repositorio_Imagen_Inmueble;
@@ -23,7 +25,8 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             IRepositorio_Imagen_Inmueble repositorio_Imagen_Inmueble,
             IRepositorio_Tipo_Inmueble repositorio_Tipo_Inmueble,
             ILogger<Inmueble_Controller> logger
-        ) {
+        )
+        {
             this.environment = environment;
             this.repositorio_Inmueble = repositorio_Inmueble;
             this.repositorio_Imagen_Inmueble = repositorio_Imagen_Inmueble;
@@ -53,7 +56,8 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(Inmueble inmueble, List<IFormFile> ArchivosImagenes) {
+        public async Task<IActionResult> Crear(Inmueble inmueble, List<IFormFile> ArchivosImagenes)
+        {
             //var IDUsuarioActual = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 
             if (!ModelState.IsValid)
@@ -91,7 +95,8 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
             repositorio_Inmueble.Alta(inmueble);
 
-            if (ArchivosImagenes != null && ArchivosImagenes.Count > 0) {
+            if (ArchivosImagenes != null && ArchivosImagenes.Count > 0)
+            {
                 string carpetaUploads = Path.Combine(
                     Directory.GetCurrentDirectory(),
                     "wwwroot",
@@ -101,19 +106,22 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
                 Directory.CreateDirectory(carpetaUploads);
 
-                foreach (var archivo in ArchivosImagenes) {
-                    if (archivo.Length > 0) {
+                foreach (var archivo in ArchivosImagenes)
+                {
+                    if (archivo.Length > 0)
+                    {
                         string nombreArchivoUnico = Guid.NewGuid().ToString() + "_" + Path.GetFileName(archivo.FileName);
                         string rutaCompletaDisco = Path.Combine(carpetaUploads, nombreArchivoUnico);
 
                         using (var stream = new FileStream(rutaCompletaDisco, FileMode.Create)) { await archivo.CopyToAsync(stream); }
 
-                        var nuevaImagen = new Imagen_Inmueble {
-                            ID_Inmueble = inmueble.id, 
+                        var nuevaImagen = new Imagen_Inmueble
+                        {
+                            ID_Inmueble = inmueble.id,
                             URL = "/uploads/inmuebles/" + nombreArchivoUnico
                         };
-                        
-                        repositorio_Imagen_Inmueble.Alta(nuevaImagen); 
+
+                        repositorio_Imagen_Inmueble.Alta(nuevaImagen);
                     }
                 }
             }
@@ -126,31 +134,35 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Eliminar
         [HttpGet, Authorize(Roles = "Administrador, Propietario")]
-        public IActionResult Eliminar(int id) {
+        public IActionResult Eliminar(int id)
+        {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();
             return View(inmueble);
         }
 
         [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador, Propietario")]
-        public IActionResult ConfirmarEliminar(int id) {
+        public IActionResult ConfirmarEliminar(int id)
+        {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();
 
             var imagenes = repositorio_Imagen_Inmueble.ObtenerTodos(id);
-            if (imagenes != null) {
-                foreach (var imagen in imagenes) { 
+            if (imagenes != null)
+            {
+                foreach (var imagen in imagenes)
+                {
                     string rutaRelativaLimpia = imagen.URL.TrimStart('/');
                     string rutaFisicaArchivo = Path.Combine(environment.WebRootPath, rutaRelativaLimpia);
 
                     if (System.IO.File.Exists(rutaFisicaArchivo)) System.IO.File.Delete(rutaFisicaArchivo);
 
-                    repositorio_Imagen_Inmueble.Baja(imagen.id); 
+                    repositorio_Imagen_Inmueble.Baja(imagen.id);
                 }
             }
 
             repositorio_Inmueble.Baja(id);
-            
+
             logger.LogInformation($"Se eliminó correctamente el Inmueble con el ID: {id}");
             TempData["Mensaje"] = "Se eliminó correctamente.";
 
@@ -159,50 +171,57 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Modificar
         [HttpGet, Authorize(Roles = "Administrador, Propietario")]
-        public IActionResult Modificar(int id) {
+        public IActionResult Modificar(int id)
+        {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();
 
             ViewBag.Tipo_Inmuebles = new SelectList(repositorio_Tipo_Inmueble.ObtenerTodos(), "id", "Nombre");
-            ViewBag.Propietario = repositorio_Propietario.ObtenerPorID(int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value));
+            ViewBag.Propietarios = new SelectList(repositorio_Propietario.ObtenerTodos(), "id", "ApellidoYNombre", inmueble.ID_Propietario);
             ViewBag.Imagenes = repositorio_Imagen_Inmueble.ObtenerTodos(id);
 
             return View(inmueble);
         }
 
         [HttpPost, Authorize(Roles = "Administrador, Propietario")]
-        public async Task<IActionResult> Modificar(int id, Inmueble inmueble, List<IFormFile> ArchivosImagenes) {
+        public async Task<IActionResult> Modificar(int id, Inmueble inmueble, List<IFormFile> ArchivosImagenes)
+        {
             if (id != inmueble.id) return BadRequest();
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 ViewBag.Tipo_Inmuebles = new SelectList(repositorio_Tipo_Inmueble.ObtenerTodos(), "id", "Nombre");
-                ViewBag.Propietario = repositorio_Propietario.ObtenerPorID(int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value));
+                ViewBag.Propietarios = new SelectList(repositorio_Propietario.ObtenerTodos(), "id", "ApellidoYNombre", inmueble.ID_Propietario);
                 ViewBag.Imagenes = repositorio_Imagen_Inmueble.ObtenerTodos(id);
 
                 return View(inmueble);
             }
-            
+
             var inmuebleExistente = repositorio_Inmueble.ObtenerPorID(id);
             if (inmuebleExistente == null) return NotFound();
 
-            if (ArchivosImagenes != null && ArchivosImagenes.Count > 0) {
+            if (ArchivosImagenes != null && ArchivosImagenes.Count > 0)
+            {
                 string carpetaUploads = Path.Combine(environment.WebRootPath, "uploads", "inmuebles");
                 if (!Directory.Exists(carpetaUploads)) Directory.CreateDirectory(carpetaUploads);
 
-                foreach (var archivo in ArchivosImagenes) {
-                    if (archivo.Length > 0) {
+                foreach (var archivo in ArchivosImagenes)
+                {
+                    if (archivo.Length > 0)
+                    {
                         string nombreArchivoUnico = Guid.NewGuid().ToString() + "_" + Path.GetFileName(archivo.FileName);
                         string rutaCompletaDisco = Path.Combine(carpetaUploads, nombreArchivoUnico);
 
                         using (var stream = new FileStream(rutaCompletaDisco, FileMode.Create)) { await archivo.CopyToAsync(stream); }
 
-                        var nuevaImagen = new Imagen_Inmueble {
+                        var nuevaImagen = new Imagen_Inmueble
+                        {
                             ID_Inmueble = id,
                             EsPortada = 0,
                             Orden = 0,
                             URL = "/uploads/inmuebles/" + nombreArchivoUnico
                         };
-                        
-                        repositorio_Imagen_Inmueble.Alta(nuevaImagen); 
+
+                        repositorio_Imagen_Inmueble.Alta(nuevaImagen);
                     }
                 }
             }
@@ -220,9 +239,14 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Obtener por ID
         [AllowAnonymous]
-        public IActionResult Detalles(int id) {
+        public IActionResult Detalles(int id)
+        {
             var inmueble = repositorio_Inmueble.ObtenerPorID(id);
             if (inmueble == null) return NotFound();
+
+            inmueble.Imagenes =
+                repositorio_Imagen_Inmueble.ObtenerTodos(id).ToList();
+
             return View(inmueble);
         }
 
