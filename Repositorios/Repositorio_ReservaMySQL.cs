@@ -4,32 +4,38 @@ using System.Data;
 using MySqlConnector;
 using Inmobiliaria_.Net_Core.Models;
 
-namespace Inmobiliaria_.Net_Core.Repositorios {
-    public class Repositorio_ReservaMySQL : RepositorioBase, IRepositorio_Reserva {
-        public Repositorio_ReservaMySQL(IConfiguration configuration) : base(configuration) {}
+namespace Inmobiliaria_.Net_Core.Repositorios
+{
+    public class Repositorio_ReservaMySQL : RepositorioBase, IRepositorio_Reserva
+    {
+        public Repositorio_ReservaMySQL(IConfiguration configuration) : base(configuration) { }
 
-        public int Alta(Reserva r) {
+        public int Alta(Reserva r)
+        {
             int respuesta = -1;
-             r.Fecha_Creacion = DateTime.Now;
+            r.Fecha_Creacion = DateTime.Now;
+            r.Estado = "1";
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     
                     INSERT INTO Reservas (
                         fecha_creacion, fecha_inicio, fecha_fin_original,
-                        fecha_fin_efectiva, monto_dia, multa,
+                        fecha_fin_efectiva, monto_dia, multa, estado,
                         id_inquilino, id_inmueble, id_usuario_creador, id_usuario_finalizador
                     )
                     VALUES (
                         @fecha_creacion, @fecha_inicio, @fecha_fin_original,
-                        @fecha_fin_efectiva, @monto_dia, @multa,
+                        @fecha_fin_efectiva, @monto_dia, @multa, @estado,
                         @id_inquilino, @id_inmueble, @id_usuario_creador, @id_usuario_finalizador
                     );
 
                     SELECT LAST_INSERT_ID();
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@fecha_creacion", r.Fecha_Creacion);
@@ -42,6 +48,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     command.Parameters.AddWithValue("@id_inmueble", r.ID_Inmueble);
                     command.Parameters.AddWithValue("@id_usuario_creador", r.ID_Usuario_Creador);
                     command.Parameters.AddWithValue("@id_usuario_finalizador", r.ID_Usuario_Finalizador);
+                    command.Parameters.AddWithValue("@estado", r.Estado);
 
                     connection.Open();
                     respuesta = Convert.ToInt32(command.ExecuteScalar());
@@ -53,10 +60,12 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public int Modificacion(Reserva r) {
+        public int Modificacion(Reserva r)
+        {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     UPDATE Reservas
                     SET fecha_creacion = @fecha_creacion,
@@ -72,7 +81,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     WHERE id = @id;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@fecha_creacion", r.Fecha_Creacion);
@@ -96,17 +106,20 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public int Baja(int id, int idUsuario) {
+        public int Baja(int id, int idUsuario)
+        {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     UPDATE Reservas
                     SET estado = 0, id_usuario_finalizador = @idUsuario
                     WHERE id = @id;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@id", id);
@@ -121,20 +134,147 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return respuesta;
         }
 
-        public IList<Reserva> ObtenerTodos() {
+        public int FinalizarConPago(
+    int idReserva,
+    DateTime fechaEfectiva,
+    int idUsuario,
+    bool confirmarPagoMulta
+)
+        {
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            using var transaction = connection.BeginTransaction();
+
+            // Bloqueamos la reserva para evitar dos finalizaciones simultáneas.
+            DateTime inicio;
+            DateTime finOriginal;
+            decimal montoDia;
+            string estado;
+
+            using (var consultar = new MySqlCommand(@"
+        SELECT fecha_inicio, fecha_fin_original, monto_dia, estado
+        FROM Reservas
+        WHERE id = @id
+        FOR UPDATE;
+    ", connection, transaction))
+            {
+                consultar.Parameters.AddWithValue("@id", idReserva);
+
+                using var reader = consultar.ExecuteReader();
+
+                if (!reader.Read())
+                    throw new InvalidOperationException("La reserva no existe.");
+
+                inicio = reader.GetDateTime("fecha_inicio");
+                finOriginal = reader.GetDateTime("fecha_fin_original");
+                montoDia = reader.GetDecimal("monto_dia");
+                estado = reader.GetString("estado");
+            }
+
+            if (estado != "1")
+                throw new InvalidOperationException(
+                    "La reserva ya está finalizada."
+                );
+
+            if (finOriginal <= inicio || montoDia <= 0m)
+                throw new InvalidOperationException(
+                    "La reserva tiene una duración o un monto diario inválido."
+                );
+
+            if (fechaEfectiva < inicio || fechaEfectiva > finOriginal)
+                throw new InvalidOperationException(
+                    "La fecha efectiva debe estar entre el inicio y el fin original."
+                );
+
+            decimal duracion = (decimal)(finOriginal - inicio).TotalDays;
+            decimal cumplido = (decimal)(fechaEfectiva - inicio).TotalDays;
+            decimal restante = (decimal)(finOriginal - fechaEfectiva).TotalDays;
+
+            decimal porcentaje = cumplido < duracion / 2m ? 0.50m : 0.25m;
+
+            decimal multa = Math.Round(
+                restante * montoDia * porcentaje,
+                2,
+                MidpointRounding.AwayFromZero
+            );
+
+            if (multa > 0m && !confirmarPagoMulta)
+                throw new InvalidOperationException(
+                    "Debés confirmar el cobro de la multa para finalizar."
+                );
+
+            DateTime ahora = DateTime.Now;
+
+            if (multa > 0m)
+            {
+                using var registrarPago = new MySqlCommand(@"
+                    INSERT INTO Pagos (
+                        concepto, fecha_pago, importe, estado,
+                        id_reserva, id_usuario_creador
+                    )
+                    VALUES (
+                        @concepto, @fecha, @importe, '1',
+                        @reserva, @usuario
+                    );
+                ", connection, transaction);
+
+                registrarPago.Parameters.AddWithValue(
+                    "@concepto", "Multa por finalización anticipada"
+                );
+                registrarPago.Parameters.AddWithValue("@fecha", ahora);
+                registrarPago.Parameters.AddWithValue("@importe", multa);
+                registrarPago.Parameters.AddWithValue("@reserva", idReserva);
+                registrarPago.Parameters.AddWithValue("@usuario", idUsuario);
+
+                registrarPago.ExecuteNonQuery();
+            }
+
+            using var finalizar = new MySqlCommand(@"
+                UPDATE Reservas
+                SET estado = '0',
+                    fecha_fin_efectiva = @fecha,
+                    multa = @multa,
+                    id_usuario_finalizador = @usuario
+                WHERE id = @id AND estado = '1';
+            ", connection, transaction);
+
+            finalizar.Parameters.AddWithValue("@fecha", fechaEfectiva);
+            finalizar.Parameters.AddWithValue("@multa", multa);
+            finalizar.Parameters.AddWithValue("@usuario", idUsuario);
+            finalizar.Parameters.AddWithValue("@id", idReserva);
+
+            int filas = finalizar.ExecuteNonQuery();
+
+            if (filas != 1)
+                throw new InvalidOperationException(
+                    "No se pudo finalizar la reserva."
+                );
+
+            transaction.Commit();
+            return filas;
+        }
+
+        public IList<Reserva> ObtenerTodos()
+        {
             var reservas = new List<Reserva>();
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     SELECT *
                     FROM Reservas
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     connection.Open();
-                    using (var reader = command.ExecuteReader()) {
-                        while (reader.Read()) {
-                            Reserva reserva = new Reserva {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Reserva reserva = new Reserva
+                            {
                                 id = reader.GetInt32("id"),
                                 Estado = reader.GetString("estado"),
                                 Fecha_Creacion = reader.GetDateTime("Fecha_Creacion"),
@@ -146,7 +286,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 ID_Inquilino = reader.GetInt32("ID_Inquilino"),
                                 ID_Inmueble = reader.GetInt32("ID_Inmueble"),
                                 ID_Usuario_Creador = reader.GetInt32("ID_Usuario_Creador"),
-                                ID_Usuario_Finalizador =reader.IsDBNull(reader.GetOrdinal("id_usuario_finalizador"))? null
+                                ID_Usuario_Finalizador = reader.IsDBNull(reader.GetOrdinal("id_usuario_finalizador")) ? null
                                     : reader.GetInt32("id_usuario_finalizador"),
                             };
 
@@ -160,23 +300,29 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return reservas;
         }
 
-        public IList<Reserva> MisReservas(int id) {
+        public IList<Reserva> MisReservas(int id)
+        {
             var reservas = new List<Reserva>();
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     SELECT r.*
                     FROM Reservas r
                     WHERE id_inquilino = @id
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.Parameters.AddWithValue("@id", id);
 
                     connection.Open();
-                    using (var reader = command.ExecuteReader()) {
-                        while (reader.Read()) {
-                            Reserva reserva = new Reserva {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Reserva reserva = new Reserva
+                            {
                                 id = reader.GetInt32("id"),
                                 Estado = reader.GetString("estado"),
                                 Fecha_Creacion = reader.GetDateTime("Fecha_Creacion"),
@@ -188,7 +334,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                 ID_Inquilino = reader.GetInt32("ID_Inquilino"),
                                 ID_Inmueble = reader.GetInt32("ID_Inmueble"),
                                 ID_Usuario_Creador = reader.GetInt32("ID_Usuario_Creador"),
-                                ID_Usuario_Finalizador = reader.IsDBNull(reader.GetOrdinal("id_usuario_finalizador"))? null
+                                ID_Usuario_Finalizador = reader.IsDBNull(reader.GetOrdinal("id_usuario_finalizador")) ? null
                                     : reader.GetInt32("id_usuario_finalizador"),
                             };
 
@@ -202,8 +348,10 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return reservas;
         }
 
-        public bool ExisteSuperposicion(int idInmueble, DateTime fechaInicio, DateTime fechaFin, int? idReservaExcluir = null) {
-            using (var connection = new MySqlConnection(connectionString)) {
+        public bool ExisteSuperposicion(int idInmueble, DateTime fechaInicio, DateTime fechaFin, int? idReservaExcluir = null)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     SELECT COUNT(*)
                     FROM Reservas
@@ -214,7 +362,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     AND (@idReservaExcluir IS NULL OR id <> @idReservaExcluir);
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.Parameters.AddWithValue("@idInmueble", idInmueble);
                     command.Parameters.AddWithValue("@fechaInicio", fechaInicio);
                     command.Parameters.AddWithValue("@fechaFin", fechaFin);
@@ -232,10 +381,12 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             }
         }
 
-        public Reserva? ObtenerPorID(int id) {
+        public Reserva? ObtenerPorID(int id)
+        {
             Reserva? reserva = null;
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     SELECT 
                         r.*,
@@ -251,14 +402,19 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     WHERE r.id = @id
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.Parameters.AddWithValue("@id", id);
 
                     connection.Open();
-                    using (var reader = command.ExecuteReader()) {
-                        if (reader.Read()) {
-                            reserva = new Reserva {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            reserva = new Reserva
+                            {
                                 id = reader.GetInt32("id"),
+                                Estado = reader.GetString("estado"),
                                 Fecha_Creacion = reader.GetDateTime("Fecha_Creacion"),
                                 Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
                                 Fecha_Fin_Original = reader.GetDateTime("Fecha_Fin_Original"),
@@ -273,17 +429,20 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                                         ? null
                                         : reader.GetInt32("ID_Usuario_Finalizador"),
 
-                                Inquilino = new Inquilino {
+                                Inquilino = new Inquilino
+                                {
                                     id = reader.GetInt32("InqId"),
                                     Nombre = reader.GetString("InqNombre"),
                                     Apellido = reader.GetString("InqApellido")
                                 },
 
-                                Inmueble = new Inmueble {
+                                Inmueble = new Inmueble
+                                {
                                     id = reader.GetInt32("InmId")
                                 },
 
-                                Usuario_Creador = new Usuario {
+                                Usuario_Creador = new Usuario
+                                {
                                     Nombre = reader.GetString("U1Nombre"),
                                     Apellido = reader.GetString("U1Apellido"),
                                     Correo = reader.GetString("U1Correo"),

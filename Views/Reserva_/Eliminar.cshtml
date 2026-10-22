@@ -1,66 +1,101 @@
-@model Inmobiliaria_.Net_Core.Models.Reserva
+@model Inmobiliaria_.Net_Core.Models.FinalizarReservaViewModel
 
 @{
-    ViewData["Title"] = "Finalizar Reserva";
+    ViewData["Title"] = "Finalizar reserva";
 }
 
-<h1>Finalizar Reserva</h1>
-<h3>¿Está seguro que desea finalizar esta reserva?</h3>
+<h1>Finalizar reserva</h1>
 
-<hr />
+@if (Model.Reserva != null) {
+    <dl class="row">
+        <dt class="col-sm-4">Reserva</dt>
+        <dd class="col-sm-8">#@Model.ID_Reserva</dd>
 
-<dl class="row">
-    <dt class="col-sm-3">Fecha de creación</dt>
-    <dd class="col-sm-9">@Model.Fecha_Creacion</dd>
-    
-    <dt class="col-sm-3">Fecha de inicio</dt>
-    <dt class="col-sm-9">@Model.Fecha_Inicio</dt>
+        <dt class="col-sm-4">Inicio</dt>
+        <dd class="col-sm-8">
+            @Model.Reserva.Fecha_Inicio.ToString("dd/MM/yyyy HH:mm")
+        </dd>
 
-    <dt class="col-sm-3">Fecha fin original</dt>
-    <dt class="col-sm-9">@Model.Fecha_Fin_Original</dt>
+        <dt class="col-sm-4">Fin original</dt>
+        <dd class="col-sm-8">
+            @Model.Reserva.Fecha_Fin_Original.ToString("dd/MM/yyyy HH:mm")
+        </dd>
 
-    <dt class="col-sm-3">Fecha fin efectiva</dt>
-    <dt class="col-sm-9">@Model.Fecha_Fin_Efectiva</dt>
+        <dt class="col-sm-4">Monto diario</dt>
+        <dd class="col-sm-8">
+            @Model.Reserva.Monto_Dia.ToString("C")
+        </dd>
+    </dl>
+}
 
-    <dt class="col-sm-3">Monto</dt>
-    <dt class="col-sm-9">$@Model.Monto_Dia</dt>
+<form asp-action="CalcularFinalizacion" method="post">
+    <input type="hidden" asp-for="ID_Reserva" />
 
-    <dt class="col-sm-3">Multa</dt>
-    <dt class="col-sm-9">$@Model.Multa</dt>
-    
-    <dt class="col-sm-3">Estado</dt>
-    <dd class="col-sm-9">@(Model.Estado == "1" ? "Activa" : "Inactiva")</dd>
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger"></div>
 
-    <dt class="col-sm-3">Inquilino</dt>
-    <dd class="col-sm-9">@(Model.Inquilino.Apellido + " " + Model.Inquilino.Nombre)
-        <a href="/Inquilino_/Detalles/@Model.Inquilino.id">Detalles</a>
-    </dd>
+    <div class="mb-3">
+        <label asp-for="Fecha_Fin_Efectiva"
+               class="form-label"></label>
 
-    <dt class="col-sm-3">Inmueble</dt>
-    <dd class="col-sm-9"><a href="/Inmueble_/Detalles/@Model.Inmueble.id">Detalles</a></dd>
+        <input asp-for="Fecha_Fin_Efectiva"
+               type="datetime-local"
+               step="1"
+               asp-format="{0:yyyy-MM-ddTHH:mm:ss}"
+               class="form-control" />
 
-    <dt class="col-sm-3">Usuario creador</dt>
-    <dd class="col-sm-9">
-        <p class="col-sm-9">@Model.Usuario_Creador.Avatar</p>
-        <p class="col-sm-9">@(Model.Usuario_Creador.Apellido + " " + Model.Usuario_Creador.Nombre)</p>
-        <p class="col-sm-9">@Model.Usuario_Creador.Correo</p>
-    </dd>
+        <span asp-validation-for="Fecha_Fin_Efectiva"
+              class="text-danger"></span>
+    </div>
 
-    <dt class="col-sm-3">Usuario finalizador</dt>
-    <dd class="col-sm-9">
-        @if (Model.Usuario_Finalizador != null) {
-            <p>@Model.Usuario_Finalizador.Avatar</p>
-            <p>@Model.Usuario_Finalizador.Apellido @Model.Usuario_Finalizador.Nombre</p>
-            <p>@Model.Usuario_Finalizador.Correo</p>
-        } else {
-            <p>No finalizada</p>
-        }
-    </dd>
-</dl>
+    <button type="submit" class="btn btn-primary">
+        Calcular multa
+    </button>
 
-<form asp-action="ConfirmarEliminar" method="post">
-    <input type="hidden" asp-for="id">
-
-    <button type="submit" class="btn btn-danger">Finalizar</button>
-    <a asp-action="Indice" class="btn btn-secondary">Cancelar</a>
+    <a asp-action="Indice" class="btn btn-secondary">
+        Volver
+    </a>
 </form>
+
+@if (Model.CalculoRealizado) {
+    <div class="alert alert-info mt-3">
+        <p>
+            Finalización consultada:
+            <strong>
+                @(Model.Fecha_Fin_Efectiva?.ToString("dd/MM/yyyy HH:mm:ss"))
+            </strong>
+        </p>
+        <p>
+            Multa:
+            <strong>@Model.MultaCalculada.ToString("C")</strong>
+        </p>
+        <form asp-action="ConfirmarEliminar" method="post">
+            <input type="hidden" asp-for="ID_Reserva" />
+
+            <input type="hidden"
+                name="Fecha_Fin_Efectiva"
+                value="@(Model.Fecha_Fin_Efectiva?.ToString("yyyy-MM-ddTHH:mm:ss"))" />
+
+            @if (Model.MultaCalculada > 0m) {
+                <div class="form-check mb-3">
+                    <input asp-for="ConfirmarPagoMulta"
+                        class="form-check-input" />
+
+                    <label asp-for="ConfirmarPagoMulta"
+                        class="form-check-label"></label>
+                </div>
+
+                <span asp-validation-for="ConfirmarPagoMulta"
+                    class="text-danger"></span>
+            }
+
+            <button type="submit" class="btn btn-danger">
+                Confirmar finalización
+            </button>
+        </form>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

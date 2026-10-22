@@ -4,15 +4,19 @@ using System.Data;
 using MySqlConnector;
 using Inmobiliaria_.Net_Core.Models;
 
-namespace Inmobiliaria_.Net_Core.Repositorios {
-    public class Repositorio_PagoMySQL : RepositorioBase, IRepositorio_Pago {
-        public Repositorio_PagoMySQL(IConfiguration configuration) : base(configuration) {}
+namespace Inmobiliaria_.Net_Core.Repositorios
+{
+    public class Repositorio_PagoMySQL : RepositorioBase, IRepositorio_Pago
+    {
+        public Repositorio_PagoMySQL(IConfiguration configuration) : base(configuration) { }
 
         // CREACIÓN, MODIFICACIÓN y ELIMINACIÓN
-        public int Alta(Pago pago) {
+        public int Alta(Pago pago)
+        {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     INSERT INTO Pagos (
                         concepto,
@@ -38,7 +42,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     SELECT LAST_INSERT_ID();
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@concepto", pago.Concepto);
@@ -59,11 +64,13 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return respuesta;
         }
-       
-        public int Modificacion(Pago pago) {
+
+        public int Modificacion(Pago pago)
+        {
             int respuesta = -1;
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     UPDATE Pagos
                     SET
@@ -74,7 +81,8 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     WHERE id = @id;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.AddWithValue("@concepto", pago.Concepto);
@@ -95,12 +103,14 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return respuesta;
         }
-       
-        public int Baja(int id, int idUsuario) {
-                int respuesta = -1;
 
-                using (var connection = new MySqlConnection(connectionString)) {
-                    string sql = @"
+        public int Baja(int id, int idUsuario)
+        {
+            int respuesta = -1;
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
                         UPDATE Pagos
                         SET estado = 0,
                             fecha_anulacion = NOW(),
@@ -108,34 +118,39 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                         WHERE id = @id;
                     ";
 
-                    using (var command = new MySqlCommand(sql, connection)) {
-                        command.CommandType = CommandType.Text;
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
 
-                        command.Parameters.AddWithValue("@id", id);
-                        command.Parameters.AddWithValue("@idUsuario", idUsuario);
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@idUsuario", idUsuario);
 
-                        connection.Open();
-                        respuesta = command.ExecuteNonQuery();
-                        connection.Close();
-                    }
+                    connection.Open();
+                    respuesta = command.ExecuteNonQuery();
+                    connection.Close();
                 }
-
-                return respuesta;
             }
-        
-        public IList<Pago> ObtenerTodos() {
+
+            return respuesta;
+        }
+
+        public IList<Pago> ObtenerTodos()
+        {
             var pagos = new List<Pago>();
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     SELECT *
                     FROM Pagos
                     ORDER BY fecha_pago DESC;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     connection.Open();
-                    using (var reader = command.ExecuteReader()) {
+                    using (var reader = command.ExecuteReader())
+                    {
                         while (reader.Read()) { pagos.Add(MapearPago(reader)); }
                     }
                     connection.Close();
@@ -145,28 +160,26 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return pagos;
         }
 
-        public IList<Pago> MisPagos(int id) {
+        public IList<Pago> MisPagos(int id)
+        {
             var pagos = new List<Pago>();
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
-                    SELECT p.*, i.direccion
-                    FROM Pagos p
-                    JOIN Reservas r ON p.id_reserva = r.id
-                    JOIN Inmuebles i ON r.id_inmueble = i.id
-                    WHERE p.id_reserva IN (
-                        SELECT id
-                        FROM Reservas
-                        WHERE id_inquilino = @id
-                    )
-                    ORDER BY p.fecha_pago DESC;
-                ";
+                        SELECT p.*
+                        FROM Pagos p
+                        WHERE p.id_usuario_creador = @id
+                        ORDER BY p.fecha_pago DESC, p.id DESC;
+                    ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.Parameters.AddWithValue("@id", id);
 
                     connection.Open();
-                    using (var reader = command.ExecuteReader()) {
+                    using (var reader = command.ExecuteReader())
+                    {
                         while (reader.Read()) { pagos.Add(MapearPago(reader)); }
                     }
                     connection.Close();
@@ -175,23 +188,29 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return pagos;
         }
-        
-        public Pago? ObtenerPorID(int id) {
+
+        public Pago? ObtenerPorID(int id)
+        {
             Pago? pago = null;
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"SELECT *
                     FROM Pagos
                     WHERE id = @id
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.Parameters.AddWithValue("@id", id);
 
                     connection.Open();
-                    using (var reader = command.ExecuteReader()) {
-                        if (reader.Read()) {
-                            pago = new Pago {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            pago = new Pago
+                            {
                                 id = reader.GetInt32("id"),
                                 Concepto = reader.GetString("concepto"),
                                 Fecha_Pago = reader.GetDateTime("fecha_pago"),
@@ -216,11 +235,13 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return pago;
         }
-        
-        public IList<Pago> ObtenerPorReserva(int idReserva) {
+
+        public IList<Pago> ObtenerPorReserva(int idReserva)
+        {
             var pagos = new List<Pago>();
 
-            using (var connection = new MySqlConnection(connectionString)) {
+            using (var connection = new MySqlConnection(connectionString))
+            {
                 string sql = @"
                     SELECT
                         id,
@@ -237,11 +258,13 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     ORDER BY fecha_pago DESC;
                 ";
 
-                using (var command = new MySqlCommand(sql, connection)) {
+                using (var command = new MySqlCommand(sql, connection))
+                {
                     command.Parameters.AddWithValue("@id_reserva", idReserva);
 
                     connection.Open();
-                    using (var reader = command.ExecuteReader()) {
+                    using (var reader = command.ExecuteReader())
+                    {
                         while (reader.Read()) { pagos.Add(MapearPago(reader)); }
                     }
                     connection.Close();
@@ -250,11 +273,13 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return pagos;
         }
-        
+
         // MAPEO DE MYSQL -> PAGO 
         // Para evitar repeticiones de los metodos obtener, para evitar eso hacemos pagos.Add(MapearPago(reader));
-        private Pago MapearPago(MySqlDataReader reader) {
-            return new Pago {
+        private Pago MapearPago(MySqlDataReader reader)
+        {
+            return new Pago
+            {
                 id = reader.GetInt32("id"),
                 Concepto = reader.GetString("concepto"),
                 Fecha_Pago = reader.GetDateTime("fecha_pago"),
