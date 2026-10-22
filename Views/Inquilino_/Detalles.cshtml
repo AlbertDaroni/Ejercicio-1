@@ -24,9 +24,10 @@
     <dd class="col-sm-9">@Model.Correo</dd>
 </dl>
 
-<form asp-action="ConfirmarEliminar" method="post">
-    <input type="hidden" asp-for="id" />
-
-    <button type="submit" class="btn btn-danger">Eliminar</button>
+<div>
+    <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
+    @if (User.IsInRole("Administrador")) {                 
+        <a asp-action="Eliminar" asp-route-id="@Model.id" class="btn btn-danger">Eliminar</a>
+    }
     <button type="button" onclick="history.back()" class="btn btn-secondary">Volver</button>
-</form>
+</div>

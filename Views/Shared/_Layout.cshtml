@@ -42,7 +42,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Usuario_" asp-action="Detalles" asp-route-id="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value">
                                     <img src="@User.FindFirst(ClaimTypes.Uri)?.Value" width="50">
-                                    <span class="nav-link text-success">Hola, @User.Identity.Name</span>
+                                    <span>Hola, @User.Identity.Name</span>
                                 </a>
                             </li>
                         } else {
