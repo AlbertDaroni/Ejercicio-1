@@ -11,15 +11,26 @@
         <form asp-action="Crear" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
-                <label asp-for="ID_Propietario" class="form-label">
-                    Propietario
-                </label>
+                <label class="form-label">Propietario</label>
 
-                <select asp-for="ID_Propietario"
-                        asp-items="ViewBag.Propietarios"
-                        class="form-select">
-                    <option value="">Seleccione un propietario</option>
-                </select>
+                <input type="text"
+                    id="buscarPropietario"
+                    class="form-control"
+                    placeholder="Escriba el nombre o DNI del propietario"
+                    autocomplete="off" />
+
+                <input type="hidden" asp-for="ID_Propietario" />
+
+                <div id="resultadosPropietarios"
+                    class="list-group mt-2">
+                </div>
+
+                <button type="button"
+                        id="cargarMasPropietarios"
+                        class="btn btn-outline-primary btn-sm mt-2"
+                        style="display: none;">
+                    Cargar más propietarios
+                </button>
 
                 <span asp-validation-for="ID_Propietario"
                     class="text-danger"></span>
@@ -88,3 +99,108 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const buscador = document.getElementById("buscarPropietario");
+        const resultados = document.getElementById("resultadosPropietarios");
+        const idPropietario = document.getElementById("ID_Propietario");
+        const botonCargarMas = document.getElementById("cargarMasPropietarios");
+
+        let paginaActual = 1;
+        let temporizador;
+        let controladorBusqueda;
+        let cargando = false;
+
+        async function buscarPropietarios(nuevaBusqueda = false) {
+            if (nuevaBusqueda) {
+                paginaActual = 1;
+                resultados.innerHTML = "";
+            }
+
+            const busqueda = buscador.value.trim();
+
+            if (busqueda.length < 2 || cargando) return;
+
+            if (controladorBusqueda) {
+                controladorBusqueda.abort();
+            }
+
+            controladorBusqueda = new AbortController();
+            const solicitudActual = controladorBusqueda;
+            cargando = true;
+            botonCargarMas.style.display = "none";
+
+            try {
+                const url = `/Inmueble_/BuscarPropietarios?busqueda=${encodeURIComponent(busqueda)}&pagina=${paginaActual}`;
+
+                const respuesta = await fetch(url, {
+                    signal: solicitudActual.signal
+                });
+
+                if (!respuesta.ok) {
+                    throw new Error("Error al buscar propietarios");
+                }
+
+                const datos = await respuesta.json();
+
+                datos.resultados.forEach(propietario => {
+                    const boton = document.createElement("button");
+                    boton.type = "button";
+                    boton.className = "list-group-item list-group-item-action";
+                    boton.textContent = propietario.texto;
+
+                    boton.addEventListener("click", () => {
+                        buscador.value = propietario.texto;
+                        idPropietario.value = propietario.id;
+                        resultados.innerHTML = "";
+                        botonCargarMas.style.display = "none";
+                    });
+
+                    resultados.appendChild(boton);
+                });
+
+                if (datos.resultados.length === 0 && paginaActual === 1) {
+                    resultados.textContent = "No se encontraron propietarios.";
+                }
+
+                if (datos.hayMas) {
+                    botonCargarMas.style.display = "block";
+                }
+
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    console.error(error);
+                }
+            } finally {
+                cargando = false;
+            }
+        }
+
+        buscador.addEventListener("input", function () {
+            clearTimeout(temporizador);
+
+            if (controladorBusqueda) {
+                controladorBusqueda.abort();
+            }
+
+            idPropietario.value = "";
+            paginaActual = 1;
+            resultados.innerHTML = "";
+            botonCargarMas.style.display = "none";
+
+            if (buscador.value.trim().length < 2) return;
+
+            temporizador = setTimeout(() => {
+                buscarPropietarios(true);
+            }, 300);
+        });
+
+        botonCargarMas.addEventListener("click", function () {
+            if (cargando) return;
+
+            paginaActual++;
+            buscarPropietarios();
+        });
+    </script>
+}

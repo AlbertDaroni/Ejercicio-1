@@ -50,27 +50,16 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Crear
         [HttpGet]
-        public IActionResult Crear()
-        {
-            return View(new Propietario());
-        }
+        public IActionResult Crear() { return View(new Propietario()); }
 
         // Crear
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Crear(Propietario propietario)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(propietario);
-            }
+        public IActionResult Crear(Propietario propietario) {
+            if (!ModelState.IsValid) return View(propietario);
 
             repositorio_Propietario.Alta(propietario);
 
-            logger.LogInformation(
-                "Se registró correctamente el propietario con ID: {Id}",
-                propietario.id
-            );
-
+            logger.LogInformation("Se registró correctamente el propietario con ID: {Id}", propietario.id);
             TempData["Mensaje"] = "El propietario fue registrado correctamente.";
 
             return RedirectToAction(nameof(Indice));

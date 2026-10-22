@@ -1,10 +1,12 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 
+
 namespace Inmobiliaria_.Net_Core.Controllers {
-    [Authorize(Roles = "Administrador")]
+    [Authorize]
     public class Usuario_Controller : Controller {
         private readonly IRepositorio_Usuario repositorio;
         private readonly ILogger<Usuario_Controller> logger;
@@ -18,18 +20,18 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         // Listar
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public IActionResult Indice(bool todos = false) {
             var usuarios = repositorio.ObtenerTodos();
             return View(usuarios);
         }
 
         // Crear
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public IActionResult Crear() { return View(); }
 
         // Crear
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador")]
         public IActionResult Crear(Usuario usuario) {
             if (!ModelState.IsValid) return View(usuario);
 
@@ -58,9 +60,21 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Modificar
         [HttpGet]
-        public IActionResult Modificar(int id) {
+        public IActionResult Modificar(int id)
+        {
+            var idUsuarioActual = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(idUsuarioActual, out int idActual))
+                return Unauthorized();
+
+            if (!User.IsInRole("Administrador") && idActual != id)
+                return Forbid();
+
             var usuario = repositorio.ObtenerPorID(id);
-            if (usuario == null) return NotFound();
+
+            if (usuario == null)
+                return NotFound();
+
             return View(usuario);
         }
 
@@ -69,6 +83,19 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Modificar(int id, Usuario usuario) {
             if (id != usuario.id) return BadRequest();
+            var idUsuarioActual = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(idUsuarioActual, out int idActual))
+            {
+                return Unauthorized();
+            }
+
+            bool esAdministrador = User.IsInRole("Administrador");
+
+            if (!esAdministrador && idActual != id)
+            {
+                return Forbid();
+            }
             if (!ModelState.IsValid) return View(usuario);
 
             var usuarioConMismoCorreo = repositorio.ObtenerPorCorreo(usuario.Correo);
@@ -88,8 +115,9 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
 
         // Eliminar
-        [HttpGet]
-        public IActionResult Eliminar(int id) {
+       [HttpGet]
+       [Authorize(Roles = "Administrador")]
+       public IActionResult Eliminar(int id) {
             var usuario = repositorio.ObtenerPorID(id);
             if (usuario == null) return NotFound();
             return View(usuario);
@@ -97,7 +125,10 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
 
         // Eliminar
-        [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
+        [ActionName("Eliminar")]
         public IActionResult ConfirmarEliminar(int id) {
             var usuario = repositorio.ObtenerPorID(id);
             if (usuario == null) return NotFound();
