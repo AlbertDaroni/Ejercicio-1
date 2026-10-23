@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
+
+    [Authorize]
     public class Pago_Controller : Controller {
         private readonly IRepositorio_Pago repositorio_Pago;
         private readonly IRepositorio_Reserva repositorio_Reserva;

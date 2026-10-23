@@ -1,0 +1,81 @@
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.InmuebleMasReservadoViewModel>
+
+@{
+    ViewData["Title"] = "Inmuebles más reservados";
+
+    DateTime desde = ViewBag.Desde;
+    DateTime hasta = ViewBag.Hasta;
+    int paginaActual = ViewBag.Pagina;
+    int totalPaginas = ViewBag.TotalPaginas;
+}
+
+<h1>Inmuebles más reservados</h1>
+
+<p>
+    Reservas creadas entre
+    @desde.ToString("dd/MM/yyyy HH:mm")
+    y @hasta.ToString("dd/MM/yyyy HH:mm").
+    Incluye reservas finalizadas.
+</p>
+
+<a asp-action="Indice" class="btn btn-secondary mb-3">
+    Volver a inmuebles
+</a>
+
+@if (!Model.Any()) {
+    <div class="alert alert-info">
+        No hay reservas registradas en este período.
+    </div>
+}
+else {
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Dirección</th>
+                <th>Propietario</th>
+                <th>Cantidad de reservas</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var inmueble in Model) {
+                <tr>
+                    <td>@inmueble.Direccion</td>
+                    <td>@inmueble.Propietario</td>
+                    <td>@inmueble.CantidadReservas</td>
+                    <td>
+                        <a asp-action="Detalles"
+                           asp-route-id="@inmueble.ID_Inmueble"
+                           class="btn btn-info btn-sm">
+                            Detalles
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (totalPaginas > 1) {
+    <nav aria-label="Páginas de inmuebles más reservados"
+         class="d-flex align-items-center gap-3">
+
+        @if (paginaActual > 1) {
+            <a asp-action="MasReservados"
+               asp-route-pagina="@(paginaActual - 1)"
+               class="btn btn-outline-primary">
+                Anterior
+            </a>
+        }
+
+        <span>Página @paginaActual de @totalPaginas</span>
+
+        @if (paginaActual < totalPaginas) {
+            <a asp-action="MasReservados"
+               asp-route-pagina="@(paginaActual + 1)"
+               class="btn btn-outline-primary">
+                Siguiente
+            </a>
+        }
+    </nav>
+}

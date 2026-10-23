@@ -33,7 +33,13 @@
 </dl>
 
 <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
-<a asp-action="Eliminar" asp-route-id="@Model.id" class="btn btn-danger btn-sm">Eliminar</a>
+@if (User.IsInRole("Administrador")) {
+    <a asp-action="Eliminar"
+       asp-route-id="@Model.id"
+       class="btn btn-danger btn-sm">
+        Eliminar
+    </a>
+}
 
 @if (User.FindFirst(ClaimTypes.NameIdentifier)?.Value == Model.id.ToString()) {
     <form asp-controller="Cuenta_" asp-action="Logout" method="post" class="d-inline">

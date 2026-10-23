@@ -1,7 +1,9 @@
 @using System.Security.Claims
 @model Inmobiliaria_.Net_Core.Models.Propietario
 
-@{ ViewData["Title"] = "Detalles del propietario"; }
+@{
+    ViewData["Title"] = "Detalles del propietario";
+}
 
 <h1>Detalles del propietario</h1>
 
@@ -25,9 +27,15 @@
 </dl>
 
 <div>
-    @if (Model.id.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Administrador")) {
+    @if (Model.id.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Administrador"))
+    {
         <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
         <a asp-action="Eliminar" asp-route-id="@Model.id" class="btn btn-danger">Eliminar</a>
     }
+
+    <a asp-controller="Inmueble_" asp-action="Indice" asp-route-idPropietario="@Model.id" class="btn btn-primary">
+        Ver inmuebles
+    </a>
+    
     <button type="button" onclick="history.back()" class="btn btn-secondary">Volver</button>
 </div>

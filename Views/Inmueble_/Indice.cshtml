@@ -1,6 +1,36 @@
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.Rendering
 @model IEnumerable<Inmobiliaria_.Net_Core.Models.Inmueble>
 
-@{ ViewData["Title"] = "Inmuebles"; }
+@{
+    ViewData["Title"] = "Inmuebles";
+
+    string? estadoActual = ViewBag.Estado as string;
+    int paginaActual = ViewBag.Pagina;
+    int totalPaginas = ViewBag.TotalPaginas;
+    int total = ViewBag.Total;
+
+    int? idPropietarioActual = ViewBag.IdPropietario;
+    string? nombrePropietario = ViewBag.NombrePropietario as string;
+
+    var estados = new List<SelectListItem> {
+        new SelectListItem {
+            Text = "Todos",
+            Value = "",
+            Selected = estadoActual == null
+        },
+        new SelectListItem {
+            Text = "Activos",
+            Value = "1",
+            Selected = estadoActual == "1"
+        },
+        new SelectListItem {
+            Text = "Inactivos",
+            Value = "0",
+            Selected = estadoActual == "0"
+        }
+    };
+}
 
 <h1>Inmuebles</h1>
 
@@ -19,8 +49,52 @@
     }
 }
 
-@if (User.Identity != null && User.Identity.IsAuthenticated) {
+@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
     <p><a asp-action="Crear" class="btn btn-primary">Nuevo Inmueble</a></p>
+}
+
+@if (User.Identity?.IsAuthenticated == true) {
+    <a asp-action="MasReservados"
+       class="btn btn-outline-primary mb-3">
+        Más reservados en los últimos 365 días
+    </a>
+}
+
+<form asp-action="Indice" method="get" class="d-flex align-items-end gap-2 mb-3">
+
+    @if (idPropietarioActual.HasValue)
+    {
+        <input type="hidden" name="idPropietario" value="@idPropietarioActual" />
+
+        <p class="mb-0">
+            Propietario: <strong>@nombrePropietario</strong>
+        </p>
+    }
+
+    <div>
+        <label for="estado" class="form-label">Estado</label>
+
+        <select id="estado" name="estado" asp-items="estados" class="form-select">
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Filtrar
+    </button>
+
+    <a asp-action="Indice" class="btn btn-secondary">
+        Limpiar
+    </a>
+</form>
+
+<p>Total de inmuebles: @total</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No hay inmuebles para el estado seleccionado.
+    </div>
 }
 
 <table class="table table-striped">
@@ -39,7 +113,8 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var inmueble in Model) {
+        @foreach (var inmueble in Model)
+        {
             <tr>
                 <td>@inmueble.Direccion</td>
                 <td>@inmueble.Cupo</td>
@@ -48,9 +123,12 @@
                 <td>$ @inmueble.Precio_Dia</td>
                 <td>% @inmueble.Porcentaje_Seña</td>
                 <td>
-                    @if (inmueble.Estado == "1") {
+                    @if (inmueble.Estado == "1")
+                    {
                         <span class="badge bg-success">Activo</span>
-                    } else {
+                    }
+                    else
+                    {
                         <span class="badge bg-danger">Inactivo</span>
                     }
                 </td>
@@ -58,7 +136,8 @@
                 <td><a href=/Propietario_/Detalles/@inmueble.Propietario.id>@(inmueble.Propietario.ApellidoYNombre)</a></td>
                 <td>
                     <a asp-action="Detalles" asp-route-id="@inmueble.id" class="btn btn-info btn-sm">Detalles</a>
-                    @if (inmueble.Estado == "1") {
+                    @if (inmueble.Estado == "1")
+                    {
                         <a href="/Reserva_/Crear?ID_Inmueble=@inmueble.id" class="btn btn-primary">Reservar</a>
                     }
                 </td>
@@ -66,3 +145,27 @@
         }
     </tbody>
 </table>
+
+@if (totalPaginas > 1)
+{
+    <nav aria-label="Páginas de inmuebles" class="d-flex align-items-center gap-3">
+
+        @if (paginaActual > 1)
+        {
+            <a asp-action="Indice" asp-route-estado="@estadoActual" asp-route-idPropietario="@idPropietarioActual" asp-route-pagina="@(paginaActual - 1)"
+               class="btn btn-outline-primary">
+                Anterior
+            </a>
+        }
+
+        <span>Página @paginaActual de @totalPaginas</span>
+
+        @if (paginaActual < totalPaginas)
+        {
+            <a asp-action="Indice" asp-route-estado="@estadoActual" asp-route-idPropietario="@idPropietarioActual" asp-route-pagina="@(paginaActual + 1)"
+               class="btn btn-outline-primary">
+                Siguiente
+            </a>
+        }
+    </nav>
+}

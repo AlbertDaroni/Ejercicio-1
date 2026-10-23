@@ -5,23 +5,29 @@ using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 
 
-namespace Inmobiliaria_.Net_Core.Controllers {
+namespace Inmobiliaria_.Net_Core.Controllers
+{
     [Authorize]
-    public class Usuario_Controller : Controller {
+    public class Usuario_Controller : Controller
+    {
         private readonly IRepositorio_Usuario repositorio;
         private readonly ILogger<Usuario_Controller> logger;
+        private readonly IWebHostEnvironment environment;
 
         public Usuario_Controller(
             IRepositorio_Usuario repositorio,
-            ILogger<Usuario_Controller> logger)
+            ILogger<Usuario_Controller> logger,
+            IWebHostEnvironment environment)
         {
             this.repositorio = repositorio;
             this.logger = logger;
+            this.environment = environment;
         }
 
         // Listar
         [HttpGet, Authorize(Roles = "Administrador")]
-        public IActionResult Indice(bool todos = false) {
+        public IActionResult Indice(bool todos = false)
+        {
             var usuarios = repositorio.ObtenerTodos();
             return View(usuarios);
         }
@@ -32,12 +38,14 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Crear
         [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "Administrador")]
-        public IActionResult Crear(Usuario usuario) {
+        public IActionResult Crear(Usuario usuario)
+        {
             if (!ModelState.IsValid) return View(usuario);
 
             var usuarioExistente = repositorio.ObtenerPorCorreo(usuario.Correo);
 
-            if (usuarioExistente != null) {
+            if (usuarioExistente != null)
+            {
                 ModelState.AddModelError("Correo", "Ya existe un usuario registrado con este correo.");
                 return View(usuario);
             }
@@ -47,12 +55,13 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation("Se creó correctamente el usuario con ID {Id}", id);
             TempData["Mensaje"] = "El usuario fue creado correctamente.";
 
-            return RedirectToAction(nameof(Detalles));
+            return RedirectToAction(nameof(Detalles), new { id });
         }
 
         // Detalles
         [HttpGet]
-        public IActionResult Detalles(int id) {
+        public IActionResult Detalles(int id)
+        {
             var usuario = repositorio.ObtenerPorID(id);
             if (usuario == null) return NotFound();
             return View(usuario);
@@ -60,7 +69,8 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Modificar
         [HttpGet]
-        public IActionResult Modificar(int id) {
+        public IActionResult Modificar(int id)
+        {
             var idUsuarioActual = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (!int.TryParse(idUsuarioActual, out int idActual)) return Unauthorized();
@@ -75,36 +85,164 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Modificar
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Modificar(int id, Usuario usuario) {
+        public async Task<IActionResult> Modificar(
+            int id,
+            Usuario usuario,
+            IFormFile? ArchivoAvatar
+        )
+        {
             if (id != usuario.id) return BadRequest();
-            var idUsuarioActual = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!int.TryParse(idUsuarioActual, out int idActual)) return Unauthorized();
+            var idUsuarioActual =
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(idUsuarioActual, out int idActual))
+                return Unauthorized();
 
             bool esAdministrador = User.IsInRole("Administrador");
 
-            if (!esAdministrador && idActual != id) return Forbid();
-            if (!ModelState.IsValid) return View(usuario);
+            if (!esAdministrador && idActual != id)
+                return Forbid();
 
-            var usuarioConMismoCorreo = repositorio.ObtenerPorCorreo(usuario.Correo);
+            var usuarioActual = repositorio.ObtenerPorID(id);
+            if (usuarioActual == null) return NotFound();
 
-            if (usuarioConMismoCorreo != null && usuarioConMismoCorreo.id != usuario.id) {
-                ModelState.AddModelError("Correo", "Ya existe otro usuario registrado con este correo.");
+            if (!esAdministrador)
+            {
+                ModelState.Remove(nameof(usuario.Rol));
+                ModelState.Remove(nameof(usuario.Estado));
+
+                usuario.Rol = usuarioActual.Rol;
+                usuario.Estado = usuarioActual.Estado;
+            }
+
+            ModelState.Remove(nameof(usuario.Avatar));
+            usuario.Avatar = usuarioActual.Avatar;
+
+            var usuarioConMismoCorreo =
+                repositorio.ObtenerPorCorreo(usuario.Correo);
+
+            if (usuarioConMismoCorreo != null &&
+                usuarioConMismoCorreo.id != id)
+            {
+                ModelState.AddModelError(
+                    nameof(usuario.Correo),
+                    "Ya existe otro usuario registrado con este correo."
+                );
+            }
+
+            string? extensionAvatar = null;
+
+            if (ArchivoAvatar != null)
+            {
+                if (ArchivoAvatar.Length == 0 ||
+                    ArchivoAvatar.Length > 2 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(
+                        nameof(usuario.Avatar),
+                        "La imagen debe tener contenido y no superar 2 MB."
+                    );
+                }
+                else
+                {
+                    byte[] cabecera = new byte[8];
+                    int leidos = 0;
+
+                    using (var stream = ArchivoAvatar.OpenReadStream())
+                    {
+                        while (leidos < cabecera.Length)
+                        {
+                            int cantidad = await stream.ReadAsync(
+                                cabecera,
+                                leidos,
+                                cabecera.Length - leidos
+                            );
+
+                            if (cantidad == 0) break;
+                            leidos += cantidad;
+                        }
+                    }
+
+                    bool esPng = leidos == 8 &&
+                        cabecera[0] == 0x89 &&
+                        cabecera[1] == 0x50 &&
+                        cabecera[2] == 0x4E &&
+                        cabecera[3] == 0x47 &&
+                        cabecera[4] == 0x0D &&
+                        cabecera[5] == 0x0A &&
+                        cabecera[6] == 0x1A &&
+                        cabecera[7] == 0x0A;
+
+                    bool esJpg = leidos >= 3 &&
+                        cabecera[0] == 0xFF &&
+                        cabecera[1] == 0xD8 &&
+                        cabecera[2] == 0xFF;
+
+                    string extension = Path.GetExtension(
+                        ArchivoAvatar.FileName
+                    ).ToLowerInvariant();
+
+                    if (esPng && extension == ".png")
+                    {
+                        extensionAvatar = ".png";
+                    }
+                    else if (esJpg &&
+                        (extension == ".jpg" || extension == ".jpeg"))
+                    {
+                        extensionAvatar = ".jpg";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(
+                            nameof(usuario.Avatar),
+                            "Seleccioná una imagen JPG o PNG válida."
+                        );
+                    }
+                }
+            }
+
+            if (!ModelState.IsValid)
                 return View(usuario);
+
+            if (ArchivoAvatar != null && extensionAvatar != null)
+            {
+                string carpeta = Path.Combine(
+                    environment.WebRootPath,
+                    "uploads",
+                    "avatares"
+                );
+
+                Directory.CreateDirectory(carpeta);
+
+                string nombre = $"{Guid.NewGuid():N}{extensionAvatar}";
+                string ruta = Path.Combine(carpeta, nombre);
+
+                using (var destino = new FileStream(
+                    ruta, FileMode.CreateNew
+                ))
+                {
+                    await ArchivoAvatar.CopyToAsync(destino);
+                }
+
+                usuario.Avatar = "/uploads/avatares/" + nombre;
             }
 
             repositorio.Modificacion(usuario);
 
-            logger.LogInformation("Se modificó correctamente el usuario con ID {Id}", usuario.id);
+            logger.LogInformation(
+                "Se modificó correctamente el usuario con ID {Id}", id
+            );
+
             TempData["Mensaje"] = "El usuario fue modificado correctamente.";
 
-            return RedirectToAction(nameof(Detalles));
+            return RedirectToAction(nameof(Detalles), new { id });
         }
 
 
         // Eliminar
-       [HttpGet, Authorize(Roles = "Administrador")]
-       public IActionResult Eliminar(int id) {
+        [HttpGet, Authorize(Roles = "Administrador")]
+        public IActionResult Eliminar(int id)
+        {
             var usuario = repositorio.ObtenerPorID(id);
             if (usuario == null) return NotFound();
             return View(usuario);
@@ -113,13 +251,15 @@ namespace Inmobiliaria_.Net_Core.Controllers {
 
         // Eliminar
         [HttpPost, ValidateAntiForgeryToken, ActionName("Eliminar"), Authorize(Roles = "Administrador")]
-        public IActionResult ConfirmarEliminar(int id) {
+        public IActionResult ConfirmarEliminar(int id)
+        {
             var usuario = repositorio.ObtenerPorID(id);
             if (usuario == null) return NotFound();
 
             var idUsuarioActual = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            if (idUsuarioActual == id.ToString()) {
+            if (idUsuarioActual == id.ToString())
+            {
                 TempData["Mensaje"] = "No puede dar de baja su propio usuario.";
                 return RedirectToAction(nameof(Detalles));
             }

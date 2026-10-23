@@ -1,6 +1,8 @@
 @model Inmobiliaria_.Net_Core.Models.Usuario
 
-@{ ViewData["Title"] = "Modificar Usuario"; }
+@{
+    ViewData["Title"] = "Modificar Usuario";
+}
 
 <h1>Modificar Usuario</h1>
 
@@ -8,7 +10,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Modificar" asp-route-id="@Model.id" method="post">
+        <form asp-action="Modificar" asp-route-id="@Model.id" method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="id">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -38,12 +40,23 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="Avatar" class="form-label"></label>
-                <input asp-for="Avatar" class="form-control" type="file">
+                <label for="ArchivoAvatar" class="form-label">
+                    Nuevo avatar
+                </label>
+
+                <input type="file" id="ArchivoAvatar" name="ArchivoAvatar" accept=".jpg,.jpeg,.png"
+                       class="form-control" />
+
                 <span asp-validation-for="Avatar" class="text-danger"></span>
+
+                <small class="text-muted">
+                    JPG o PNG, hasta 2 MB.
+                    Si no seleccionás una imagen, se conserva la actual.
+                </small>
             </div>
 
-            @if (User.IsInRole("Administrador")) {
+            @if (User.IsInRole("Administrador"))
+            {
                 <div class="mb-3">
                     <label asp-for="Rol" class="form-label"></label>
                     <select asp-for="Rol" class="form-select">
@@ -70,4 +83,9 @@
     </div>
 </div>
 
-@section Scripts { @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); } }
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}
