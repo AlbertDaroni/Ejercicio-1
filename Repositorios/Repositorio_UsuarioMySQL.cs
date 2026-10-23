@@ -47,7 +47,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     SET Nombre = @Nombre,
                         Apellido = @Apellido,
                         Correo = @Correo,
-                        Contraseña = @Contraseña,
+                        
                         Avatar = @Avatar,
                         Rol = @Rol,
                         Estado = @Estado
@@ -58,7 +58,7 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
                     command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
                     command.Parameters.AddWithValue("@Apellido", usuario.Apellido);
                     command.Parameters.AddWithValue("@Correo", usuario.Correo);
-                    command.Parameters.AddWithValue("@Contraseña", usuario.Contraseña);
+                    //command.Parameters.AddWithValue("@Contraseña", usuario.Contraseña);
                     command.Parameters.AddWithValue("@Avatar", usuario.Avatar);
                     command.Parameters.AddWithValue("@Rol", usuario.Rol);
                     command.Parameters.AddWithValue("@Estado", usuario.Estado);

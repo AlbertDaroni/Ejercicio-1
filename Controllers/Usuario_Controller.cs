@@ -62,8 +62,26 @@ namespace Inmobiliaria_.Net_Core.Controllers
         [HttpGet]
         public IActionResult Detalles(int id)
         {
+            var idUsuarioActual =
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(idUsuarioActual, out int idActual))
+            {
+                return Unauthorized();
+            }
+
+            if (!User.IsInRole("Administrador") && idActual != id)
+            {
+                return Forbid();
+            }
+
             var usuario = repositorio.ObtenerPorID(id);
-            if (usuario == null) return NotFound();
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
             return View(usuario);
         }
 
@@ -103,6 +121,20 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             if (!esAdministrador && idActual != id)
                 return Forbid();
+            var usuarioExistente = repositorio.ObtenerPorID(id);
+
+            if (usuarioExistente == null)
+            {
+                return NotFound();
+            }
+
+            if (!esAdministrador)
+            {
+                usuario.Rol = usuarioExistente.Rol;
+                usuario.Estado = usuarioExistente.Estado;
+            } 
+            // La contraseña no se modifica desde la edicion del perfil.
+            usuario.Contraseña = usuarioExistente.Contraseña;   
 
             var usuarioActual = repositorio.ObtenerPorID(id);
             if (usuarioActual == null) return NotFound();
@@ -200,7 +232,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     }
                 }
             }
-
+            // La contraseña no se modifica desde este formulario.
+            ModelState.Remove(nameof(usuario.Contraseña));
             if (!ModelState.IsValid)
                 return View(usuario);
 
