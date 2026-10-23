@@ -333,5 +333,48 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             return View(resultados);
         }
+
+        [HttpGet, Authorize(Roles = "Administrador")]
+        public IActionResult SinReservas(int dias = 30, int pagina = 1)
+        {
+            if (dias < 1 || dias > 3650)
+            {
+                return BadRequest("La cantidad de días debe estar entre 1 y 3650.");
+            }
+
+            DateTime hasta = DateTime.Now;
+            DateTime desde = hasta.AddDays(-dias);
+
+            const int tamPagina = 10;
+
+            int total = repositorio_Inmueble.ContarSinReservas(
+                desde,
+                hasta
+            );
+
+            int totalPaginas = Math.Max(
+                1,
+                (int)Math.Ceiling(total / (double)tamPagina)
+            );
+
+            pagina = Math.Clamp(pagina, 1, totalPaginas);
+
+            var inmuebles = repositorio_Inmueble.ObtenerSinReservas(
+                desde,
+                hasta,
+                pagina,
+                tamPagina
+            );
+
+            ViewBag.Dias = dias;
+            ViewBag.Desde = desde;
+            ViewBag.Hasta = hasta;
+            ViewBag.Total = total;
+            ViewBag.Pagina = pagina;
+            ViewBag.TotalPaginas = totalPaginas;
+
+            return View(inmuebles);
+        }
+
     }
 }

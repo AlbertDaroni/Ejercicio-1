@@ -31,5 +31,20 @@ namespace Inmobiliaria_.Net_Core.Repositorios
         );
 
         int ContarMasReservados(DateTime desde, DateTime hasta);
+
+        IList<Inmueble> ObtenerSinReservas(
+        DateTime desde,
+        DateTime hasta,
+        int pagina = 1,
+        int tamPagina = 10
+        );
+
+        int ContarSinReservas(
+            DateTime desde,
+            DateTime hasta
+        );
+
     }
+
+    
 }
