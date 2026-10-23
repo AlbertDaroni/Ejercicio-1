@@ -1,0 +1,166 @@
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.Reserva>
+
+@{
+    ViewData["Title"] = "Reservas vigentes entre fechas";
+
+    DateTime desde = ViewBag.Desde ?? DateTime.Today;
+    DateTime hasta = ViewBag.Hasta ?? DateTime.Today.AddDays(30);
+
+    int total = ViewBag.Total ?? 0;
+    int pagina = ViewBag.Pagina ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+}
+
+<h1>Reservas vigentes entre fechas</h1>
+
+<p>
+    Consultá las reservas activas que se superponen
+    con el período seleccionado.
+</p>
+
+<form asp-action="VigentesEntreFechas" method="get" class="mb-4">
+    <div class="row align-items-end">
+
+        <div class="col-md-3">
+            <label for="desde" class="form-label">
+                Fecha inicial
+            </label>
+
+            <input type="date"
+                   id="desde"
+                   name="desde"
+                   value="@desde.ToString("yyyy-MM-dd")"
+                   required
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label for="hasta" class="form-label">
+                Fecha final
+            </label>
+
+            <input type="date"
+                   id="hasta"
+                   name="hasta"
+                   value="@hasta.ToString("yyyy-MM-dd")"
+                   required
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary">
+                Buscar
+            </button>
+        </div>
+
+    </div>
+</form>
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<p>
+    <strong>Período:</strong>
+    @desde.ToString("dd/MM/yyyy")
+    al
+    @hasta.ToString("dd/MM/yyyy")
+</p>
+
+<p>
+    <strong>Total de reservas encontradas:</strong> @total
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No se encontraron reservas vigentes
+        durante el período seleccionado.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Reserva</th>
+                <th>Inquilino</th>
+                <th>Inmueble</th>
+                <th>Fecha de inicio</th>
+                <th>Fecha de finalización</th>
+                <th>Monto diario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var reserva in Model)
+            {
+                <tr>
+                    <td>#@reserva.id</td>
+
+                    <td>
+                        @reserva.Inquilino?.Apellido,
+                        @reserva.Inquilino?.Nombre
+                    </td>
+
+                    <td>
+                        @reserva.Inmueble?.Direccion
+                    </td>
+
+                    <td>
+                        @reserva.Fecha_Inicio.ToString("dd/MM/yyyy")
+                    </td>
+
+                    <td>
+                        @reserva.Fecha_Fin_Efectiva.ToString("dd/MM/yyyy")
+                    </td>
+
+                    <td>
+                        @reserva.Monto_Dia.ToString("C")
+                    </td>
+
+                    <td>
+                        <a asp-action="Detalles"
+                           asp-route-id="@reserva.id"
+                           class="btn btn-info btn-sm">
+                            Ver reserva
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (totalPaginas > 1)
+{
+    <nav class="d-flex align-items-center gap-3">
+
+        @if (pagina > 1)
+        {
+            <a asp-action="VigentesEntreFechas"
+               asp-route-desde="@desde.ToString("yyyy-MM-dd")"
+               asp-route-hasta="@hasta.ToString("yyyy-MM-dd")"
+               asp-route-pagina="@(pagina - 1)"
+               class="btn btn-outline-primary">
+                Anterior
+            </a>
+        }
+
+        <span>Página @pagina de @totalPaginas</span>
+
+        @if (pagina < totalPaginas)
+        {
+            <a asp-action="VigentesEntreFechas"
+               asp-route-desde="@desde.ToString("yyyy-MM-dd")"
+               asp-route-hasta="@hasta.ToString("yyyy-MM-dd")"
+               asp-route-pagina="@(pagina + 1)"
+               class="btn btn-outline-primary">
+                Siguiente
+            </a>
+        }
+    </nav>
+}
+
+<a asp-action="Indice" class="btn btn-secondary mt-3">
+    Volver a reservas
+</a>

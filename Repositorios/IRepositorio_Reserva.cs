@@ -16,5 +16,18 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         Reserva? ObtenerPorID(int id);
 
         bool ExisteSuperposicion(int idInmueble, DateTime fechaInicio, DateTime fechaFin, int? idReservaExcluir = null);
+
+        IList<Reserva> ObtenerVigentesEntreFechas(
+        DateTime desde,
+        DateTime hasta,
+        int pagina = 1,
+        int tamPagina = 10
+        );
+
+        int ContarVigentesEntreFechas(
+        DateTime desde,
+        DateTime hasta
+        );
+
     }
 }

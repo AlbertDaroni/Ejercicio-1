@@ -459,5 +459,59 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             return RedirectToAction(nameof(Detalles), new { id = nueva.id });
         }
+
+    [HttpGet, Authorize(Roles = "Administrador")]
+    public IActionResult VigentesEntreFechas(
+        DateTime? desde,
+        DateTime? hasta,
+        int pagina = 1)
+    {
+        DateTime fechaDesde = (desde ?? DateTime.Today).Date;
+        DateTime fechaHasta = (hasta ?? DateTime.Today.AddDays(30)).Date;
+
+        if (fechaHasta < fechaDesde)
+        {
+            ModelState.AddModelError(
+                "",
+                "La fecha final no puede ser anterior a la fecha inicial."
+            );
+
+            return View(new List<Reserva>());
+        }
+
+        // Sumamos un día para incluir toda la fecha final.
+        DateTime hastaExclusivo = fechaHasta.AddDays(1);
+
+        const int tamPagina = 10;
+
+        int total = repositorio_Reserva.ContarVigentesEntreFechas(
+            fechaDesde,
+            hastaExclusivo
+        );
+
+        int totalPaginas = Math.Max(
+            1,
+            (int)Math.Ceiling(total / (double)tamPagina)
+        );
+
+        pagina = Math.Clamp(pagina, 1, totalPaginas);
+
+        var reservas = repositorio_Reserva.ObtenerVigentesEntreFechas(
+            fechaDesde,
+            hastaExclusivo,
+            pagina,
+            tamPagina
+        );
+
+        ViewBag.Desde = fechaDesde;
+        ViewBag.Hasta = fechaHasta;
+        ViewBag.Total = total;
+        ViewBag.Pagina = pagina;
+        ViewBag.TotalPaginas = totalPaginas;
+
+        return View(reservas);
+    }
+
+
     }
 }
