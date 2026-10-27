@@ -412,12 +412,127 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return Convert.ToInt32(command.ExecuteScalar());
         }
 
-    public IList<Reserva> ObtenerVigentesEntreFechas(
+        public int ContarProximasAFinalizar(DateTime desde, DateTime hasta)
+        {
+            using var connection = new MySqlConnection(connectionString);
+
+            string sql = @"
+                SELECT COUNT(*)
+                FROM Reservas r
+                WHERE r.estado = '1'
+                AND r.fecha_fin_efectiva >= @desde
+                AND r.fecha_fin_efectiva < @hasta;
+            ";
+
+            using var command = new MySqlCommand(sql, connection);
+
+            command.Parameters.AddWithValue("@desde", desde);
+            command.Parameters.AddWithValue("@hasta", hasta);
+
+            connection.Open();
+
+            return Convert.ToInt32(command.ExecuteScalar());
+        }
+
+        public IList<Reserva> ObtenerProximasAFinalizar(
+            DateTime desde,
+            DateTime hasta,
+            int pagina = 1,
+            int tamPagina = 10)
+        {
+            var reservas = new List<Reserva>();
+
+            pagina = Math.Max(1, pagina);
+            tamPagina = Math.Clamp(tamPagina, 1, 100);
+
+            using var connection = new MySqlConnection(connectionString);
+
+            string sql = @"
+                SELECT
+                    r.id,
+                    r.fecha_creacion,
+                    r.fecha_inicio,
+                    r.fecha_fin_original,
+                    r.fecha_fin_efectiva,
+                    r.monto_dia,
+                    r.multa,
+                    r.estado,
+                    r.id_inquilino,
+                    r.id_inmueble,
+                    r.id_usuario_creador,
+                    r.id_usuario_finalizador,
+                    inq.nombre AS InquilinoNombre,
+                    inq.apellido AS InquilinoApellido,
+                    inm.direccion AS InmuebleDireccion
+                FROM Reservas r
+                INNER JOIN Inquilinos inq ON inq.id = r.id_inquilino
+                INNER JOIN Inmuebles inm ON inm.id = r.id_inmueble
+                WHERE r.estado = '1'
+                AND r.fecha_fin_efectiva >= @desde
+                AND r.fecha_fin_efectiva < @hasta
+                ORDER BY r.fecha_fin_efectiva ASC, r.id ASC
+                LIMIT @limite OFFSET @desplazamiento;
+            ";
+
+            using var command = new MySqlCommand(sql, connection);
+
+            command.Parameters.AddWithValue("@desde", desde);
+            command.Parameters.AddWithValue("@hasta", hasta);
+            command.Parameters.AddWithValue("@limite", tamPagina);
+            command.Parameters.AddWithValue(
+                "@desplazamiento", (pagina - 1) * tamPagina);
+
+            connection.Open();
+
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var reserva = new Reserva
+                {
+                    id = reader.GetInt32("id"),
+                    Fecha_Creacion = reader.GetDateTime("fecha_creacion"),
+                    Fecha_Inicio = reader.GetDateTime("fecha_inicio"),
+                    Fecha_Fin_Original = reader.GetDateTime("fecha_fin_original"),
+                    Fecha_Fin_Efectiva = reader.GetDateTime("fecha_fin_efectiva"),
+                    Monto_Dia = reader.GetDecimal("monto_dia"),
+                    Multa = reader.GetDecimal("multa"),
+                    Estado = reader.GetString("estado"),
+                    ID_Inquilino = reader.GetInt32("id_inquilino"),
+                    ID_Inmueble = reader.GetInt32("id_inmueble"),
+                    ID_Usuario_Creador = reader.GetInt32("id_usuario_creador"),
+
+                    ID_Usuario_Finalizador = reader.IsDBNull(
+                        reader.GetOrdinal("id_usuario_finalizador"))
+                        ? null
+                        : reader.GetInt32("id_usuario_finalizador"),
+
+                    Inquilino = new Inquilino
+                    {
+                        id = reader.GetInt32("id_inquilino"),
+                        Nombre = reader.GetString("InquilinoNombre"),
+                        Apellido = reader.GetString("InquilinoApellido")
+                    },
+
+                    Inmueble = new Inmueble
+                    {
+                        id = reader.GetInt32("id_inmueble"),
+                        Direccion = reader.GetString("InmuebleDireccion")
+                    }
+                };
+
+                reservas.Add(reserva);
+            }
+
+            return reservas;
+        }
+
+        public IList<Reserva> ObtenerVigentesEntreFechas(
         DateTime desde,
         DateTime hasta,
         int pagina = 1,
         int tamPagina = 10)
-    {
+        {
         var reservas = new List<Reserva>();
 
         pagina = Math.Max(1, pagina);

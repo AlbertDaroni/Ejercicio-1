@@ -29,5 +29,17 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         DateTime hasta
         );
 
+        IList<Reserva> ObtenerProximasAFinalizar(
+        DateTime desde,
+        DateTime hasta,
+        int pagina = 1,
+        int tamPagina = 10
+        );
+
+        int ContarProximasAFinalizar(
+            DateTime desde,
+            DateTime hasta
+        );
+
     }
 }

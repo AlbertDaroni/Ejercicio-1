@@ -512,6 +512,52 @@ namespace Inmobiliaria_.Net_Core.Controllers
         return View(reservas);
     }
 
+    [HttpGet, Authorize(Roles = "Administrador")]
+    public IActionResult ProximasAFinalizar(int dias = 15, int pagina = 1)
+    {
+        if (dias < 1 || dias > 3650)
+        {
+            return BadRequest(
+                "La cantidad de días debe estar entre 1 y 3650."
+            );
+        }
+
+        DateTime desde = DateTime.Today;
+
+        // Incluimos el día actual y los próximos X días completos.
+        DateTime hastaExclusivo = desde.AddDays(dias + 1);
+
+        const int tamPagina = 10;
+
+        int total = repositorio_Reserva.ContarProximasAFinalizar(
+            desde,
+            hastaExclusivo
+        );
+
+        int totalPaginas = Math.Max(
+            1,
+            (int)Math.Ceiling(total / (double)tamPagina)
+        );
+
+        pagina = Math.Clamp(pagina, 1, totalPaginas);
+
+        var reservas = repositorio_Reserva.ObtenerProximasAFinalizar(
+            desde,
+            hastaExclusivo,
+            pagina,
+            tamPagina
+        );
+
+        ViewBag.Dias = dias;
+        ViewBag.Desde = desde;
+        ViewBag.Hasta = hastaExclusivo.AddDays(-1);
+        ViewBag.Total = total;
+        ViewBag.Pagina = pagina;
+        ViewBag.TotalPaginas = totalPaginas;
+
+        return View(reservas);
+    }
+
 
     }
 }
