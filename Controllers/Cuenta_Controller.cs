@@ -4,13 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
+using Microsoft.AspNetCore.Identity;
 
 namespace Inmobiliaria_.Net_Core.Controllers {
     public class Cuenta_Controller : Controller {
         private readonly IRepositorio_Usuario repositorio_Usuario;
+        private readonly IPasswordHasher<Usuario> passwordHasher;
 
-        public Cuenta_Controller(IRepositorio_Usuario repositorio) {
+        public Cuenta_Controller(
+        IRepositorio_Usuario repositorio,
+        IPasswordHasher<Usuario> passwordHasher)
+        {
             this.repositorio_Usuario = repositorio;
+            this.passwordHasher = passwordHasher;
         }
 
         [HttpGet]
@@ -29,7 +35,14 @@ namespace Inmobiliaria_.Net_Core.Controllers {
                 ModelState.AddModelError("", "El usuario se encuentra inactivo.");
                 return View(login);
             }
-            if (usuario.Contraseña != login.Contraseña) {
+            var resultado = passwordHasher.VerifyHashedPassword(
+            usuario,
+            usuario.Contraseña,
+            login.Contraseña
+            );
+
+            if (resultado == PasswordVerificationResult.Failed)
+            {
                 ModelState.AddModelError("", "La contraseña es incorrecta.");
                 return View(login);
             }

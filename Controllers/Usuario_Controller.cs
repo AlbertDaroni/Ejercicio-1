@@ -26,6 +26,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             this.repositorio = repositorio;
             this.logger = logger;
             this.environment = environment;
+            this.passwordHasher = passwordHasher;
         }
 
         // Listar
@@ -53,6 +54,12 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 ModelState.AddModelError("Correo", "Ya existe un usuario registrado con este correo.");
                 return View(usuario);
             }
+
+            // Hashear la contraseña antes de guardarla
+            usuario.Contraseña = passwordHasher.HashPassword(
+                usuario,
+                usuario.Contraseña
+            );
 
             int id = repositorio.Alta(usuario);
 
