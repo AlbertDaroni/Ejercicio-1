@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddScoped<IRepositorio_Reserva, Repositorio_ReservaMySQL>();
 builder.Services.AddScoped<IRepositorio_Tipo_Inmueble, Repositorio_Tipo_InmuebleMySQL>();
 builder.Services.AddScoped<IRepositorio_Usuario, Repositorio_UsuarioMySQL>();
 builder.Services.AddScoped<IRepositorio_Pago, Repositorio_PagoMySQL>();
+builder.Services.AddScoped<IPasswordHasher<Usuario>,PasswordHasher<Usuario>>();
 
 var app = builder.Build();
 var culturas = new[] { new CultureInfo("es-AR") };

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace Inmobiliaria_.Net_Core.Controllers
@@ -13,11 +14,14 @@ namespace Inmobiliaria_.Net_Core.Controllers
         private readonly IRepositorio_Usuario repositorio;
         private readonly ILogger<Usuario_Controller> logger;
         private readonly IWebHostEnvironment environment;
+        private readonly IPasswordHasher<Usuario> passwordHasher;
+
 
         public Usuario_Controller(
             IRepositorio_Usuario repositorio,
             ILogger<Usuario_Controller> logger,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IPasswordHasher<Usuario> passwordHasher)
         {
             this.repositorio = repositorio;
             this.logger = logger;
