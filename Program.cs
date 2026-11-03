@@ -1,3 +1,4 @@
+using Inmobiliaria_.Net_Core.Inicializacion;
 using Inmobiliaria_.Net_Core.Models;
 using Inmobiliaria_.Net_Core.Repositorios;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -29,6 +30,28 @@ builder.Services.AddScoped<IRepositorio_Pago, Repositorio_PagoMySQL>();
 builder.Services.AddScoped<IPasswordHasher<Usuario>,PasswordHasher<Usuario>>();
 
 var app = builder.Build();
+
+// Inicialización de usuarios para una base de datos nueva.
+// Solo se ejecuta si se habilita explícitamente.
+
+if (app.Environment.IsDevelopment() &&
+    builder.Configuration.GetValue<bool>("Inicializacion:CrearUsuarios"))
+{
+    using var scope = app.Services.CreateScope();
+
+    var repositorio = scope.ServiceProvider
+        .GetRequiredService<IRepositorio_Usuario>();
+
+    var passwordHasher = scope.ServiceProvider
+        .GetRequiredService<IPasswordHasher<Usuario>>();
+
+    InicializadorUsuarios.Ejecutar(
+        builder.Configuration,
+        repositorio,
+        passwordHasher
+    );
+}
+
 var culturas = new[] { new CultureInfo("es-AR") };
 
 app.UseRequestLocalization(new RequestLocalizationOptions {

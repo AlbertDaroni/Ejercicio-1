@@ -1,6 +1,7 @@
 using MySqlConnector;
 using Inmobiliaria_.Net_Core.Models;
 
+
 namespace Inmobiliaria_.Net_Core.Repositorios {
     public class Repositorio_UsuarioMySQL : RepositorioBase, IRepositorio_Usuario {
         public Repositorio_UsuarioMySQL(IConfiguration configuration) : base(configuration) {}
@@ -205,5 +206,9 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
 
             return usuario;
         }
+
+                      
+
+
     }
 }

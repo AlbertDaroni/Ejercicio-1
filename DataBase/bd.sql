@@ -89,19 +89,20 @@ CREATE TABLE Usuarios (
 
 -- Inserciones para Usuarios
 
-INSERT INTO Usuarios (Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado)
-VALUES  ('Alejandro', 'Silva', 'ale.silva@sistema.com', '$2y$10$e0myL5u..vsnDGL.61iYGe1V6.2Lp3P76pA7h4fR5G2vB5fU3u', 'avatar_ale.png', 'Administrador', '1'),
-        ('Gabriela', 'Pérez', 'gaby.perez@sistema.com', '$2y$10$r9xM3a9JkLZ7qP1oY8z2e.V9wX4mB7tK3vL5nP8qR1sT3uV5w', 'avatar_gaby.png', 'Recepcionista', '1'),
-        ('Ricardo', 'Torres', 'ricardo.torres@sistema.com', '$2y$10$w4mB7tK3vL5nP8qR1sT3uV5wX4mB7tK3vL5nP8qR1sT3uV5w', 'avatar_ricardo.png', 'Agente Inmobiliario', '1'),
-        ('Valeria', 'Ríos', 'valeria.rios@sistema.com', '$2y$10$z2e.V9wX4mB7tK3vL5nP8qR1sT3uV5wX4mB7tK3vL5nP8qR1sT', 'avatar_valeria.png', 'Recepcionista', '1'),
-        ('Manuel', 'Vargas', 'manuel.vargas@sistema.com', '$2y$10$P8qR1sT3uV5wX4mB7tK3vL5nP8qR1sT3uV5wX4mB7tK3vL5nP', 'avatar_manuel.png', 'Soporte', '1'),
-        ('Beatriz', 'Luna', 'beatriz.luna@sistema.com', '$2y$10$T3uV5wX4mB7tK3vL5nP8qR1sT3uV5wX4mB7tK3vL5nP8qR1s', 'avatar_beatriz.png', 'Supervisor', '0');
+--INSERT INTO Usuarios (Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado)
+--VALUES  ('Alejandro', 'Silva', 'ale.silva@sistema.com', '$2y$10$e0myL5u..vsnDGL.61iYGe1V6.2Lp3P76pA7h4fR5G2vB5fU3u', 'avatar_ale.png', 'Administrador', '1'),
+--        ('Gabriela', 'Pérez', 'gaby.perez@sistema.com', '$2y$10$r9xM3a9JkLZ7qP1oY8z2e.V9wX4mB7tK3vL5nP8qR1sT3uV5w', 'avatar_gaby.png', 'Recepcionista', '1'),
+--        ('Ricardo', 'Torres', 'ricardo.torres@sistema.com', '$2y$10$w4mB7tK3vL5nP8qR1sT3uV5wX4mB7tK3vL5nP8qR1sT3uV5w', 'avatar_ricardo.png', 'Agente Inmobiliario', '1'),
+--        ('Valeria', 'Ríos', 'valeria.rios@sistema.com', '$2y$10$z2e.V9wX4mB7tK3vL5nP8qR1sT3uV5wX4mB7tK3vL5nP8qR1sT', 'avatar_valeria.png', 'Recepcionista', '1'),
+--       ('Manuel', 'Vargas', 'manuel.vargas@sistema.com', '$2y$10$P8qR1sT3uV5wX4mB7tK3vL5nP8qR1sT3uV5wX4mB7tK3vL5nP', 'avatar_manuel.png', 'Soporte', '1'),
+--        ('Beatriz', 'Luna', 'beatriz.luna@sistema.com', '$2y$10$T3uV5wX4mB7tK3vL5nP8qR1sT3uV5wX4mB7tK3vL5nP8qR1s', 'avatar_beatriz.png', 'Supervisor', '0');
 
 -- Usuarios iniciales para autenticación y roles
-
-INSERT INTO Usuarios (Nombre, Apellido, Correo, Contraseña, Avatar, Rol, Estado) VALUES
-('Admin', 'Sistema', 'admin@inmobiliaria.com', '1234', 'avatar.png', 'Administrador', '1'),
-('Empleado', 'Prueba', 'empleado@inmobiliaria.com', '1234', 'avatar.png', 'Empleado', '1');
+-- IMPORTANTE:
+-- Las contraseñas deben generarse con PasswordHasher<Usuario>
+-- antes de insertar los usuarios en la base de datos.
+-- No insertar contraseñas en texto plano.
+-- Pendiente: incorporar usuarios iniciales con hashes compatibles.
 
 -- Creación de la tabla Inmuebles
 

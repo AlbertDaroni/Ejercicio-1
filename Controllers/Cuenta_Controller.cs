@@ -79,6 +79,12 @@ namespace Inmobiliaria_.Net_Core.Controllers {
                 Avatar = "../wwwroot/uploads/profile_picture/image.png",
                 Rol = "Usuario"
             };
+            // Hashear la contraseña antes de guardarla
+            aux.Contraseña = passwordHasher.HashPassword(
+                aux,
+                aux.Contraseña
+            );
+
             int nuevoID = repositorio_Usuario.Alta(aux);
             aux.id = nuevoID;
             await AutenticarUsuario(aux);
