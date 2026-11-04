@@ -5,9 +5,11 @@
     ViewData["Title"] = "Pagos por reserva";
     var reserva = ViewBag.Reserva as Inmobiliaria_.Net_Core.Models.Reserva;
     var pagos = Model.ToList();
-    decimal totalPagado = pagos
-        .Where(p => p.Estado == "1")
-        .Sum(p => p.Importe);
+    int paginaActual = ViewBag.Pagina;
+    int totalPaginas = ViewBag.TotalPaginas;
+    
+    decimal totalPagado = (decimal)ViewBag.TotalPagado;
+
 }
 
 <h1>Informe de pagos por reserva</h1>
@@ -76,6 +78,46 @@ else
             }
         </tbody>
     </table>
+
+    
+    @if (totalPaginas > 1)
+    {
+        <nav aria-label="Paginación de pagos">
+            <ul class="pagination justify-content-center mt-4">
+
+                <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                    asp-action="PagosPorReserva"
+                    asp-route-idReserva="@reserva?.id"
+                    asp-route-pagina="@(paginaActual - 1)">
+                        Anterior
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == paginaActual ? "active" : "")">
+                        <a class="page-link"
+                        asp-action="PagosPorReserva"
+                        asp-route-idReserva="@reserva?.id"
+                        asp-route-pagina="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                    <a class="page-link"
+                    asp-action="PagosPorReserva"
+                    asp-route-idReserva="@reserva?.id"
+                    asp-route-pagina="@(paginaActual + 1)">
+                        Siguiente
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    }
 
     <h5>
         Total pagado: $ @totalPagado.ToString("N2")

@@ -9,6 +9,17 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
         IList<Pago> ObtenerTodos();
         IList<Pago> MisPagos(int id);
         Pago? ObtenerPorID(int id);
-        IList<Pago> ObtenerPorReserva(int idReserva);
+        
+        IList<Pago> ObtenerPorReserva(
+            int idReserva,
+            int pagina = 1,
+            int tamPagina = 10
+        );
+
+        int ContarPorReserva(int idReserva);
+        
+        decimal ObtenerTotalPagadoPorReserva(int idReserva);
+
+
     }
 }

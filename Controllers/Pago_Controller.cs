@@ -44,9 +44,13 @@ namespace Inmobiliaria_.Net_Core.Controllers {
         }
 
         
+       
+        
         // Informe 7: pagos de una reserva específica
         [HttpGet]
-        public IActionResult PagosPorReserva(int idReserva)
+        public IActionResult PagosPorReserva(
+            int idReserva,
+            int pagina = 1)
         {
             if (idReserva <= 0)
                 return BadRequest("El identificador de la reserva no es válido.");
@@ -56,12 +60,32 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             if (reserva == null)
                 return NotFound();
 
-            var pagos = repositorio_Pago.ObtenerPorReserva(idReserva);
+            const int tamPagina = 10;
+
+            int totalPagos = repositorio_Pago.ContarPorReserva(idReserva);
+
+            int totalPaginas = Math.Max(
+                1,
+                (int)Math.Ceiling(totalPagos / (double)tamPagina)
+            );
+
+            pagina = Math.Clamp(pagina, 1, totalPaginas);
+
+            var pagos = repositorio_Pago.ObtenerPorReserva(
+                idReserva,
+                pagina,
+                tamPagina
+            );
 
             ViewBag.Reserva = reserva;
+            ViewBag.Pagina = pagina;
+            ViewBag.TotalPaginas = totalPaginas;
+            ViewBag.TotalPagos = totalPagos;
+            ViewBag.TotalPagado = repositorio_Pago.ObtenerTotalPagadoPorReserva(idReserva);
 
             return View(pagos);
         }
+
 
 
         

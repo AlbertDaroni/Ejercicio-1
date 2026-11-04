@@ -211,39 +211,84 @@ namespace Inmobiliaria_.Net_Core.Repositorios {
             return pago;
         }
 
-        public IList<Pago> ObtenerPorReserva(int idReserva) {
+        
+        public IList<Pago> ObtenerPorReserva(
+            int idReserva,
+            int pagina = 1,
+            int tamPagina = 10)
+        {
             var pagos = new List<Pago>();
 
-            using (var connection = new MySqlConnection(connectionString)) {
-                string sql = @"
-                    SELECT
-                        id,
-                        concepto,
-                        fecha_pago,
-                        fecha_anulacion,
-                        importe,
-                        estado,
-                        id_reserva,
-                        id_usuario_creador,
-                        id_usuario_finalizador
-                    FROM Pagos
-                    WHERE id_reserva = @id_reserva
-                    ORDER BY fecha_pago DESC;
-                ";
+            pagina = Math.Max(1, pagina);
+            tamPagina = Math.Clamp(tamPagina, 1, 100);
 
-                using (var command = new MySqlCommand(sql, connection)) {
-                    command.Parameters.AddWithValue("@id_reserva", idReserva);
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open();
 
-                    connection.Open();
-                    using (var reader = command.ExecuteReader()) {
-                        while (reader.Read()) { pagos.Add(MapearPago(reader)); }
-                    }
-                    connection.Close();
-                }
+            string sql = @"
+                SELECT id, concepto, fecha_pago, fecha_anulacion,
+                    importe, estado, id_reserva,
+                    id_usuario_creador, id_usuario_finalizador
+                FROM Pagos
+                WHERE id_reserva = @idReserva
+                ORDER BY fecha_pago DESC, id DESC
+                LIMIT @limite OFFSET @offset;";
+
+            using var command = new MySqlCommand(sql, connection);
+
+            command.Parameters.AddWithValue("@idReserva", idReserva);
+            command.Parameters.AddWithValue("@limite", tamPagina);
+            command.Parameters.AddWithValue(
+                "@offset", (pagina - 1) * tamPagina
+            );
+
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                pagos.Add(MapearPago(reader));
             }
 
             return pagos;
         }
+
+        
+        public int ContarPorReserva(int idReserva)
+        {
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            string sql = @"
+                SELECT COUNT(*)
+                FROM Pagos
+                WHERE id_reserva = @idReserva;";
+
+            using var command = new MySqlCommand(sql, connection);
+
+            command.Parameters.AddWithValue("@idReserva", idReserva);
+
+            return Convert.ToInt32(command.ExecuteScalar());
+        }
+
+        
+        public decimal ObtenerTotalPagadoPorReserva(int idReserva)
+        {
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            string sql = @"
+                SELECT COALESCE(SUM(importe), 0)
+                FROM Pagos
+                WHERE id_reserva = @idReserva
+                AND estado = '1';";
+
+            using var command = new MySqlCommand(sql, connection);
+
+            command.Parameters.AddWithValue("@idReserva", idReserva);
+
+            return Convert.ToDecimal(command.ExecuteScalar());
+        }
+
 
         // MAPEO DE MYSQL -> PAGO 
         // Para evitar repeticiones de los metodos obtener, para evitar eso hacemos pagos.Add(MapearPago(reader));
