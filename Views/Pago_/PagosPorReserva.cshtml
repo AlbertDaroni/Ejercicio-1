@@ -1,0 +1,90 @@
+
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.Pago>
+
+@{
+    ViewData["Title"] = "Pagos por reserva";
+    var reserva = ViewBag.Reserva as Inmobiliaria_.Net_Core.Models.Reserva;
+    var pagos = Model.ToList();
+    decimal totalPagado = pagos
+        .Where(p => p.Estado == "1")
+        .Sum(p => p.Importe);
+}
+
+<h1>Informe de pagos por reserva</h1>
+
+<h4>Reserva #@reserva?.id</h4>
+
+<p>
+    <strong>Período:</strong>
+    @reserva?.Fecha_Inicio.ToString("dd/MM/yyyy")
+    al
+    @reserva?.Fecha_Fin_Original.ToString("dd/MM/yyyy")
+</p>
+
+<a asp-controller="Pago_"
+   asp-action="Crear"
+   asp-route-idReserva="@reserva?.id"
+   class="btn btn-success mb-3">
+    Nuevo pago
+</a>
+
+@if (!pagos.Any())
+{
+    <div class="alert alert-info">
+        Esta reserva todavía no tiene pagos registrados.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Concepto</th>
+                <th>Fecha</th>
+                <th>Importe</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pago in pagos)
+            {
+                <tr>
+                    <td>@pago.id</td>
+                    <td>@pago.Concepto</td>
+                    <td>@pago.Fecha_Pago.ToString("dd/MM/yyyy")</td>
+                    <td>$ @pago.Importe.ToString("N2")</td>
+                    <td>
+                        @if (pago.Estado == "1")
+                        {
+                            <span class="badge bg-success">Vigente</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Anulado</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Detalles"
+                           asp-route-id="@pago.id"
+                           class="btn btn-info btn-sm">
+                            Detalles
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h5>
+        Total pagado: $ @totalPagado.ToString("N2")
+    </h5>
+}
+
+<a asp-controller="Reserva_"
+   asp-action="Detalles"
+   asp-route-id="@reserva?.id"
+   class="btn btn-secondary mt-3">
+    Volver a la reserva
+</a>

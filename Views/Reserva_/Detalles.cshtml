@@ -64,10 +64,23 @@
 </dl>
 
 <div>
-    <a asp-action="Modificar" asp-route-id="@Model.id" class="btn btn-warning">Editar</a>
-    @if (User.IsInRole("Administrador")) {
-        <a asp-action="Eliminar" asp-route-id="@Model.id" class="btn btn-danger">Finalizar</a>
-    }
-    <a asp-action="Indice" class="btn btn-secondary">Volver</a>
-    <a asp-action="Renovar" asp-route-id="@Model.id" class="btn btn-primary">Renovar</a>
+    
+    <a asp-action="Indice"
+    class="btn btn-secondary">
+        Volver
+    </a>
+
+    <a asp-action="Renovar"
+    asp-route-id="@Model.id"
+    class="btn btn-primary">
+        Renovar
+    </a>
+
+    <a asp-controller="Pago_"
+    asp-action="PagosPorReserva"
+    asp-route-idReserva="@Model.id"
+    class="btn btn-info">
+        Ver pagos
+    </a>
+
 </div>

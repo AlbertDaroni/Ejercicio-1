@@ -43,12 +43,49 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             return View(pagos);
         }
 
+        
+        // Informe 7: pagos de una reserva específica
+        [HttpGet]
+        public IActionResult PagosPorReserva(int idReserva)
+        {
+            if (idReserva <= 0)
+                return BadRequest("El identificador de la reserva no es válido.");
+
+            var reserva = repositorio_Reserva.ObtenerPorID(idReserva);
+
+            if (reserva == null)
+                return NotFound();
+
+            var pagos = repositorio_Pago.ObtenerPorReserva(idReserva);
+
+            ViewBag.Reserva = reserva;
+
+            return View(pagos);
+        }
+
+
+        
         // Crear
         [HttpGet, Authorize]
-        public IActionResult Crear() {
-            CargarReservas();
-            return View(new Pago());
+        public IActionResult Crear(int? idReserva)
+        {
+            if (idReserva.HasValue)
+            {
+                if (idReserva.Value <= 0 ||
+                    repositorio_Reserva.ObtenerPorID(idReserva.Value) == null)
+                {
+                    return NotFound();
+                }
+            }
+
+            CargarReservas(idReserva);
+
+            return View(new Pago
+            {
+                ID_Reserva = idReserva ?? 0
+            });
         }
+
 
         [HttpPost, ValidateAntiForgeryToken, Authorize]
         public IActionResult Crear(Pago pago) {
@@ -85,7 +122,12 @@ namespace Inmobiliaria_.Net_Core.Controllers {
             logger.LogInformation("Se registró correctamente el pago con ID: {Id}", pago.id);
             TempData["Mensaje"] = "El pago se registró correctamente.";
 
-            return RedirectToAction(nameof(Indice));
+            
+            return RedirectToAction(
+                nameof(PagosPorReserva),
+                new { idReserva = pago.ID_Reserva }
+            );
+
         }
 
         private void CargarReservas(int? seleccionada = null) {
