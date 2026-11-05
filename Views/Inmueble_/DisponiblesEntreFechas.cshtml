@@ -1,0 +1,160 @@
+
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.Inmueble>
+
+@{
+    ViewData["Title"] = "Inmuebles disponibles";
+
+    DateTime? desde = ViewBag.Desde;
+    DateTime? hasta = ViewBag.Hasta;
+
+    int paginaActual = ViewBag.Pagina;
+    int totalPaginas = ViewBag.TotalPaginas;
+    int total = ViewBag.Total;
+
+    bool busquedaRealizada = desde.HasValue && hasta.HasValue
+        && desde.Value.Date < hasta.Value.Date;
+}
+
+<h2>Informe 8 - Inmuebles disponibles</h2>
+
+<p>Buscá inmuebles disponibles entre dos fechas.</p>
+
+<form asp-action="DisponiblesEntreFechas"
+      asp-controller="Inmueble_"
+      method="get"
+      class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <label for="desde" class="form-label">
+            Fecha de entrada
+        </label>
+
+        <input type="date"
+               id="desde"
+               name="desde"
+               class="form-control"
+               value="@(desde?.ToString("yyyy-MM-dd"))"
+               required />
+    </div>
+
+    <div class="col-md-4">
+        <label for="hasta" class="form-label">
+            Fecha de salida
+        </label>
+
+        <input type="date"
+               id="hasta"
+               name="hasta"
+               class="form-control"
+               value="@(hasta?.ToString("yyyy-MM-dd"))"
+               required />
+    </div>
+
+    <div class="col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary">
+            Buscar disponibles
+        </button>
+    </div>
+
+</form>
+
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+@if (busquedaRealizada)
+{
+    <div class="alert alert-info">
+        Se encontraron <strong>@total</strong>
+        inmuebles disponibles entre el
+        <strong>@desde?.ToString("dd/MM/yyyy")</strong>
+        y el
+        <strong>@hasta?.ToString("dd/MM/yyyy")</strong>.
+    </div>
+
+    @if (Model.Any())
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Dirección</th>
+                    <th>Tipo</th>
+                    <th>Propietario</th>
+                    <th>Capacidad</th>
+                    <th>Precio por día</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var inmueble in Model)
+                {
+                    <tr>
+                        <td>@inmueble.id</td>
+                        <td>@inmueble.Direccion</td>
+                        <td>@inmueble.Tipo_Inmueble?.Nombre</td>
+                        <td>@inmueble.Propietario?.ApellidoYNombre</td>
+                        <td>@inmueble.Cupo</td>
+                        <td>$ @inmueble.Precio_Dia.ToString("N2")</td>
+                        <td>
+                            <a asp-controller="Inmueble_"
+                               asp-action="Detalles"
+                               asp-route-id="@inmueble.id"
+                               class="btn btn-sm btn-info">
+                                Ver inmueble
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (totalPaginas > 1)
+        {
+            <nav aria-label="Paginación de inmuebles">
+                <ul class="pagination justify-content-center">
+
+                    <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="DisponiblesEntreFechas"
+                           asp-route-desde="@desde?.ToString("yyyy-MM-dd")"
+                           asp-route-hasta="@hasta?.ToString("yyyy-MM-dd")"
+                           asp-route-pagina="@(paginaActual - 1)">
+                            Anterior
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= totalPaginas; i++)
+                    {
+                        <li class="page-item @(i == paginaActual ? "active" : "")">
+                            <a class="page-link"
+                               asp-action="DisponiblesEntreFechas"
+                               asp-route-desde="@desde?.ToString("yyyy-MM-dd")"
+                               asp-route-hasta="@hasta?.ToString("yyyy-MM-dd")"
+                               asp-route-pagina="@i">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="DisponiblesEntreFechas"
+                           asp-route-desde="@desde?.ToString("yyyy-MM-dd")"
+                           asp-route-hasta="@hasta?.ToString("yyyy-MM-dd")"
+                           asp-route-pagina="@(paginaActual + 1)">
+                            Siguiente
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            No se encontraron inmuebles disponibles
+            para las fechas seleccionadas.
+        </div>
+    }
+}

@@ -681,5 +681,136 @@ namespace Inmobiliaria_.Net_Core.Repositorios
             return inmuebles;
         }
 
+        
+        public int ContarDisponiblesEntreFechas(DateTime desde, DateTime hasta)
+        {
+            if (desde.Date >= hasta.Date)
+                throw new ArgumentException(
+                    "La fecha de salida debe ser posterior a la de entrada."
+                );
+
+            using var connection = new MySqlConnection(connectionString);
+
+            string sql = @"
+                SELECT COUNT(*)
+                FROM Inmuebles i
+                WHERE i.estado = '1'
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM Reservas r
+                    WHERE r.id_inmueble = i.id
+                    AND r.fecha_inicio < @hasta
+                    AND r.fecha_fin_efectiva > @desde
+                );";
+
+            using var command = new MySqlCommand(sql, connection);
+
+            command.Parameters.AddWithValue("@desde", desde.Date);
+            command.Parameters.AddWithValue("@hasta", hasta.Date);
+
+            connection.Open();
+
+            return Convert.ToInt32(command.ExecuteScalar());
+        }
+
+        
+        public IList<Inmueble> ObtenerDisponiblesEntreFechas(
+            DateTime desde,
+            DateTime hasta,
+            int pagina = 1,
+            int tamPagina = 10)
+        {
+            if (desde.Date >= hasta.Date)
+                throw new ArgumentException(
+                    "La fecha de salida debe ser posterior a la de entrada."
+                );
+
+            var inmuebles = new List<Inmueble>();
+
+            pagina = Math.Max(1, pagina);
+            tamPagina = Math.Clamp(tamPagina, 1, 100);
+
+            using var connection = new MySqlConnection(connectionString);
+
+            string sql = @"
+                SELECT
+                    i.id,
+                    i.direccion,
+                    i.cupo,
+                    i.latitud,
+                    i.longitud,
+                    i.precio_dia,
+                    i.porcentaje_seña,
+                    i.estado,
+                    i.id_propietario,
+                    i.id_tipo,
+                    p.nombre AS PropietarioNombre,
+                    p.apellido AS PropietarioApellido,
+                    ti.nombre AS TipoNombre
+                FROM Inmuebles i
+                INNER JOIN Propietarios p
+                    ON p.id = i.id_propietario
+                INNER JOIN Tipo_Inmuebles ti
+                    ON ti.id = i.id_tipo
+                WHERE i.estado = '1'
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM Reservas r
+                    WHERE r.id_inmueble = i.id
+                        AND r.fecha_inicio < @hasta
+                        AND r.fecha_fin_efectiva > @desde
+                )
+                ORDER BY i.direccion, i.id
+                LIMIT @limite OFFSET @desplazamiento;";
+
+            using var command = new MySqlCommand(sql, connection);
+
+            command.Parameters.AddWithValue("@desde", desde.Date);
+            command.Parameters.AddWithValue("@hasta", hasta.Date);
+            command.Parameters.AddWithValue("@limite", tamPagina);
+            command.Parameters.AddWithValue(
+                "@desplazamiento", ((long)pagina - 1) * tamPagina
+            );
+
+            connection.Open();
+
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var inmueble = new Inmueble
+                {
+                    id = reader.GetInt32("id"),
+                    Direccion = reader.GetString("direccion"),
+                    Cupo = reader.GetInt32("cupo"),
+                    Latitud = reader.GetDecimal("latitud"),
+                    Longitud = reader.GetDecimal("longitud"),
+                    Precio_Dia = reader.GetDecimal("precio_dia"),
+                    Porcentaje_Seña = reader.GetDecimal("porcentaje_seña"),
+                    Estado = reader.GetString("estado"),
+                    ID_Propietario = reader.GetInt32("id_propietario"),
+                    ID_Tipo = reader.GetInt32("id_tipo"),
+
+                    Propietario = new Propietario
+                    {
+                        id = reader.GetInt32("id_propietario"),
+                        Nombre = reader.GetString("PropietarioNombre"),
+                        Apellido = reader.GetString("PropietarioApellido")
+                    },
+
+                    Tipo_Inmueble = new Tipo_Inmueble
+                    {
+                        id = reader.GetInt32("id_tipo"),
+                        Nombre = reader.GetString("TipoNombre")
+                    }
+                };
+
+                inmuebles.Add(inmueble);
+            }
+
+            return inmuebles;
+        }
+
+
     }
 }

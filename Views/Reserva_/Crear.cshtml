@@ -5,6 +5,10 @@
 <h1>Nueva Reserva</h1>
 
 <form asp-action="Crear" method="post">
+    <div asp-validation-summary="ModelOnly"
+        class="alert alert-danger"
+        role="alert">
+    </div>
     <input type="hidden" asp-for="ID_Inmueble">
     <input type="hidden" asp-for="Monto_Dia">
 
@@ -31,11 +35,7 @@
         <span asp-validation-for="Fecha_Fin_Original" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Fecha_Fin_Efectiva" class="form-label">Fecha fin efectiva</label>
-        <input asp-for="Fecha_Fin_Efectiva" class="form-control" type="datetime-local">
-        <span asp-validation-for="Fecha_Fin_Efectiva" class="text-danger"></span>
-    </div>
+    
 
     <div class="mb-3">
         <label asp-for="ID_Inquilino" class="form-label">Inquilino</label>

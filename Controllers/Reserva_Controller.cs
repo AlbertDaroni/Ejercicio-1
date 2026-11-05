@@ -63,6 +63,11 @@ namespace Inmobiliaria_.Net_Core.Controllers
             ModelState.Remove(nameof(reserva.Estado));
             ModelState.Remove(nameof(reserva.ID_Usuario_Creador));
             ModelState.Remove(nameof(reserva.ID_Usuario_Finalizador));
+            // La fecha efectiva inicial es igual a la fecha fin original.
+            reserva.Fecha_Fin_Efectiva = reserva.Fecha_Fin_Original;
+
+            // Evitamos conservar un valor anterior en ModelState.
+            ModelState.Remove(nameof(reserva.Fecha_Fin_Efectiva));
             /*
                         if (!ModelState.IsValid) retornar();
                         if (reserva.Fecha_Inicio < DateTime.Now) retornar();
@@ -161,6 +166,65 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             return Math.Round(importeRestante * porcentaje, 2, MidpointRounding.AwayFromZero);
         }
+
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult CalcularFinalizacion(
+            FinalizarReservaViewModel modelo)
+        {
+            var reserva = repositorio_Reserva.ObtenerPorID(modelo.ID_Reserva);
+
+            if (reserva == null)
+                return NotFound();
+
+            modelo.Reserva = reserva;
+            modelo.CalculoRealizado = false;
+
+            ModelState.Remove(nameof(modelo.Reserva));
+            ModelState.Remove(nameof(modelo.MultaCalculada));
+            ModelState.Remove(nameof(modelo.CalculoRealizado));
+
+            if (reserva.Estado != "1")
+            {
+                ModelState.AddModelError(
+                    "",
+                    "La reserva ya está finalizada."
+                );
+            }
+
+            if (!modelo.Fecha_Fin_Efectiva.HasValue)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.Fecha_Fin_Efectiva),
+                    "Debés indicar una fecha de finalización."
+                );
+            }
+
+            if (ModelState.IsValid && modelo.Fecha_Fin_Efectiva.HasValue)
+            {
+                try
+                {
+                    modelo.MultaCalculada = CalcularMulta(
+                        reserva,
+                        modelo.Fecha_Fin_Efectiva.Value
+                    );
+
+                    modelo.CalculoRealizado = true;
+                }
+                catch (ArgumentException error)
+                {
+                    ModelState.AddModelError(
+                        nameof(modelo.Fecha_Fin_Efectiva),
+                        error.Message
+                    );
+                }
+            }
+
+            return View("Eliminar", modelo);
+        }
+
 
         // Eliminar
         [HttpGet, Authorize(Roles = "Administrador")]

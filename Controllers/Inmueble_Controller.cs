@@ -376,5 +376,71 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(inmuebles);
         }
 
+        
+        // Informe 8: inmuebles disponibles entre dos fechas
+        [HttpGet]
+        public IActionResult DisponiblesEntreFechas(
+            DateTime? desde,
+            DateTime? hasta,
+            int pagina = 1)
+        {
+            ViewBag.Desde = desde;
+            ViewBag.Hasta = hasta;
+
+            // Si todavía no se ingresaron fechas,
+            // mostramos el formulario sin resultados.
+            if (!desde.HasValue || !hasta.HasValue)
+            {
+                ViewBag.Pagina = 1;
+                ViewBag.TotalPaginas = 0;
+                ViewBag.Total = 0;
+
+                return View(new List<Inmueble>());
+            }
+
+            // Validar el rango de fechas.
+            if (desde.Value.Date >= hasta.Value.Date)
+            {
+                ModelState.AddModelError(
+                    "",
+                    "La fecha de salida debe ser posterior a la de entrada."
+                );
+
+                ViewBag.Pagina = 1;
+                ViewBag.TotalPaginas = 0;
+                ViewBag.Total = 0;
+
+                return View(new List<Inmueble>());
+            }
+
+            const int tamPagina = 10;
+
+            int total = repositorio_Inmueble.ContarDisponiblesEntreFechas(
+                desde.Value.Date,
+                hasta.Value.Date
+            );
+
+            int totalPaginas = Math.Max(
+                1,
+                (int)Math.Ceiling(total / (double)tamPagina)
+            );
+
+            pagina = Math.Clamp(pagina, 1, totalPaginas);
+
+            var inmuebles = repositorio_Inmueble.ObtenerDisponiblesEntreFechas(
+                desde.Value.Date,
+                hasta.Value.Date,
+                pagina,
+                tamPagina
+            );
+
+            ViewBag.Pagina = pagina;
+            ViewBag.TotalPaginas = totalPaginas;
+            ViewBag.Total = total;
+
+            return View(inmuebles);
+        }
+
+
     }
 }
